@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include"Animiation.h"
 #include "BaseCharacter.generated.h"
+
 class UAnimMontage;
 UCLASS(Blueprintable)
 class OURMOBA_API ABaseCharacter : public ACharacter
