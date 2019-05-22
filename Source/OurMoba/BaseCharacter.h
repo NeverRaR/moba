@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include"Animiation.h"
 #include "BaseCharacter.generated.h"
-
+class UAnimiation;
 class UAnimMontage;
+class UCharacterProperty;
 UCLASS(Blueprintable)
 class OURMOBA_API ABaseCharacter : public ACharacter
 {
@@ -45,7 +45,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void CRoleResetAttack() ;
 	UFUNCTION()
-		void PlayNextMontage(TArray<UAnimMontage*> Arr);
+		void PlayNextCombo(TArray<UAnimMontage*> Arr);
+	UFUNCTION(BlueprintImplementableEvent)
+		void SetMoveSpeed(float CurSpeed);
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
@@ -53,9 +55,8 @@ private:
 		class UDecalComponent* CursorToWorld;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
-	UPROPERTY(EditAnywhere, Category = "Anim", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Anim", meta = (AllowPrivateAccess = "true"))
 		UAnimiation* AnimiationComp;
-	UPROPERTY(EditAnywhere,Category = "Anim", meta = (AllowPrivateAccess = "true"))
-		TArray<UAnimMontage*>AttackAnim;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
+		UCharacterProperty* PropertyComp;
 };

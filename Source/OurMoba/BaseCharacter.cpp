@@ -14,6 +14,8 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "MobaController.h"
+#include"Animiation.h"
+#include "CharacterProperty.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -54,12 +56,15 @@ ABaseCharacter::ABaseCharacter()
 
 	AnimiationComp = CreateDefaultSubobject<UAnimiation>(TEXT("AnimiationComp"));
 
+	PropertyComp = CreateDefaultSubobject<UCharacterProperty>(TEXT("PropertyComp"));
+
 }
 
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	SetMoveSpeed(PropertyComp->GetCurMoveSpeed());
 }
 
 void ABaseCharacter::OnSetAttackPressed()
@@ -71,7 +76,7 @@ void ABaseCharacter::OnSetAttackPressed()
 	else
 	{
 		bIsAttacking = true;
-		PlayNextMontage(AnimiationComp->AttackAnim);
+		PlayNextCombo(AnimiationComp->AttackAnim);
 	}
 	AMobaController* MC = Cast<AMobaController>(Controller);
 	if (MC)
@@ -95,6 +100,13 @@ void ABaseCharacter::Tick(float DeltaTime)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
+	
+	FVector V = GetMovementComponent()->Velocity;
+	if (V.Size() > 0.1) {
+		V = (PropertyComp->GetCurMoveSpeed() / V.Size())*V;
+		GetMovementComponent()->Velocity = V;
+	}
+	
 }
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -110,7 +122,7 @@ void ABaseCharacter::CRoleComboAttack(int32 NextIndex)
 	if (bIsReadyToCombo)
 	{
 		bIsReadyToCombo = false;
-		PlayNextMontage( AnimiationComp->AttackAnim);
+		PlayNextCombo( AnimiationComp->AttackAnim);
 	 }
 }
 
@@ -121,12 +133,12 @@ void ABaseCharacter::CRoleResetAttack()
 	ComboIndex = 0;
 }
 
-void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr)
+void ABaseCharacter::PlayNextCombo(TArray<UAnimMontage*> Arr)
 {
 	if (Arr.Num())
 	{
 		if (ComboIndex >= Arr.Num()) ComboIndex = 0;
-		PlayAnimMontage(Arr[ComboIndex++], AttackRate);
+		PlayAnimMontage(Arr[ComboIndex++], PropertyComp->GetCurAttackSpeed());
 	}
 }
 
