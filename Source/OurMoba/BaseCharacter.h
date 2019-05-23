@@ -19,18 +19,12 @@ class OURMOBA_API ABaseCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
-	UPROPERTY(EditAnywhere, Category = "Attack", meta = (AllowPrivateAccess = "true"))
-		float AttackRate = 1.0f;
-	UPROPERTY(EditAnywhere, Category = "Attack", meta = (AllowPrivateAccess = "true"))
-		float Damage;
-
-
+	uint32 bIsDead : 1;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	uint32 bIsAttacking : 1;
 	uint32 bIsReadyToCombo : 1;
-	uint32 bIsDead : 1;
 	int32 ComboIndex = 0;
 	int32 DeathIndex = 0;
 	void OnSetAttackPressed();
@@ -57,6 +51,8 @@ public:
 		void DEBUGprint(float num);
 	UFUNCTION(BlueprintCallable)
 		void	CheckIsDead();
+	UFUNCTION(BlueprintCallable)
+		void	DeathOver();
 
 
 	UFUNCTION(BlueprintCallable)

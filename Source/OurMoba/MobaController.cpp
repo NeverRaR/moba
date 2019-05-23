@@ -33,14 +33,15 @@ void AMobaController::SetupInputComponent()
 }
 void AMobaController::MoveToMouseCursor()
 {
-		// Trace to see what is under the mouse cursor
-		FHitResult Hit;
-		GetHitResultUnderCursor(ECC_Visibility, false, Hit);
-		if (Hit.bBlockingHit)
-		{
-			// We hit something, move there
-			SetNewMoveDestination(Hit.ImpactPoint);
-		}
+	    ABaseCharacter* BaswOwner = Cast<ABaseCharacter>(GetOwner()); 
+			// Trace to see what is under the mouse cursor
+			FHitResult Hit;
+			GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+			if (Hit.bBlockingHit)
+			{
+				// We hit something, move there
+				SetNewMoveDestination(Hit.ImpactPoint);
+			}
 }
 void AMobaController::SetNewMoveDestination(const FVector DestLocation)
 {

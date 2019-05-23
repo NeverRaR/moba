@@ -24,6 +24,7 @@ ABaseCharacter::ABaseCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ComboIndex = 0;
+	DeathIndex = 0;
 	bIsAttacking = false;
 	bIsDead = false;
 	// Set size for player capsule
@@ -84,12 +85,6 @@ void ABaseCharacter::OnSetAttackPressed()
 		bIsAttacking = true;
 		PlayNextMontage(AnimiationComp->AttackAnim,ComboIndex,true);
 	}
-	AMobaController* MC = Cast<AMobaController>(Controller);
-	if (MC)
-	{
-		//When character begin to attack, stop moving.
-		MC->SetNewMoveDestination(GetActorLocation());
-	}
 }
 // Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
@@ -148,7 +143,7 @@ TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 }
 void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index,int32 bisCombo=false)
 {
-	if (Arr.Num())
+	if (Arr.Num()&&bIsDead==false)
 	{
 		if (Index >= Arr.Num()) Index = 0;
 		if (bisCombo)
@@ -191,8 +186,19 @@ void ABaseCharacter::CheckIsDead()
 {
 	if (PropertyComp->GetCurHP() < 0.01)
 	{
-		bIsDead = true;
+		
+		AMobaController* MC = Cast<AMobaController>(Controller);
+		if (MC)
+		{
+			MC->SetNewMoveDestination(GetActorLocation());
+		}
+		DEBUGprint(AnimiationComp->DeathAnim.Num());
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex);
-		Destroy();
+		bIsDead = true;
 	}
+}
+
+void ABaseCharacter::DeathOver()
+{
+	Destroy();
 }
