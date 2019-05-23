@@ -46,7 +46,7 @@ struct FBaseProperty
 	UPROPERTY(EditAnywhere)
 		float AttackSpeedGrowth = 0.025f;
 	UPROPERTY(EditAnywhere)
-		float MoveSpeed = 600.0f;
+		float MoveSpeed = 1000.0f;
 	UPROPERTY(EditAnywhere)
 		float InitEXP = 0.0f;
 	//LevelRule[k]表示第k级经验上限
@@ -86,7 +86,7 @@ struct FCurProperty
 	UPROPERTY(EditAnywhere)
 		float	AttackSpeed = 1.18f;
 	UPROPERTY(EditAnywhere)
-		float	MoveSpeed = 600.0f;
+		float	MoveSpeed = 1000.0f;
 	UPROPERTY(EditAnywhere)
 		float	CurEXP = 0.0f;
 	UPROPERTY(EditAnywhere)

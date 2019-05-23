@@ -8,6 +8,7 @@
 class UAnimiation;
 class UAnimMontage;
 class UCharacterProperty;
+class UCreatureCamp;
 UCLASS(Blueprintable)
 class OURMOBA_API ABaseCharacter : public ACharacter
 {
@@ -59,4 +60,6 @@ private:
 		UAnimiation* AnimiationComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
 		UCharacterProperty* PropertyComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camp", meta = (AllowPrivateAccess = "true"))
+		UCreatureCamp*  CampComp;
 };

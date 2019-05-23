@@ -2,10 +2,10 @@ saved
 Content/Test
 Intermediate
 /Content/KiteDemo
-
+/Content/ParagonProps/**/Meshes
 /Content/Paragon*/**/*.uasset
 !/Content/**/Animations/*.uasset
-
+!/Content/**/Meshes/*.uasset
 
 
 !/Content/ParagonProps/Turrets/Turrets_inhibitors/Animations/

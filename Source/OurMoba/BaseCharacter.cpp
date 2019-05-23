@@ -16,6 +16,7 @@
 #include "MobaController.h"
 #include"Animiation.h"
 #include "CharacterProperty.h"
+#include "CreatureCamp.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -58,13 +59,15 @@ ABaseCharacter::ABaseCharacter()
 
 	PropertyComp = CreateDefaultSubobject<UCharacterProperty>(TEXT("PropertyComp"));
 
+	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
+
 }
 
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	SetMoveSpeed(PropertyComp->GetCurMoveSpeed());
+	SetMoveSpeed(PropertyComp->GetBaseMoveSpeed());
 }
 
 void ABaseCharacter::OnSetAttackPressed()
@@ -100,12 +103,13 @@ void ABaseCharacter::Tick(float DeltaTime)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
-	
+	/*
 	FVector V = GetMovementComponent()->Velocity;
 	if (V.Size() > 0.1) {
 		V = (PropertyComp->GetCurMoveSpeed() / V.Size())*V;
 		GetMovementComponent()->Velocity = V;
 	}
+	*/
 	
 }
 // Called to bind functionality to input
