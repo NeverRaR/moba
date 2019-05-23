@@ -37,12 +37,16 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	CharacterCamp GetCamp() { return Camp; }
-	CharacterGroup GetGroup() { return Group; }
-	CharacterCamp SetCamp(const CharacterCamp& NewCamp) { return Camp= NewCamp; }
-	CharacterGroup SetGroup(const CharacterGroup& NewGroup) { return Group= NewGroup; }
-
-
+	UFUNCTION(BlueprintCallable)
+		CharacterCamp GetCamp() { return Camp; }
+	UFUNCTION(BlueprintCallable)
+		CharacterGroup GetGroup() { return Group; }
+	UFUNCTION(BlueprintCallable)
+		CharacterCamp SetCamp(const CharacterCamp& NewCamp) { return Camp= NewCamp; }
+	UFUNCTION(BlueprintCallable)
+		CharacterGroup SetGroup(const CharacterGroup& NewGroup) { return Group= NewGroup; }
+	UFUNCTION(BlueprintCallable)
+		bool CheckIsEnemy(CharacterCamp UnknowCamp) { return Camp != UnknowCamp; }
 private:
 	UPROPERTY(EditAnywhere)
 		CharacterCamp Camp;

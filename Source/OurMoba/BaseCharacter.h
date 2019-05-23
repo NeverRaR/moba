@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "CreatureCamp.h"
 #include "BaseCharacter.generated.h"
+
 class UAnimiation;
 class UAnimMontage;
 class UCharacterProperty;
@@ -28,7 +30,9 @@ protected:
 	virtual void BeginPlay() override;
 	uint32 bIsAttacking : 1;
 	uint32 bIsReadyToCombo : 1;
+	uint32 bIsDead : 1;
 	int32 ComboIndex = 0;
+	int32 DeathIndex = 0;
 	void OnSetAttackPressed();
 
 
@@ -45,11 +49,24 @@ public:
 		void CRoleComboAttack(int32 NextIndex);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void CRoleResetAttack() ;
+	UFUNCTION(BlueprintCallable)
+		void ReceivePhyDamage(float PhyDamage);
+	UFUNCTION(BlueprintCallable)
+		void	CTraceDetect(TArray<FHitResult> HitResult);
+	UFUNCTION(BlueprintImplementableEvent)
+		void DEBUGprint(float num);
+	UFUNCTION(BlueprintCallable)
+		void	CheckIsDead();
+
+
+	UFUNCTION(BlueprintCallable)
+		TArray<ABaseCharacter*> GetAllEnemysInRadius(float Radius);
 	UFUNCTION()
-		void PlayNextCombo(TArray<UAnimMontage*> Arr);
+		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, int32 bisCombo);
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetMoveSpeed(float CurSpeed);
-private:
+	UFUNCTION(BlueprintCallable)
+		bool CheckIsEnemy(ABaseCharacter* UnknowCharacter) { return CampComp->CheckIsEnemy(UnknowCharacter->CampComp->GetCamp()); }
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

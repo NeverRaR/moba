@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Interaction.h"
-
+#include "BaseCharacter.h"
+#include "Engine\EngineTypes.h"
 // Sets default values for this component's properties
 UInteraction::UInteraction()
 {
@@ -31,4 +31,27 @@ void UInteraction::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 
 	// ...
 }
+
+void UInteraction::CTraceDetect(TArray<FHitResult> HitResult)
+{
+	TArray<AActor*> Ignored;
+	ABaseCharacter* BaseOwner = Cast<ABaseCharacter>(GetOwner());
+	if (BaseOwner)
+	{   
+		float Damage = BaseOwner->PropertyComp->GetCurPhyAttack();
+		for (int32 i = 0; i < HitResult.Num(); ++i)
+		{
+			if (Ignored.Contains(HitResult[i].Actor)) continue;
+			ABaseCharacter* Receiver = Cast<ABaseCharacter>(HitResult[i].Actor);
+			if (Receiver)
+			{
+				Receiver->ReceivePhyDamage(Damage);
+				DEBUGprint(Receiver->PropertyComp->GetCurHP());
+			}
+		}
+	}
+}
+
+
+
 

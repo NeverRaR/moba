@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CharacterProperty.h"
+#include"BaseCharacter.h"
 #include "Components/ActorComponent.h"
 #include "Interaction.generated.h"
 
-
+struct FHitResult;
 UCLASS(Blueprintable,ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class OURMOBA_API UInteraction : public UActorComponent
 {
@@ -23,7 +25,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UFUNCTION(BlueprintCallable)
+		void	CTraceDetect(TArray<FHitResult> HitResult);
 	UFUNCTION(BlueprintImplementableEvent)
-		void	CMultiTraceDetect(FHitResult& HitResult);
+		void DEBUGprint(float num);
 		
 };
