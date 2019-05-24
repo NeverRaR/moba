@@ -26,7 +26,6 @@ ABaseCharacter::ABaseCharacter()
 	ComboIndex = 0;
 	DeathIndex = 0;
 	bIsAttacking = false;
-	bIsDead = false;
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(105.0f, 240.0f);
 
@@ -61,6 +60,7 @@ ABaseCharacter::ABaseCharacter()
 	AnimiationComp = CreateDefaultSubobject<UAnimiation>(TEXT("AnimiationComp"));
 
 	PropertyComp = CreateDefaultSubobject<UCharacterProperty>(TEXT("PropertyComp"));
+	PropertyComp->SetAlive(true);
 
 	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
                                                             
@@ -143,7 +143,7 @@ TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 }
 void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index,int32 bisCombo=false)
 {
-	if (Arr.Num()&&bIsDead==false)
+	if (Arr.Num()&&PropertyComp->IsAlive())
 	{
 		if (Index >= Arr.Num()) Index = 0;
 		if (bisCombo)
@@ -159,13 +159,22 @@ void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index,int3
 void ABaseCharacter::ReceivePhyDamage(float PhyDamage)
 {
 	float PhyDef =PropertyComp->GetCurPhyDef();
-	float CurDamage = PhyDamage - PhyDef / 5;
-	if (CurDamage < 0.1)CurDamage = 0;
+	float DamageResistance = 0.06*PhyDef / (1 + 0.06*PhyDef);
+	float CurDamage = (1 - DamageResistance)*PhyDamage;
 	PropertyComp->AddCurHP(-CurDamage);
 	CheckIsDead();
 }
 
-void ABaseCharacter::CTraceDetect(TArray<FHitResult> HitResult)
+void ABaseCharacter::ReceiveMagDamage(float MagDamage)
+{
+	float MagDef = PropertyComp->GetCurMagDef();
+	float DamageResistance = MagDef;
+	float CurDamage = (1 - DamageResistance)*MagDamage;
+	PropertyComp->AddCurHP(-CurDamage);
+	CheckIsDead();
+}
+
+void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 {
 	TArray<AActor*> Ignored;
 
@@ -174,7 +183,7 @@ void ABaseCharacter::CTraceDetect(TArray<FHitResult> HitResult)
 		{
 			if (Ignored.Contains(HitResult[i].Actor)) continue;
 			ABaseCharacter* Receiver = Cast<ABaseCharacter>(HitResult[i].Actor);
-			if (Receiver&&Receiver->bIsDead==false)
+			if (Receiver&&Receiver->PropertyComp->IsAlive())
 			{
 				Receiver->ReceivePhyDamage(Damage);
 				DEBUGprint(Receiver->PropertyComp->GetCurHP());
@@ -182,9 +191,26 @@ void ABaseCharacter::CTraceDetect(TArray<FHitResult> HitResult)
 		}
 }
 
+void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
+{
+	TArray<AActor*> Ignored;
+
+	float Damage = PropertyComp->GetCurMagAttack();
+	for (int32 i = 0; i < HitResult.Num(); ++i)
+	{
+		if (Ignored.Contains(HitResult[i].Actor)) continue;
+		ABaseCharacter* Receiver = Cast<ABaseCharacter>(HitResult[i].Actor);
+		if (Receiver&&Receiver->PropertyComp->IsAlive())
+		{
+			Receiver->ReceiveMagDamage(Damage);
+			DEBUGprint(Receiver->PropertyComp->GetCurHP());
+		}
+	}
+
+}
 void ABaseCharacter::CheckIsDead()
 {
-	if (PropertyComp->GetCurHP() < 0.01)
+	if (PropertyComp->GetCurHP() < 0.0001)
 	{
 		
 		AMobaController* MC = Cast<AMobaController>(Controller);
@@ -194,7 +220,7 @@ void ABaseCharacter::CheckIsDead()
 		}
 		DEBUGprint(AnimiationComp->DeathAnim.Num());
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex);
-		bIsDead = true;
+		PropertyComp->SetAlive(false);
 	}
 }
 

@@ -25,9 +25,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	UFUNCTION(BlueprintCallable)
-		void	CTraceDetect(TArray<FHitResult> HitResult);
-	UFUNCTION(BlueprintImplementableEvent)
-		void DEBUGprint(float num);
 		
 };

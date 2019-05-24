@@ -98,7 +98,7 @@ class OURMOBA_API UCharacterProperty : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UCharacterProperty();
 
@@ -106,16 +106,16 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-//HP and MP
+	//HP and MP
 	UFUNCTION(BlueprintCallable)
 		float GetBaseMaxHP() { return FBasePropertyDetail.HP; }
 	UFUNCTION(BlueprintCallable)
 		float GetCurHP() { return FCurPropertyDetail.CurHP; }
 	UFUNCTION(BlueprintCallable)
-		float GetCurMaxHP(){ return FCurPropertyDetail.MaxHP; }
+		float GetCurMaxHP() { return FCurPropertyDetail.MaxHP; }
 	UFUNCTION(BlueprintCallable)
 		float GetBaseHPRecovery() { return FBasePropertyDetail.HPRecovery; }
 	UFUNCTION(BlueprintCallable)
@@ -125,9 +125,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		float SetCurHP(float NewHP) { return FCurPropertyDetail.CurHP = NewHP; }
 	UFUNCTION(BlueprintCallable)
-		float SetCurMaxHP(float NewHP) {return  FCurPropertyDetail.MaxHP = NewHP;}
+		float SetCurMaxHP(float NewHP) { return  FCurPropertyDetail.MaxHP = NewHP; }
 	UFUNCTION(BlueprintCallable)
-		float SetBaseHPRecovery(float NewHPRecovery) { return FBasePropertyDetail.HPRecovery= NewHPRecovery; }
+		float SetBaseHPRecovery(float NewHPRecovery) { return FBasePropertyDetail.HPRecovery = NewHPRecovery; }
 	UFUNCTION(BlueprintCallable)
 		float SetCurHPRecovery(float NewHPRecovery) { return FCurPropertyDetail.HPRecovery = NewHPRecovery; }
 	UFUNCTION(BlueprintCallable)
@@ -171,8 +171,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		float AddCurMPRecovery(float DeltaMPRecovery) { return FCurPropertyDetail.MPRecovery; }
 
-	
- //Level and EXP
+
+	//Level and EXP
 	UFUNCTION(BlueprintCallable)
 		float GetCurEXP() { return FCurPropertyDetail.CurEXP; }
 	UFUNCTION(BlueprintCallable)
@@ -187,11 +187,11 @@ public:
 		float AddLevel(float DeltaLevel) { return FCurPropertyDetail.CurLevel += DeltaLevel; }
 	UFUNCTION(BlueprintCallable)
 		bool CheckLevelUp(float DeltaEXP);
-	UFUNCTION(BlueprintCallable)          
+	UFUNCTION(BlueprintCallable)
 		bool IsLevelUp() { return bIsLevelUp; }
 	UFUNCTION(BlueprintCallable)
 		bool LevelUp();
-//Attack and Def
+	//Attack and Def
 	UFUNCTION(BlueprintCallable)
 		float GetBasePhyAttack() { return FBasePropertyDetail.PhyAttack; }
 	UFUNCTION(BlueprintCallable)
@@ -201,13 +201,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 		float GetCurMagAttack() { return FCurPropertyDetail.MagAttack; }
 	UFUNCTION(BlueprintCallable)
-		float SetBasePhyAttack(float NewAttack) { return FBasePropertyDetail.PhyAttack=NewAttack; }
+		float SetBasePhyAttack(float NewAttack) { return FBasePropertyDetail.PhyAttack = NewAttack; }
 	UFUNCTION(BlueprintCallable)
-		float SetCurPhyAttack(float NewAttack) { return FCurPropertyDetail.PhyAttack=NewAttack; }
+		float SetCurPhyAttack(float NewAttack) { return FCurPropertyDetail.PhyAttack = NewAttack; }
 	UFUNCTION(BlueprintCallable)
-		float SetBaseMagAttack(float NewAttack) { return FBasePropertyDetail.MagAttack= NewAttack; }
+		float SetBaseMagAttack(float NewAttack) { return FBasePropertyDetail.MagAttack = NewAttack; }
 	UFUNCTION(BlueprintCallable)
-		float SetCurMagAttack(float NewAttack) { return FCurPropertyDetail.MagAttack=NewAttack; }
+		float SetCurMagAttack(float NewAttack) { return FCurPropertyDetail.MagAttack = NewAttack; }
 	UFUNCTION(BlueprintCallable)
 		float AddBasePhyAttack(float DeltaAttack) { return FBasePropertyDetail.PhyAttack += DeltaAttack; }
 	UFUNCTION(BlueprintCallable)
@@ -223,7 +223,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		float GetBaseMagDef() { return FBasePropertyDetail.MagDef; }
 	UFUNCTION(BlueprintCallable)
-		float GetCurMagDef() { return FCurPropertyDetail.MagDef ; }
+		float GetCurMagDef() { return FCurPropertyDetail.MagDef; }
 	UFUNCTION(BlueprintCallable)
 		float SetBasePhyDef(float NewDef) { return FBasePropertyDetail.PhyDef = NewDef; }
 	UFUNCTION(BlueprintCallable)
@@ -251,25 +251,27 @@ public:
 	UFUNCTION(BlueprintCallable)
 		float GetCurAttackSpeed() { return FCurPropertyDetail.AttackSpeed; }
 	UFUNCTION(BlueprintCallable)
-		float SetBaseMoveSpeed(float NewMoveSpeed) { return FBasePropertyDetail.MoveSpeed=NewMoveSpeed; }
+		float SetBaseMoveSpeed(float NewMoveSpeed) { return FBasePropertyDetail.MoveSpeed = NewMoveSpeed; }
 	UFUNCTION(BlueprintCallable)
-		float SetCurMoveSpeed(float NewMoveSpeed) { return FCurPropertyDetail.MoveSpeed=NewMoveSpeed; }
+		float SetCurMoveSpeed(float NewMoveSpeed) { return FCurPropertyDetail.MoveSpeed = NewMoveSpeed; }
 	UFUNCTION(BlueprintCallable)
-		float SetBaseAttackSpeed(float NewAttackSpeed) { return FBasePropertyDetail.AttackSpeed=NewAttackSpeed; }
+		float SetBaseAttackSpeed(float NewAttackSpeed) { return FBasePropertyDetail.AttackSpeed = NewAttackSpeed; }
 	UFUNCTION(BlueprintCallable)
-		float SetCurAttackSpeed(float NewAttackSpeed) { return FCurPropertyDetail.AttackSpeed=NewAttackSpeed; }
+		float SetCurAttackSpeed(float NewAttackSpeed) { return FCurPropertyDetail.AttackSpeed = NewAttackSpeed; }
 	UFUNCTION(BlueprintCallable)
-		float AddBaseMoveSpeed(float DeltaMoveSpeed) { return FBasePropertyDetail.MoveSpeed+=DeltaMoveSpeed; }
+		float AddBaseMoveSpeed(float DeltaMoveSpeed) { return FBasePropertyDetail.MoveSpeed += DeltaMoveSpeed; }
 	UFUNCTION(BlueprintCallable)
-		float AddCurMoveSpeed(float DeltaMoveSpeed) { return FCurPropertyDetail.MoveSpeed+=DeltaMoveSpeed; }
+		float AddCurMoveSpeed(float DeltaMoveSpeed) { return FCurPropertyDetail.MoveSpeed += DeltaMoveSpeed; }
 	UFUNCTION(BlueprintCallable)
-		float AddBaseAttackSpeed(float DeltaAttackSpeed) { return FBasePropertyDetail.AttackSpeed+=DeltaAttackSpeed; }
+		float AddBaseAttackSpeed(float DeltaAttackSpeed) { return FBasePropertyDetail.AttackSpeed += DeltaAttackSpeed; }
 	UFUNCTION(BlueprintCallable)
-		float AddCurAttackSpeed(float DeltaAttackSpeed) { return FCurPropertyDetail.AttackSpeed+=DeltaAttackSpeed; }
-
-
+		float AddCurAttackSpeed(float DeltaAttackSpeed) { return FCurPropertyDetail.AttackSpeed += DeltaAttackSpeed; }
 	UFUNCTION(BlueprintCallable)
 		void ResetCurProperty();
+		void  HPRecovering(float DeltaTime);
+		void MPRecovering(float DeltaTime);
+		int32 IsAlive() { return bIsAlive; }
+		int32 SetAlive(int32 UnkonwStatus) { return bIsAlive = UnkonwStatus; }
 
 
 
@@ -280,5 +282,5 @@ private:
 		FCurProperty FCurPropertyDetail;
 	uint32 bIsLevelUp : 1;
 	const int32 MaxLevel = 16;
-
+	int32 bIsAlive : 1;
 };

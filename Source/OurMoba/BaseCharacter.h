@@ -19,23 +19,23 @@ class OURMOBA_API ABaseCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
-	uint32 bIsDead : 1;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	uint32 bIsAttacking : 1;
+	uint32 bIsAlive : 1;
 	uint32 bIsReadyToCombo : 1;
 	int32 ComboIndex = 0;
 	int32 DeathIndex = 0;
-	void OnSetAttackPressed();
-
+	
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void OnSetAttackPressed();//将在远程单位中重写
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	int32 IsAttacking()const { return bIsAttacking; }
+	uint32 IsAttacking()const { return bIsAttacking; }
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -46,15 +46,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ReceivePhyDamage(float PhyDamage);
 	UFUNCTION(BlueprintCallable)
-		void	CTraceDetect(TArray<FHitResult> HitResult);
+		void ReceiveMagDamage(float MagDamage);
+	UFUNCTION(BlueprintCallable)
+		void	CPhyTraceDetect(TArray<FHitResult> HitResult);
+	UFUNCTION(BlueprintCallable)
+		void	CMagTraceDetect(TArray<FHitResult> HitResult);
 	UFUNCTION(BlueprintImplementableEvent)
 		void DEBUGprint(float num);
 	UFUNCTION(BlueprintCallable)
 		void	CheckIsDead();
 	UFUNCTION(BlueprintCallable)
 		void	DeathOver();
-
-
 	UFUNCTION(BlueprintCallable)
 		TArray<ABaseCharacter*> GetAllEnemysInRadius(float Radius);
 	UFUNCTION()
