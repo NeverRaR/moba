@@ -4,6 +4,7 @@
 #include "MobaController.h"
 #include "Runtime/Engine/Classes/Components/DecalComponent.h"
 #include "BaseCharacter.h"
+#include"CharacterProperty.h"
 #include "Engine/World.h"
 AMobaController::AMobaController()
 {
@@ -33,21 +34,21 @@ void AMobaController::SetupInputComponent()
 }
 void AMobaController::MoveToMouseCursor()
 {
-	    ABaseCharacter* BaswOwner = Cast<ABaseCharacter>(GetOwner()); 
 			// Trace to see what is under the mouse cursor
-			FHitResult Hit;
-			GetHitResultUnderCursor(ECC_Visibility, false, Hit);
-			if (Hit.bBlockingHit)
-			{
-				// We hit something, move there
-				SetNewMoveDestination(Hit.ImpactPoint);
-			}
+		FHitResult Hit;
+		GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+		if (Hit.bBlockingHit)
+		{
+			// We hit something, move there
+			SetNewMoveDestination(Hit.ImpactPoint);
+		}
 }
-void AMobaController::SetNewMoveDestination(const FVector DestLocation)
+void AMobaController::SetNewMoveDestination(FVector DestLocation)
 {
-	APawn* const MyPawn = GetPawn();
+	ABaseCharacter* MyPawn = Cast<ABaseCharacter>(GetPawn());
 	if (MyPawn)
 	{
+		if (!MyPawn->PropertyComp->IsAlive()) DestLocation = MyPawn->GetActorLocation();
 		CMoveToLocation(this, DestLocation);
 	}
 }

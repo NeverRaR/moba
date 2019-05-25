@@ -15,7 +15,7 @@ class OURMOBA_API AMobaController : public APlayerController
 public:
 	// Sets default values for this character's properties
 	AMobaController();
-	void SetNewMoveDestination(const FVector DestLocation);
+	void SetNewMoveDestination(FVector DestLocation);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

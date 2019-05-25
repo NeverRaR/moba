@@ -17,7 +17,7 @@
 #include"Animiation.h"
 #include "CharacterProperty.h"
 #include"Kismet\GameplayStatics.h"
-
+#include"Particles\ParticleSystem.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -64,7 +64,6 @@ ABaseCharacter::ABaseCharacter()
 
 	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
                                                             
-
 }
 
 // Called when the game starts or when spawned
@@ -159,9 +158,10 @@ void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index,int3
 void ABaseCharacter::ReceivePhyDamage(float PhyDamage)
 {
 	float PhyDef =PropertyComp->GetCurPhyDef();
-	float DamageResistance = 0.06*PhyDef / (1 + 0.06*PhyDef);
+	float DamageResistance =PhyDef / (PhyDef+150);
 	float CurDamage = (1 - DamageResistance)*PhyDamage;
 	PropertyComp->AddCurHP(-CurDamage);
+	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
 	CheckIsDead();
 }
 
@@ -181,12 +181,16 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 		float Damage =PropertyComp->GetCurPhyAttack();
 		for (int32 i = 0; i < HitResult.Num(); ++i)
 		{
-			if (Ignored.Contains(HitResult[i].Actor)) continue;
+			if (Ignored.Contains(HitResult[i].GetActor())) continue;
+			Ignored.Add(HitResult[i].GetActor());
 			ABaseCharacter* Receiver = Cast<ABaseCharacter>(HitResult[i].Actor);
 			if (Receiver&&Receiver->PropertyComp->IsAlive())
 			{
-				Receiver->ReceivePhyDamage(Damage);
-				DEBUGprint(Receiver->PropertyComp->GetCurHP());
+				if (CheckIsEnemy(Receiver))
+				{
+					Receiver->ReceivePhyDamage(Damage);
+					DEBUGprint(Receiver->PropertyComp->GetCurHP());
+				}
 			}
 		}
 }
@@ -198,12 +202,16 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 	float Damage = PropertyComp->GetCurMagAttack();
 	for (int32 i = 0; i < HitResult.Num(); ++i)
 	{
-		if (Ignored.Contains(HitResult[i].Actor)) continue;
+		if (Ignored.Contains(HitResult[i].GetActor())) continue;
+		Ignored.Add(HitResult[i].GetActor());
 		ABaseCharacter* Receiver = Cast<ABaseCharacter>(HitResult[i].Actor);
 		if (Receiver&&Receiver->PropertyComp->IsAlive())
 		{
-			Receiver->ReceiveMagDamage(Damage);
-			DEBUGprint(Receiver->PropertyComp->GetCurHP());
+			if (CheckIsEnemy(Receiver))
+			{
+				Receiver->ReceiveMagDamage(Damage);
+				DEBUGprint(Receiver->PropertyComp->GetCurHP());
+			}
 		}
 	}
 
@@ -218,7 +226,9 @@ void ABaseCharacter::CheckIsDead()
 		{
 			MC->SetNewMoveDestination(GetActorLocation());
 		}
+		SetActorEnableCollision(false);
 		DEBUGprint(AnimiationComp->DeathAnim.Num());
+
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex);
 		PropertyComp->SetAlive(false);
 	}

@@ -268,9 +268,10 @@ public:
 		float AddCurAttackSpeed(float DeltaAttackSpeed) { return FCurPropertyDetail.AttackSpeed += DeltaAttackSpeed; }
 	UFUNCTION(BlueprintCallable)
 		void ResetCurProperty();
+	UFUNCTION(BlueprintCallable)
+		bool IsAlive() { return bIsAlive; }
 		void  HPRecovering(float DeltaTime);
 		void MPRecovering(float DeltaTime);
-		int32 IsAlive() { return bIsAlive; }
 		int32 SetAlive(int32 UnkonwStatus) { return bIsAlive = UnkonwStatus; }
 
 

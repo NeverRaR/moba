@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "CreatureCamp.h"
 #include "BaseCharacter.generated.h"
-
+class UParticleSystem;
 class UAnimiation;
 class UAnimMontage;
 class UCharacterProperty;
@@ -77,4 +77,9 @@ public:
 		UCharacterProperty* PropertyComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camp", meta = (AllowPrivateAccess = "true"))
 		UCreatureCamp*  CampComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
+		UParticleSystem*  HitReact;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
+		UParticleSystem*  DeathReact;
+	
 };
