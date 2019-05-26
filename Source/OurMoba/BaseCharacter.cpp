@@ -16,12 +16,15 @@
 #include "MobaController.h"
 #include"Animiation.h"
 #include "CharacterProperty.h"
+#include"Kismet\GameplayStatics.h"
+#include"Particles\ParticleSystem.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ComboIndex = 0;
+	DeathIndex = 0;
 	bIsAttacking = false;
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(105.0f, 240.0f);
@@ -57,14 +60,17 @@ ABaseCharacter::ABaseCharacter()
 	AnimiationComp = CreateDefaultSubobject<UAnimiation>(TEXT("AnimiationComp"));
 
 	PropertyComp = CreateDefaultSubobject<UCharacterProperty>(TEXT("PropertyComp"));
+	PropertyComp->SetAlive(true);
 
+	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
+                                                            
 }
 
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	SetMoveSpeed(PropertyComp->GetCurMoveSpeed());
+	SetMoveSpeed(PropertyComp->GetBaseMoveSpeed());
 }
 
 void ABaseCharacter::OnSetAttackPressed()
@@ -76,13 +82,7 @@ void ABaseCharacter::OnSetAttackPressed()
 	else
 	{
 		bIsAttacking = true;
-		PlayNextCombo(AnimiationComp->AttackAnim);
-	}
-	AMobaController* MC = Cast<AMobaController>(Controller);
-	if (MC)
-	{
-		//When character begin to attack, stop moving.
-		MC->SetNewMoveDestination(GetActorLocation());
+		PlayNextMontage(AnimiationComp->AttackAnim,ComboIndex,true);
 	}
 }
 // Called every frame
@@ -99,14 +99,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 			CursorToWorld->SetWorldLocation(TraceHitResult.Location);
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
-	}
-	
-	FVector V = GetMovementComponent()->Velocity;
-	if (V.Size() > 0.1) {
-		V = (PropertyComp->GetCurMoveSpeed() / V.Size())*V;
-		GetMovementComponent()->Velocity = V;
-	}
-	
+	}	
 }
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -122,7 +115,7 @@ void ABaseCharacter::CRoleComboAttack(int32 NextIndex)
 	if (bIsReadyToCombo)
 	{
 		bIsReadyToCombo = false;
-		PlayNextCombo( AnimiationComp->AttackAnim);
+		PlayNextMontage( AnimiationComp->AttackAnim,ComboIndex,true);
 	 }
 }
 
@@ -132,13 +125,116 @@ void ABaseCharacter::CRoleResetAttack()
 	bIsReadyToCombo = false;
 	ComboIndex = 0;
 }
-
-void ABaseCharacter::PlayNextCombo(TArray<UAnimMontage*> Arr)
+TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 {
-	if (Arr.Num())
+	TArray<AActor*> AllActor;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseCharacter::GetClass(), AllActor);
+	TArray<ABaseCharacter*> AllEnemysInRadius;
+	for (int32 i = 0; i < AllActor.Num(); ++i)
 	{
-		if (ComboIndex >= Arr.Num()) ComboIndex = 0;
-		PlayAnimMontage(Arr[ComboIndex++], PropertyComp->GetCurAttackSpeed());
+		ABaseCharacter* UnknowCharacter = Cast<ABaseCharacter>(AllActor[i]);
+		if (UnknowCharacter&&CampComp->CheckIsEnemy(UnknowCharacter->CampComp->GetCamp()))
+		{
+			if (GetDistanceTo(UnknowCharacter) < Radius) AllEnemysInRadius.Push(UnknowCharacter);
+		}
+	}
+	return AllEnemysInRadius;
+}
+void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index,int32 bisCombo=false)
+{
+	if (Arr.Num()&&PropertyComp->IsAlive())
+	{
+		if (Index >= Arr.Num()) Index = 0;
+		if (bisCombo)
+		{
+			PlayAnimMontage(Arr[Index++], PropertyComp->GetCurAttackSpeed());
+		}
+		else
+		{
+			PlayAnimMontage(Arr[Index++]);
+		}
+	}
+}
+void ABaseCharacter::ReceivePhyDamage(float PhyDamage)
+{
+	float PhyDef =PropertyComp->GetCurPhyDef();
+	float DamageResistance =PhyDef / (PhyDef+150);
+	float CurDamage = (1 - DamageResistance)*PhyDamage;
+	PropertyComp->AddCurHP(-CurDamage);
+	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
+	CheckIsDead();
+}
+
+void ABaseCharacter::ReceiveMagDamage(float MagDamage)
+{
+	float MagDef = PropertyComp->GetCurMagDef();
+	float DamageResistance = MagDef;
+	float CurDamage = (1 - DamageResistance)*MagDamage;
+	PropertyComp->AddCurHP(-CurDamage);
+	CheckIsDead();
+}
+
+void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
+{
+	TArray<AActor*> Ignored;
+
+		float Damage =PropertyComp->GetCurPhyAttack();
+		for (int32 i = 0; i < HitResult.Num(); ++i)
+		{
+			if (Ignored.Contains(HitResult[i].GetActor())) continue;
+			Ignored.Add(HitResult[i].GetActor());
+			ABaseCharacter* Receiver = Cast<ABaseCharacter>(HitResult[i].Actor);
+			if (Receiver&&Receiver->PropertyComp->IsAlive())
+			{
+				if (CheckIsEnemy(Receiver))
+				{
+					Receiver->ReceivePhyDamage(Damage);
+					DEBUGprint(Receiver->PropertyComp->GetCurHP());
+				}
+			}
+		}
+}
+
+void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
+{
+	TArray<AActor*> Ignored;
+
+	float Damage = PropertyComp->GetCurMagAttack();
+	for (int32 i = 0; i < HitResult.Num(); ++i)
+	{
+		if (Ignored.Contains(HitResult[i].GetActor())) continue;
+		Ignored.Add(HitResult[i].GetActor());
+		ABaseCharacter* Receiver = Cast<ABaseCharacter>(HitResult[i].Actor);
+		if (Receiver&&Receiver->PropertyComp->IsAlive())
+		{
+			if (CheckIsEnemy(Receiver))
+			{
+				Receiver->ReceiveMagDamage(Damage);
+				DEBUGprint(Receiver->PropertyComp->GetCurHP());
+			}
+		}
+	}
+
+}
+void ABaseCharacter::CheckIsDead()
+{
+	if (PropertyComp->GetCurHP() < 0.0001)
+	{
+		
+		AMobaController* MC = Cast<AMobaController>(Controller);
+		if (MC)
+		{
+			MC->SetNewMoveDestination(GetActorLocation());
+		}
+		SetActorEnableCollision(false);
+		DEBUGprint(AnimiationComp->DeathAnim.Num());
+
+		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex);
+		PropertyComp->SetAlive(false);
 	}
 }
 
+void ABaseCharacter::DeathOver()
+{
+	Destroy();
+}

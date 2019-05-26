@@ -28,7 +28,8 @@ void UCharacterProperty::BeginPlay()
 void UCharacterProperty::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	HPRecovering(DeltaTime);
+	MPRecovering(DeltaTime);
 	// ...
 }
 
@@ -80,17 +81,50 @@ void UCharacterProperty::ResetCurProperty()
 	SetCurMoveSpeed(GetBaseMoveSpeed());
 }
 
+void UCharacterProperty::HPRecovering(float DeltaTime)
+{
+	if (IsAlive())
+	{
+		float FlameRecovery = GetCurHPRecovery() * DeltaTime;
+		if (GetCurHP() < GetCurMaxHP())
+		{
+			AddCurHP(FlameRecovery);
+			if (GetCurHP() > GetCurMaxHP()) SetCurHP(GetCurMaxHP());
+		}
+	}
+
+}
+
+void UCharacterProperty::MPRecovering(float DeltaTime)
+{
+	if (IsAlive())
+	{
+		float FlameRecovery = GetCurMPRecovery() * DeltaTime;
+		if (GetCurMP() < GetCurMaxMP())
+		{
+			AddCurMP(FlameRecovery);
+			if (GetCurMP() > GetCurMaxMP()) SetCurMP(GetCurMaxMP());
+		}
+	}
+
+}
+
 bool UCharacterProperty::CheckLevelUp(float DeltaEXP)
 {
-	if (AddEXP(DeltaEXP) > FBasePropertyDetail.LevelRule[GetCurLevel()]) {
-		if (GetCurLevel() >= MaxLevel) {
-			SetLevel(MaxLevel);
-			SetEXP(FBasePropertyDetail.LevelRule[MaxLevel-1] + 1.0);//防止经验和等级溢出
-			bIsLevelUp = false;
-		}
+	if (GetCurLevel() >= MaxLevel) 
+	{
+		SetLevel(MaxLevel);
+		SetEXP(FBasePropertyDetail.LevelRule[MaxLevel - 1] + 1.0);//防止经验和等级溢出
+		bIsLevelUp = false;
+	}
+	if (AddEXP(DeltaEXP) > FBasePropertyDetail.LevelRule[GetCurLevel()])
+	{
 		bIsLevelUp = true;
 	}
-	else bIsLevelUp = false;
+	else
+	{
+		bIsLevelUp = false;
+	}
 	return LevelUp();
 }
 

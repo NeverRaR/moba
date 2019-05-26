@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "CreatureCamp.h"
 #include "BaseCharacter.generated.h"
+class UParticleSystem;
 class UAnimiation;
 class UAnimMontage;
 class UCharacterProperty;
+class UCreatureCamp;
 UCLASS(Blueprintable)
 class OURMOBA_API ABaseCharacter : public ACharacter
 {
@@ -16,27 +19,23 @@ class OURMOBA_API ABaseCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
-	UPROPERTY(EditAnywhere, Category = "Attack", meta = (AllowPrivateAccess = "true"))
-		float AttackRate = 1.0f;
-	UPROPERTY(EditAnywhere, Category = "Attack", meta = (AllowPrivateAccess = "true"))
-		float Damage;
-
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	uint32 bIsAttacking : 1;
+	uint32 bIsAlive : 1;
 	uint32 bIsReadyToCombo : 1;
 	int32 ComboIndex = 0;
-	void OnSetAttackPressed();
-
+	int32 DeathIndex = 0;
+	
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void OnSetAttackPressed();//将在远程单位中重写
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	int32 IsAttacking()const { return bIsAttacking; }
+	uint32 IsAttacking()const { return bIsAttacking; }
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -44,11 +43,28 @@ public:
 		void CRoleComboAttack(int32 NextIndex);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void CRoleResetAttack() ;
+	UFUNCTION(BlueprintCallable)
+		void ReceivePhyDamage(float PhyDamage);
+	UFUNCTION(BlueprintCallable)
+		void ReceiveMagDamage(float MagDamage);
+	UFUNCTION(BlueprintCallable)
+		void	CPhyTraceDetect(TArray<FHitResult> HitResult);
+	UFUNCTION(BlueprintCallable)
+		void	CMagTraceDetect(TArray<FHitResult> HitResult);
+	UFUNCTION(BlueprintImplementableEvent)
+		void DEBUGprint(float num);
+	UFUNCTION(BlueprintCallable)
+		void	CheckIsDead();
+	UFUNCTION(BlueprintCallable)
+		void	DeathOver();
+	UFUNCTION(BlueprintCallable)
+		TArray<ABaseCharacter*> GetAllEnemysInRadius(float Radius);
 	UFUNCTION()
-		void PlayNextCombo(TArray<UAnimMontage*> Arr);
+		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, int32 bisCombo);
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetMoveSpeed(float CurSpeed);
-private:
+	UFUNCTION(BlueprintCallable)
+		bool CheckIsEnemy(ABaseCharacter* UnknowCharacter) { return CampComp->CheckIsEnemy(UnknowCharacter->CampComp->GetCamp()); }
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -59,4 +75,11 @@ private:
 		UAnimiation* AnimiationComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
 		UCharacterProperty* PropertyComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camp", meta = (AllowPrivateAccess = "true"))
+		UCreatureCamp*  CampComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
+		UParticleSystem*  HitReact;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
+		UParticleSystem*  DeathReact;
+	
 };
