@@ -19,10 +19,10 @@ void AMobaController::BeginPlay()
 void AMobaController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-	if (bMoveToMouseCursor)
-	{
-			MoveToMouseCursor();
-	}
+	//if (bMoveToMouseCursor)
+	//{
+		//	MoveToMouseCursor();
+	//}
 }
 void AMobaController::SetupInputComponent()
 {
@@ -30,7 +30,6 @@ void AMobaController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &AMobaController::OnSetDestinationPressed);
-	InputComponent->BindAction("SetDestination", IE_Released, this, &AMobaController::OnSetDestinationReleased);
 }
 void AMobaController::MoveToMouseCursor()
 {
@@ -54,12 +53,5 @@ void AMobaController::SetNewMoveDestination(FVector DestLocation)
 }
 void AMobaController::OnSetDestinationPressed()
 {
-	// set flag to keep updating destination until released
-	bMoveToMouseCursor = true;
-}
-
-void AMobaController::OnSetDestinationReleased()
-{
-	// clear flag to indicate we should stop updating the destination
-	bMoveToMouseCursor = false;
+	MoveToMouseCursor();
 }

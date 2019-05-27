@@ -3,16 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseCharacter.h"
-#include "Minion.generated.h"
+#include "Minion.h"
+#include "Minion_Melee.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OURMOBA_API AMinion : public ABaseCharacter
+class OURMOBA_API AMinion_Melee : public AMinion
 {
 	GENERATED_BODY()
-public:
 
 };
