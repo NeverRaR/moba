@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "AIManager.generated.h"
-class  UBehaviorTree;
+class UBehaviorTree;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class OURMOBA_API UAIManager : public UActorComponent
