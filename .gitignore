@@ -4,7 +4,7 @@ Intermediate
 /Content/KiteDemo
 /Content/ParagonProps/**/Meshes
 /Content/Paragon*/**/*.uasset
-!/Content/**/Animations/*.uasset
+!/Content/**/Animations/**/*.uasset
 !/Content/**/Meshes/*.uasset
 
 
