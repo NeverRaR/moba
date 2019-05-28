@@ -4,28 +4,8 @@ Intermediate
 /Content/KiteDemo
 /Content/ParagonProps/**/Meshes
 /Content/Paragon*/**/*.uasset
-!/Content/**/Animations/*.uasset
+!/Content/**/Animations/**/*.uasset
 !/Content/**/Meshes/*.uasset
-
-
-!/Content/ParagonProps/Turrets/Turrets_inhibitors/Animations/
-
-
-!/Content/ParagonKwang/Characters/Heroes/Kwang/Animations/
-
-
-!/Content/ParagonMinions/Characters/Minions/Prime_Helix/Animations/
-!/Content/ParagonMinions/Characters/Minions/Down_Minions/Animations/
-!/Content/ParagonMinions/Characters/Buff/Buff_White/Animations/
-!/Content/ParagonMinions/Characters/Buff/Buff_Red/Animations/
-!/Content/ParagonMinions/Characters/Buff/Buff_Green/Animations/
-!/Content/ParagonMinions/Characters/Buff/Buff_Blue/Animations/
-!/Content/ParagonMinions/Characters/Buff/Buff_Black/Animations/
-
-
-!/Content/ParagonShinbi/Characters/Heroes/Shinbi/Shinbi_Wolf/Animations/
-!/Content/ParagonShinbi/Characters/Heroes/Shinbi/Animations/
-
 
 
 # Visual Studio 2015 user specific files

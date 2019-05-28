@@ -19,10 +19,6 @@ void AMobaController::BeginPlay()
 void AMobaController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-	//if (bMoveToMouseCursor)
-	//{
-		//	MoveToMouseCursor();
-	//}
 }
 void AMobaController::SetupInputComponent()
 {
