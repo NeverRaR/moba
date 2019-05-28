@@ -11,6 +11,7 @@ class UAnimiation;
 class UAnimMontage;
 class UCharacterProperty;
 class UCreatureCamp;
+class UAIManager;
 UCLASS(Blueprintable)
 class OURMOBA_API ABaseCharacter : public ACharacter
 {
@@ -50,6 +51,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void	CPhyTraceDetect(TArray<FHitResult> HitResult);
 	UFUNCTION(BlueprintCallable)
+		void	CPhySingleDetect(ABaseCharacter* Target);
+	UFUNCTION(BlueprintCallable)
 		void	CMagTraceDetect(TArray<FHitResult> HitResult);
 	UFUNCTION(BlueprintImplementableEvent)
 		void DEBUGprint(float num);
@@ -59,10 +62,14 @@ public:
 		void	DeathOver();
 	UFUNCTION(BlueprintCallable)
 		TArray<ABaseCharacter*> GetAllEnemysInRadius(float Radius);
-	UFUNCTION()
-		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, int32 bisCombo);
+	UFUNCTION(BlueprintCallable)
+		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, float Rate);
+	UFUNCTION(BlueprintImplementableEvent)
+		void  SetFireParticle(UParticleSystem*  React);
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetMoveSpeed(float CurSpeed);
+	UFUNCTION(BlueprintImplementableEvent)
+		void WholeDeath(AActor*Death);
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsEnemy(ABaseCharacter* UnknowCharacter) { return CampComp->CheckIsEnemy(UnknowCharacter->CampComp->GetCamp()); }
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -81,5 +88,6 @@ public:
 		UParticleSystem*  HitReact;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
 		UParticleSystem*  DeathReact;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
+		UParticleSystem*  FireReact;
 };

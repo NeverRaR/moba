@@ -71,10 +71,13 @@ UAnimMontage * UAnimiation::GetRandomAnimByType(AnimationType Type)
 	{
 	case AnimationType::Attack:
 		 RNumber%=AttackAnim.Num();
+		 break;
 	case AnimationType::Death:
 		RNumber %= DeathAnim.Num();
+		break;
 	case AnimationType::Recall:
 		RNumber %= DeathAnim.Num();
+		break;
 	default:
 		return nullptr;
 	}

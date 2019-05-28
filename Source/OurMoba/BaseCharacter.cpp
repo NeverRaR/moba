@@ -115,7 +115,7 @@ void ABaseCharacter::CRoleComboAttack(int32 NextIndex)
 	if (bIsReadyToCombo)
 	{
 		bIsReadyToCombo = false;
-		PlayNextMontage( AnimiationComp->AttackAnim,ComboIndex,true);
+		PlayNextMontage( AnimiationComp->AttackAnim,ComboIndex,PropertyComp->GetCurAttackSpeed());
 	 }
 }
 
@@ -140,19 +140,12 @@ TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 	}
 	return AllEnemysInRadius;
 }
-void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index,int32 bisCombo=false)
+void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index,float Rate)
 {
 	if (Arr.Num()&&PropertyComp->IsAlive())
 	{
 		if (Index >= Arr.Num()) Index = 0;
-		if (bisCombo)
-		{
-			PlayAnimMontage(Arr[Index++], PropertyComp->GetCurAttackSpeed());
-		}
-		else
-		{
-			PlayAnimMontage(Arr[Index++]);
-		}
+			PlayAnimMontage(Arr[Index++], Rate);
 	}
 }
 void ABaseCharacter::ReceivePhyDamage(float PhyDamage)
@@ -195,6 +188,14 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 		}
 }
 
+void ABaseCharacter::CPhySingleDetect(ABaseCharacter * Target)
+{
+
+	float Damage = PropertyComp->GetCurMagAttack();
+	SetFireParticle(FireReact);
+	Target->ReceivePhyDamage(Damage);
+}
+
 void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 {
 	TArray<AActor*> Ignored;
@@ -228,9 +229,9 @@ void ABaseCharacter::CheckIsDead()
 		}
 		SetActorEnableCollision(false);
 		DEBUGprint(AnimiationComp->DeathAnim.Num());
-
-		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex);
+		UGameplayStatics::SpawnEmitterAtLocation(this, DeathReact, GetActorLocation());
 		PropertyComp->SetAlive(false);
+		WholeDeath(this);
 	}
 }
 

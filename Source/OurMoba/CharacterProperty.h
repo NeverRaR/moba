@@ -56,6 +56,10 @@ struct FBaseProperty
 	                                         //10         11         12          13            14          15           16
 	UPROPERTY(EditAnywhere)
 		int32 InitLevel = 1;
+	UPROPERTY(EditAnywhere)
+		float AttackRange=400.0f;
+	UPROPERTY(EditAnywhere)
+		float AttackedRange = 400.0f;
 
 };
 USTRUCT(BlueprintType)
@@ -270,6 +274,10 @@ public:
 		void ResetCurProperty();
 	UFUNCTION(BlueprintCallable)
 		bool IsAlive() { return bIsAlive; }
+	UFUNCTION(BlueprintCallable)
+		float GetAlttackRange() { return FBasePropertyDetail.AttackRange; }
+	UFUNCTION(BlueprintCallable)
+		float GetAlttackedRange() { return FBasePropertyDetail.AttackedRange; }
 		void  HPRecovering(float DeltaTime);
 		void MPRecovering(float DeltaTime);
 		int32 SetAlive(int32 UnkonwStatus) { return bIsAlive = UnkonwStatus; }
