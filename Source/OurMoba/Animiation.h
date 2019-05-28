@@ -28,16 +28,22 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	UFUNCTION(BlueprintCallable)
 		UAnimMontage* GetAnimByTypeAndIndex(AnimationType Type, int32 Index);
+
 	UFUNCTION(BlueprintCallable)
 		TArray<UAnimMontage*> GetAllAnimByType(AnimationType Type);
+
 	UFUNCTION(BlueprintCallable)
 		UAnimMontage* GetRandomAnimByType(AnimationType Type);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack", meta = (AllowPrivateAccess = "true"))
 		TArray<UAnimMontage*>AttackAnim;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Death", meta = (AllowPrivateAccess = "true"))
 		TArray<UAnimMontage*>DeathAnim;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Recal", meta = (AllowPrivateAccess = "true"))
 		TArray<UAnimMontage*>RecalAnim;
 	
