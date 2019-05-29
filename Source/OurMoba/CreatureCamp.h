@@ -39,17 +39,22 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UFUNCTION(BlueprintCallable)
 		CharacterCamp GetCamp() { return Camp; }
+
 	UFUNCTION(BlueprintCallable)
 		CharacterGroup GetGroup() { return Group; }
+
 	UFUNCTION(BlueprintCallable)
 		CharacterCamp SetCamp(const CharacterCamp& NewCamp) { return Camp= NewCamp; }
+
 	UFUNCTION(BlueprintCallable)
 		CharacterGroup SetGroup(const CharacterGroup& NewGroup) { return Group= NewGroup; }
+
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsEnemy(CharacterCamp UnknowCamp) { return Camp != UnknowCamp; }
 private:
 	UPROPERTY(EditAnywhere)
 		CharacterCamp Camp;
+
 	UPROPERTY(EditAnywhere)
 		CharacterGroup Group;
 };

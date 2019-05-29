@@ -16,8 +16,9 @@ struct FBaseProperty
 		float HPGrowth = 78.0f;
 	UPROPERTY(EditAnywhere)
 		float MP = 303.6f;
+	UPROPERTY(EditAnywhere)
 		float MPGrowth = 17.25f;
-	UPROPERTY(EditAnywhere)	
+	UPROPERTY(EditAnywhere)
 		float HPRecovery = 1.14f;
 	UPROPERTY(EditAnywhere)
 		float HPRecoveryGrowth = 0.13f;
@@ -50,18 +51,19 @@ struct FBaseProperty
 	UPROPERTY(EditAnywhere)
 		float InitEXP = 0.0f;
 	//LevelRule[k]表示第k级经验上限
-	    TArray<float> LevelRule{ 0.0f,100.0f,300.0f,500.0f,800.0f,1300.0f,2150.0f,2900.0f,3900.0f,5400.0f,
-			                                  // 0    1         2         3		    4          5           6           7           8           9          
-			                                     6900.0f,8900.0f,11000.0f,13500.0f,16000.0f,19000.0f,999999999.0f };
-	                                         //10         11         12          13            14          15           16
+	TArray<float> LevelRule{ 0.0f,100.0f,300.0f,500.0f,800.0f,1300.0f,2150.0f,2900.0f,3900.0f,5400.0f,
+		// 0    1         2         3		    4          5           6           7           8           9          
+		   6900.0f,8900.0f,11000.0f,13500.0f,16000.0f,19000.0f,999999999.0f };
+	//10         11         12          13            14          15           16
 	UPROPERTY(EditAnywhere)
 		int32 InitLevel = 1;
 	UPROPERTY(EditAnywhere)
-		float AttackRange=400.0f;
+		float AttackRange = 400.0f;
 	UPROPERTY(EditAnywhere)
 		float AttackedRange = 400.0f;
 
 };
+
 USTRUCT(BlueprintType)
 struct FCurProperty
 {
@@ -72,19 +74,19 @@ struct FCurProperty
 	UPROPERTY(EditAnywhere)
 		float MaxHP = 685.9f;
 	UPROPERTY(EditAnywhere)
-		float	CurMP = 303.6f;
+		float CurMP = 303.6f;
 	UPROPERTY(EditAnywhere)
-		float	MaxMP = 303.6f;
+		float MaxMP = 303.6f;
 	UPROPERTY(EditAnywhere)
-		float	HPRecovery = 1.14f;
+		float HPRecovery = 1.14f;
 	UPROPERTY(EditAnywhere)
-		float	MPRecovery = 1.41f;
+		float MPRecovery = 1.41f;
 	UPROPERTY(EditAnywhere)
-		float	PhyAttack = 60.4f;//物理攻击
+		float PhyAttack = 60.4f;//物理攻击
 	UPROPERTY(EditAnywhere)
-		float	MagAttack = 0.0f;//魔法攻击
+		float MagAttack = 0.0f;//魔法攻击
 	UPROPERTY(EditAnywhere)
-		float	PhyDef = 25.2f;//物理防御
+		float PhyDef = 25.2f;//物理防御
 	UPROPERTY(EditAnywhere)
 		float	MagDef = 25.0f;//魔法防御
 	UPROPERTY(EditAnywhere)
@@ -97,7 +99,7 @@ struct FCurProperty
 		int32 CurLevel = 1;
 };
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class OURMOBA_API UCharacterProperty : public UActorComponent
 {
 	GENERATED_BODY()
@@ -278,17 +280,22 @@ public:
 		float GetAlttackRange() { return FBasePropertyDetail.AttackRange; }
 	UFUNCTION(BlueprintCallable)
 		float GetAlttackedRange() { return FBasePropertyDetail.AttackedRange; }
-		void  HPRecovering(float DeltaTime);
-		void MPRecovering(float DeltaTime);
-		int32 SetAlive(int32 UnkonwStatus) { return bIsAlive = UnkonwStatus; }
+
+	void HPRecovering(float DeltaTime);
+
+	void MPRecovering(float DeltaTime);
+
+	int32 SetAlive(int32 UnkonwStatus) { return bIsAlive = UnkonwStatus; }
 
 
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Property", meta = (AllowPrivateAccess = "true"))
 		FBaseProperty FBasePropertyDetail;
+
 	UPROPERTY(EditAnywhere, Category = "Property", meta = (AllowPrivateAccess = "true"))
 		FCurProperty FCurPropertyDetail;
+
 	uint32 bIsLevelUp : 1;
 	const int32 MaxLevel = 16;
 	int32 bIsAlive : 1;
