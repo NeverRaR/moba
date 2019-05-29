@@ -191,9 +191,12 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 void ABaseCharacter::CPhySingleDetect(ABaseCharacter * Target)
 {
 
-	float Damage = PropertyComp->GetCurMagAttack();
+	float Damage = PropertyComp->GetCurPhyAttack();
 	SetFireParticle(FireReact);
+	DEBUGprint(Damage);
 	Target->ReceivePhyDamage(Damage);
+	DEBUGprint(Target->PropertyComp->GetCurHP());
+
 }
 
 void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
@@ -228,7 +231,7 @@ void ABaseCharacter::CheckIsDead()
 			MC->SetNewMoveDestination(GetActorLocation());
 		}
 		SetActorEnableCollision(false);
-		DEBUGprint(AnimiationComp->DeathAnim.Num());
+		//DEBUGprint(AnimiationComp->DeathAnim.Num());
 		UGameplayStatics::SpawnEmitterAtLocation(this, DeathReact, GetActorLocation());
 		PropertyComp->SetAlive(false);
 		WholeDeath(this);
