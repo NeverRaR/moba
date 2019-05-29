@@ -40,54 +40,79 @@ public:
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void CRoleComboAttack(int32 NextIndex);
+
 	UFUNCTION(BlueprintCallable, Category = "Attack")
-		void CRoleResetAttack() ;
+		void CRoleResetAttack();
+
 	UFUNCTION(BlueprintCallable)
 		void ReceivePhyDamage(float PhyDamage);
+
 	UFUNCTION(BlueprintCallable)
 		void ReceiveMagDamage(float MagDamage);
+
 	UFUNCTION(BlueprintCallable)
-		void	CPhyTraceDetect(TArray<FHitResult> HitResult);
+		void CPhyTraceDetect(TArray<FHitResult> HitResult);
+
 	UFUNCTION(BlueprintCallable)
-		void	CPhySingleDetect(ABaseCharacter* Target);
+		void CPhySingleDetect(ABaseCharacter* Target);
+
 	UFUNCTION(BlueprintCallable)
-		void	CMagTraceDetect(TArray<FHitResult> HitResult);
+		void CMagTraceDetect(TArray<FHitResult> HitResult);
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void DEBUGprint(float num);
+
 	UFUNCTION(BlueprintCallable)
-		void	CheckIsDead();
+		void CheckIsDead();
+
 	UFUNCTION(BlueprintCallable)
-		void	DeathOver();
+		void DeathOver();
+
 	UFUNCTION(BlueprintCallable)
 		TArray<ABaseCharacter*> GetAllEnemysInRadius(float Radius);
+
 	UFUNCTION(BlueprintCallable)
 		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, float Rate);
+
 	UFUNCTION(BlueprintImplementableEvent)
-		void  SetFireParticle(UParticleSystem*  React);
+		void SetFireParticle(UParticleSystem* React);
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetMoveSpeed(float CurSpeed);
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void WholeDeath(AActor*Death);
+
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsEnemy(ABaseCharacter* UnknowCharacter) { return CampComp->CheckIsEnemy(UnknowCharacter->CampComp->GetCamp()); }
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UDecalComponent* CursorToWorld;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Anim", meta = (AllowPrivateAccess = "true"))
 		UAnimiation* AnimiationComp;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
 		UCharacterProperty* PropertyComp;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camp", meta = (AllowPrivateAccess = "true"))
-		UCreatureCamp*  CampComp;
+		UCreatureCamp* CampComp;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
-		UParticleSystem*  HitReact;
+		UParticleSystem* HitReact;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
-		UParticleSystem*  DeathReact;
+		UParticleSystem* DeathReact;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
-		UParticleSystem*  FireReact;
+		UParticleSystem* FireReact;
 };

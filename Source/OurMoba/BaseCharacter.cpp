@@ -21,7 +21,7 @@
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ComboIndex = 0;
 	DeathIndex = 0;
@@ -42,14 +42,14 @@ ABaseCharacter::ABaseCharacter()
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->bAbsoluteRotation = true; 
+	CameraBoom->bAbsoluteRotation = true;
 	CameraBoom->TargetArmLength = 800.f;
 	CameraBoom->RelativeRotation = FRotator(0.f, 0.f, 0.f);
 	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	TopDownCameraComponent->bUsePawnControlRotation = true; 
+	TopDownCameraComponent->bUsePawnControlRotation = true;
 
 	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	CursorToWorld->SetupAttachment(RootComponent);
@@ -63,7 +63,7 @@ ABaseCharacter::ABaseCharacter()
 	PropertyComp->SetAlive(true);
 
 	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
-                                                            
+
 }
 
 // Called when the game starts or when spawned
@@ -82,7 +82,7 @@ void ABaseCharacter::OnSetAttackPressed()
 	else
 	{
 		bIsAttacking = true;
-		PlayNextMontage(AnimiationComp->AttackAnim,ComboIndex,true);
+		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, true);
 	}
 }
 // Called every frame
@@ -99,7 +99,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 			CursorToWorld->SetWorldLocation(TraceHitResult.Location);
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
-	}	
+	}
 }
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -115,8 +115,8 @@ void ABaseCharacter::CRoleComboAttack(int32 NextIndex)
 	if (bIsReadyToCombo)
 	{
 		bIsReadyToCombo = false;
-		PlayNextMontage( AnimiationComp->AttackAnim,ComboIndex,PropertyComp->GetCurAttackSpeed());
-	 }
+		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, PropertyComp->GetCurAttackSpeed());
+	}
 }
 
 void ABaseCharacter::CRoleResetAttack()
@@ -125,6 +125,7 @@ void ABaseCharacter::CRoleResetAttack()
 	bIsReadyToCombo = false;
 	ComboIndex = 0;
 }
+
 TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 {
 	TArray<AActor*> AllActor;
@@ -140,18 +141,20 @@ TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 	}
 	return AllEnemysInRadius;
 }
-void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index,float Rate)
+
+void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, float Rate)
 {
-	if (Arr.Num()&&PropertyComp->IsAlive())
+	if (Arr.Num() && PropertyComp->IsAlive())
 	{
 		if (Index >= Arr.Num()) Index = 0;
-			PlayAnimMontage(Arr[Index++], Rate);
+		PlayAnimMontage(Arr[Index++], Rate);
 	}
 }
+
 void ABaseCharacter::ReceivePhyDamage(float PhyDamage)
 {
-	float PhyDef =PropertyComp->GetCurPhyDef();
-	float DamageResistance =PhyDef / (PhyDef+150);
+	float PhyDef = PropertyComp->GetCurPhyDef();
+	float DamageResistance = PhyDef / (PhyDef + 150);
 	float CurDamage = (1 - DamageResistance)*PhyDamage;
 	PropertyComp->AddCurHP(-CurDamage);
 	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
@@ -171,21 +174,21 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 {
 	TArray<AActor*> Ignored;
 
-		float Damage =PropertyComp->GetCurPhyAttack();
-		for (int32 i = 0; i < HitResult.Num(); ++i)
+	float Damage = PropertyComp->GetCurPhyAttack();
+	for (int32 i = 0; i < HitResult.Num(); ++i)
+	{
+		if (Ignored.Contains(HitResult[i].GetActor())) continue;
+		Ignored.Add(HitResult[i].GetActor());
+		ABaseCharacter* Receiver = Cast<ABaseCharacter>(HitResult[i].Actor);
+		if (Receiver&&Receiver->PropertyComp->IsAlive())
 		{
-			if (Ignored.Contains(HitResult[i].GetActor())) continue;
-			Ignored.Add(HitResult[i].GetActor());
-			ABaseCharacter* Receiver = Cast<ABaseCharacter>(HitResult[i].Actor);
-			if (Receiver&&Receiver->PropertyComp->IsAlive())
+			if (CheckIsEnemy(Receiver))
 			{
-				if (CheckIsEnemy(Receiver))
-				{
-					Receiver->ReceivePhyDamage(Damage);
-					DEBUGprint(Receiver->PropertyComp->GetCurHP());
-				}
+				Receiver->ReceivePhyDamage(Damage);
+				DEBUGprint(Receiver->PropertyComp->GetCurHP());
 			}
 		}
+	}
 }
 
 void ABaseCharacter::CPhySingleDetect(ABaseCharacter * Target)
@@ -224,7 +227,7 @@ void ABaseCharacter::CheckIsDead()
 {
 	if (PropertyComp->GetCurHP() < 0.0001)
 	{
-		
+
 		AMobaController* MC = Cast<AMobaController>(Controller);
 		if (MC)
 		{
