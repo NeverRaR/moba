@@ -29,6 +29,6 @@ protected:
 	/** Navigate player to the given world location. */
 	/** Input handlers for SetDestination action. */
 	void OnSetDestinationPressed();
-	UFUNCTION(BlueprintImplementableEvent)
-		void CMoveToLocation(const APlayerController* PC,const FVector& DestLocation);
+	UFUNCTION(Server, Reliable, WithValidation)
+		void CMoveToLocation(AController* PC,const FVector& DestLocation);
 };
