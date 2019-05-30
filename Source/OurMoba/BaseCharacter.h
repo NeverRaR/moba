@@ -48,10 +48,10 @@ public:
 		void CRoleResetAttack();
 
 	UFUNCTION(BlueprintCallable)
-		void ReceivePhyDamage(float PhyDamage);
+		void ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker);
 
 	UFUNCTION(BlueprintCallable)
-		void ReceiveMagDamage(float MagDamage);
+		void ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker);
 
 	UFUNCTION(BlueprintCallable)
 		void CPhyTraceDetect(TArray<FHitResult> HitResult);
@@ -66,7 +66,7 @@ public:
 		void DEBUGprint(float num);
 
 	UFUNCTION(BlueprintCallable)
-		void CheckIsDead();
+		void CheckIsDead(ABaseCharacter* Attacker);
 
 	UFUNCTION(BlueprintCallable)
 		void DeathOver();

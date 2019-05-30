@@ -49,6 +49,8 @@ bool UCharacterProperty::LevelUp()
 		AddBaseAttackSpeed(FBasePropertyDetail.AttackSpeedGrowth);
 		AddCurMaxHP(FBasePropertyDetail.HPGrowth);
 		AddCurMaxMP(FBasePropertyDetail.MPGrowth);
+		AddCurHP(FBasePropertyDetail.HPGrowth);
+		AddCurMP(FBasePropertyDetail.MPGrowth);
 		AddCurHPRecovery(FBasePropertyDetail.HPRecoveryGrowth);
 		AddCurMPRecovery(FBasePropertyDetail.MPRecoveryGrowth);
 		AddCurPhyAttack(FBasePropertyDetail.PhyAttackGrowth);
@@ -56,6 +58,8 @@ bool UCharacterProperty::LevelUp()
 		AddCurPhyDef(FBasePropertyDetail.PhyDefGrowth);
 		AddCurMagDef(FBasePropertyDetail.MagDefGrowth);
 		AddCurAttackSpeed(FBasePropertyDetail.AttackSpeedGrowth);
+		AddMoneyWorth(FBasePropertyDetail.MoneyWorthGrowth);
+		AddEXPWorth(FBasePropertyDetail.EXPWorthGrowth);
 		bIsLevelUp = false;
 		return true;
 	}

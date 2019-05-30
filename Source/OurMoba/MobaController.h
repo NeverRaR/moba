@@ -20,7 +20,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	// Begin PlayerController interface
+
 	virtual void PlayerTick(float DeltaTime) override;
+	
 	virtual void SetupInputComponent() override;
 	// End PlayerController interface
 	/** Navigate player to the current mouse cursor location. */
@@ -29,6 +31,7 @@ protected:
 	/** Navigate player to the given world location. */
 	/** Input handlers for SetDestination action. */
 	void OnSetDestinationPressed();
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void CMoveToLocation(const APlayerController* PC,const FVector& DestLocation);
 };

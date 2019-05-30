@@ -51,6 +51,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsEnemy(CharacterCamp UnknowCamp) { return Camp != UnknowCamp; }
+
+	UFUNCTION(BlueprintCallable)
+		bool CheckIsHero() { return Group == CharacterGroup::Hero; }
 private:
 	UPROPERTY(EditAnywhere)
 		CharacterCamp Camp;

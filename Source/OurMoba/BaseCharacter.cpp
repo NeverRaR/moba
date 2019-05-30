@@ -151,23 +151,23 @@ void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, fl
 	}
 }
 
-void ABaseCharacter::ReceivePhyDamage(float PhyDamage)
+void ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
 {
 	float PhyDef = PropertyComp->GetCurPhyDef();
 	float DamageResistance = PhyDef / (PhyDef + 150);
 	float CurDamage = (1 - DamageResistance)*PhyDamage;
 	PropertyComp->AddCurHP(-CurDamage);
 	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
-	CheckIsDead();
+	CheckIsDead(Attacker);
 }
 
-void ABaseCharacter::ReceiveMagDamage(float MagDamage)
+void ABaseCharacter::ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker)
 {
 	float MagDef = PropertyComp->GetCurMagDef();
 	float DamageResistance = MagDef;
 	float CurDamage = (1 - DamageResistance)*MagDamage;
 	PropertyComp->AddCurHP(-CurDamage);
-	CheckIsDead();
+	CheckIsDead(Attacker);
 }
 
 void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
@@ -184,7 +184,7 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 		{
 			if (CheckIsEnemy(Receiver))
 			{
-				Receiver->ReceivePhyDamage(Damage);
+				Receiver->ReceivePhyDamage(Damage,this);
 				DEBUGprint(Receiver->PropertyComp->GetCurHP());
 			}
 		}
@@ -197,7 +197,7 @@ void ABaseCharacter::CPhySingleDetect(ABaseCharacter * Target)
 	float Damage = PropertyComp->GetCurPhyAttack();
 	SetFireParticle(FireReact);
 	DEBUGprint(Damage);
-	Target->ReceivePhyDamage(Damage);
+	Target->ReceivePhyDamage(Damage,this);
 	DEBUGprint(Target->PropertyComp->GetCurHP());
 
 }
@@ -216,14 +216,14 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 		{
 			if (CheckIsEnemy(Receiver))
 			{
-				Receiver->ReceiveMagDamage(Damage);
+				Receiver->ReceiveMagDamage(Damage,this);
 				DEBUGprint(Receiver->PropertyComp->GetCurHP());
 			}
 		}
 	}
 
 }
-void ABaseCharacter::CheckIsDead()
+void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 {
 	if (PropertyComp->GetCurHP() < 0.0001)
 	{
@@ -234,9 +234,21 @@ void ABaseCharacter::CheckIsDead()
 			MC->SetNewMoveDestination(GetActorLocation());
 		}
 		SetActorEnableCollision(false);
-		//DEBUGprint(AnimiationComp->DeathAnim.Num());
 		UGameplayStatics::SpawnEmitterAtLocation(this, DeathReact, GetActorLocation());
 		PropertyComp->SetAlive(false);
+		if (CampComp->CheckIsHero())
+		{
+			PropertyComp->AddDeathNum(1);
+		}
+		if (Attacker->CampComp->CheckIsHero())
+		{
+			if (CampComp->CheckIsHero())
+			{
+				Attacker->PropertyComp->AddKillNum(1);
+			}
+			Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
+			Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
+		}
 		WholeDeath(this);
 	}
 }
