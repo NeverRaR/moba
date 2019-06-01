@@ -20,6 +20,7 @@ class OURMOBA_API ABaseCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -29,13 +30,20 @@ protected:
 	int32 ComboIndex = 0;
 	int32 DeathIndex = 0;
 	
-
 public:	
+	//Recall
+	void Recall();
+	FVector OriginLocation;
+
+	//Reborn
+	void Reborn();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnSetAttackPressed();//将在远程单位中重写
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	uint32 IsAttacking()const { return bIsAttacking; }
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }

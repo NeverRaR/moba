@@ -71,6 +71,8 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	SetMoveSpeed(PropertyComp->GetBaseMoveSpeed());
+
+	OriginLocation = GetActorLocation();
 }
 
 void ABaseCharacter::OnSetAttackPressed()
@@ -107,6 +109,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	InputComponent->BindAction("Attack", IE_Pressed, this, &ABaseCharacter::OnSetAttackPressed);
+	PlayerInputComponent->BindAction("Recall", IE_Pressed, this, &ABaseCharacter::Recall);
 
 }
 
@@ -227,16 +230,20 @@ void ABaseCharacter::CheckIsDead()
 {
 	if (PropertyComp->GetCurHP() < 0.0001)
 	{
-
+		Reborn();
 		AMobaController* MC = Cast<AMobaController>(Controller);
 		if (MC)
 		{
 			MC->SetNewMoveDestination(GetActorLocation());
 		}
-		SetActorEnableCollision(false);
+
+		//SetActorEnableCollision(false);
+
 		//DEBUGprint(AnimiationComp->DeathAnim.Num());
 		UGameplayStatics::SpawnEmitterAtLocation(this, DeathReact, GetActorLocation());
-		PropertyComp->SetAlive(false);
+
+		//PropertyComp->SetAlive(false);
+
 		WholeDeath(this);
 	}
 }
@@ -244,4 +251,19 @@ void ABaseCharacter::CheckIsDead()
 void ABaseCharacter::DeathOver()
 {
 	Destroy();
+}
+
+void ABaseCharacter::Recall()
+{
+	if (PropertyComp->GetCurHP() > 0)
+	{
+		PropertyComp->ResetCurProperty();
+		SetActorLocation(OriginLocation);
+	}
+}
+
+void ABaseCharacter::Reborn()
+{
+	PropertyComp->ResetCurProperty();
+	SetActorLocation(OriginLocation);
 }
