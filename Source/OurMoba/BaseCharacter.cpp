@@ -18,6 +18,9 @@
 #include "CharacterProperty.h"
 #include"Kismet\GameplayStatics.h"
 #include"Particles\ParticleSystem.h"
+#include "AIManager.h"
+#include "OurMobaGameMode.h"
+#include"Kismet\KismetSystemLibrary.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -63,6 +66,8 @@ ABaseCharacter::ABaseCharacter()
 	PropertyComp->SetAlive(true);
 
 	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
+	
+	AIManger= CreateDefaultSubobject<UAIManager>(TEXT("AIManger"));
 
 }
 
@@ -116,6 +121,7 @@ void ABaseCharacter::CRoleComboAttack(int32 NextIndex)
 	{
 		bIsReadyToCombo = false;
 		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, PropertyComp->GetCurAttackSpeed());
+		
 	}
 }
 
@@ -147,7 +153,9 @@ void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, fl
 	if (Arr.Num() && PropertyComp->IsAlive())
 	{
 		if (Index >= Arr.Num()) Index = 0;
+		float AnimLength = Arr[Index]->SequenceLength;
 		PlayAnimMontage(Arr[Index++], Rate);
+		CDelay(0.6*AnimLength);
 	}
 }
 
@@ -249,7 +257,9 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 			Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
 			Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
 		}
-		WholeDeath(this);
+		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
+		OnActorDeath.Broadcast(this);
+		Destroy();
 	}
 }
 

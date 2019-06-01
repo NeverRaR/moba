@@ -1,17 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "CreatureCamp.h"
+#include "Perception\AIPerceptionComponent.h"
+#include "UObject/ObjectMacros.h"
+#include "Templates/SubclassOf.h"
+#include "Components/ActorComponent.h"
+#include "EngineDefines.h"
+#include "GenericTeamAgentInterface.h"
 #include "BaseCharacter.generated.h"
+
 class UParticleSystem;
 class UAnimiation;
 class UAnimMontage;
 class UCharacterProperty;
 class UCreatureCamp;
 class UAIManager;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActorDeathDelegate, AActor*, DeathActor);
 UCLASS(Blueprintable)
 class OURMOBA_API ABaseCharacter : public ACharacter
 {
@@ -89,6 +96,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsEnemy(ABaseCharacter* UnknowCharacter) { return CampComp->CheckIsEnemy(UnknowCharacter->CampComp->GetCamp()); }
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void CDelay(float time);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
 
@@ -115,4 +125,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
 		UParticleSystem* FireReact;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+		UAIManager* AIManger;
+
+	UPROPERTY(BlueprintAssignable)
+		FActorDeathDelegate OnActorDeath;
 };

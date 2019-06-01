@@ -13,5 +13,6 @@ UCLASS()
 class OURMOBA_API AOurMobaGameMode : public AGameMode
 {
 	GENERATED_BODY()
+public:
 	
 };
