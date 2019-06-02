@@ -99,6 +99,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void CDelay(float time);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
+	UFUNCTION(NetMulticast, UnReliable)
+		void MulticastPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
 
