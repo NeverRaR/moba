@@ -11,7 +11,7 @@
 #include "EngineDefines.h"
 #include "GenericTeamAgentInterface.h"
 #include "BaseCharacter.generated.h"
-
+class UBuff;
 class UParticleSystem;
 class UAnimiation;
 class UAnimMontage;
@@ -82,6 +82,9 @@ public:
 		TArray<ABaseCharacter*> GetAllEnemysInRadius(float Radius);
 
 	UFUNCTION(BlueprintCallable)
+		TArray<ABaseCharacter*> GetAllEnemysInRadiusToLocation(float Radius,FVector Location);
+
+	UFUNCTION(BlueprintCallable)
 		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, float Rate);
 
 	UFUNCTION(BlueprintImplementableEvent)
@@ -107,6 +110,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buff", meta = (AllowPrivateAccess = "true"))
+		UBuff* BuffComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Anim", meta = (AllowPrivateAccess = "true"))
 		UAnimiation* AnimiationComp;
