@@ -177,9 +177,31 @@ void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, fl
 	{
 		if (Index >= Arr.Num()) Index = 0;
 		float AnimLength = Arr[Index]->SequenceLength;
-		PlayAnimMontage(Arr[Index++], Rate);
+		if (Role < ROLE_Authority)
+		{
+			ServerPlayMontage(Arr[Index++], Rate);
+			CDelay(0.6*AnimLength);
+			return;
+		}
+		MulticastPlayMontage(Arr[Index++], Rate);
 		CDelay(0.6*AnimLength);
 	}
+}
+
+void ABaseCharacter::MulticastPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	PlayAnimMontage(AnimMontage, InPlayRate);
+}
+
+//Play Animation On Server
+void ABaseCharacter::ServerPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	MulticastPlayMontage(AnimMontage, InPlayRate);
+}
+
+bool ABaseCharacter::ServerPlayMontage_Validate(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	return true;
 }
 
 void ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
