@@ -18,6 +18,9 @@
 #include "CharacterProperty.h"
 #include"Kismet\GameplayStatics.h"
 #include"Particles\ParticleSystem.h"
+#include "AIManager.h"
+#include "OurMobaGameMode.h"
+#include"Kismet\KismetSystemLibrary.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -28,6 +31,7 @@ ABaseCharacter::ABaseCharacter()
 	bIsAttacking = false;
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(105.0f, 240.0f);
+	GetCapsuleComponent()->SetIsReplicated(true);
 
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
@@ -49,11 +53,13 @@ ABaseCharacter::ABaseCharacter()
 
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	TopDownCameraComponent->bUsePawnControlRotation = true;
+	TopDownCameraComponent->bUsePawnControlRotation = false;
+	TopDownCameraComponent->SetWorldLocation(FVector(-60.0f, -60.0f, 2500.0f));
+	TopDownCameraComponent->SetWorldRotation(FRotator(-70.0f, 0.0f, 0.0f));
 
 	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	CursorToWorld->SetupAttachment(RootComponent);
-	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
+	CursorToWorld->DecalSize = FVector(48.0f, 96.0f, 96.0f);
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
@@ -63,6 +69,8 @@ ABaseCharacter::ABaseCharacter()
 	PropertyComp->SetAlive(true);
 
 	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
+	
+	AIManger= CreateDefaultSubobject<UAIManager>(TEXT("AIManger"));
 
 }
 
@@ -116,6 +124,7 @@ void ABaseCharacter::CRoleComboAttack(int32 NextIndex)
 	{
 		bIsReadyToCombo = false;
 		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, PropertyComp->GetCurAttackSpeed());
+		
 	}
 }
 
@@ -129,7 +138,8 @@ void ABaseCharacter::CRoleResetAttack()
 TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 {
 	TArray<AActor*> AllActor;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseCharacter::GetClass(), AllActor);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), AllActor);
+	DEBUGprint(AllActor.Num());
 	TArray<ABaseCharacter*> AllEnemysInRadius;
 	for (int32 i = 0; i < AllActor.Num(); ++i)
 	{
@@ -142,32 +152,78 @@ TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 	return AllEnemysInRadius;
 }
 
+TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadiusToLocation(float Radius, FVector TargetLocation)
+{
+	TArray<AActor*> AllActor;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), AllActor);
+	TArray<ABaseCharacter*> AllEnemysInRadius;
+	for (int32 i = 0; i < AllActor.Num(); ++i)
+	{
+		ABaseCharacter* UnknowCharacter = Cast<ABaseCharacter>(AllActor[i]);
+		if (UnknowCharacter&&CheckIsEnemy(UnknowCharacter))
+		{
+			
+			FVector EnemyLocaion = AllActor[i]->GetActorLocation();
+			FVector Direction = EnemyLocaion - TargetLocation;
+			Direction.Z = 0.0f;
+			if (Direction .Size()< Radius) AllEnemysInRadius.Push(UnknowCharacter);
+		}
+	}
+	return AllEnemysInRadius;
+}
+
 void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, float Rate)
 {
 	if (Arr.Num() && PropertyComp->IsAlive())
 	{
 		if (Index >= Arr.Num()) Index = 0;
-		PlayAnimMontage(Arr[Index++], Rate);
+		float AnimLength = Arr[Index]->SequenceLength;
+		if (Role < ROLE_Authority)
+		{
+			ServerPlayMontage(Arr[Index++], Rate);
+			CDelay(0.6*AnimLength);
+			return;
+		}
+		MulticastPlayMontage(Arr[Index++], Rate);
+		CDelay(0.6*AnimLength);
 	}
 }
 
-void ABaseCharacter::ReceivePhyDamage(float PhyDamage)
+void ABaseCharacter::MulticastPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	PlayAnimMontage(AnimMontage, InPlayRate);
+}
+
+//Play Animation On Server
+void ABaseCharacter::ServerPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	MulticastPlayMontage(AnimMontage, InPlayRate);
+}
+
+bool ABaseCharacter::ServerPlayMontage_Validate(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	return true;
+}
+
+void ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
 {
 	float PhyDef = PropertyComp->GetCurPhyDef();
 	float DamageResistance = PhyDef / (PhyDef + 150);
 	float CurDamage = (1 - DamageResistance)*PhyDamage;
 	PropertyComp->AddCurHP(-CurDamage);
 	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
-	CheckIsDead();
+	CheckIsDead(Attacker);
 }
 
-void ABaseCharacter::ReceiveMagDamage(float MagDamage)
+void ABaseCharacter::ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker)
 {
 	float MagDef = PropertyComp->GetCurMagDef();
-	float DamageResistance = MagDef;
+	float DamageResistance = MagDef/100;
 	float CurDamage = (1 - DamageResistance)*MagDamage;
+	DEBUGprint(CurDamage);
 	PropertyComp->AddCurHP(-CurDamage);
-	CheckIsDead();
+	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
+	CheckIsDead(Attacker);
 }
 
 void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
@@ -184,8 +240,7 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 		{
 			if (CheckIsEnemy(Receiver))
 			{
-				Receiver->ReceivePhyDamage(Damage);
-				DEBUGprint(Receiver->PropertyComp->GetCurHP());
+				Receiver->ReceivePhyDamage(Damage,this);
 			}
 		}
 	}
@@ -197,7 +252,7 @@ void ABaseCharacter::CPhySingleDetect(ABaseCharacter * Target)
 	float Damage = PropertyComp->GetCurPhyAttack();
 	SetFireParticle(FireReact);
 	DEBUGprint(Damage);
-	Target->ReceivePhyDamage(Damage);
+	Target->ReceivePhyDamage(Damage,this);
 	DEBUGprint(Target->PropertyComp->GetCurHP());
 
 }
@@ -216,14 +271,14 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 		{
 			if (CheckIsEnemy(Receiver))
 			{
-				Receiver->ReceiveMagDamage(Damage);
+				Receiver->ReceiveMagDamage(Damage,this);
 				DEBUGprint(Receiver->PropertyComp->GetCurHP());
 			}
 		}
 	}
 
 }
-void ABaseCharacter::CheckIsDead()
+void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 {
 	if (PropertyComp->GetCurHP() < 0.0001)
 	{
@@ -234,10 +289,24 @@ void ABaseCharacter::CheckIsDead()
 			MC->SetNewMoveDestination(GetActorLocation());
 		}
 		SetActorEnableCollision(false);
-		//DEBUGprint(AnimiationComp->DeathAnim.Num());
 		UGameplayStatics::SpawnEmitterAtLocation(this, DeathReact, GetActorLocation());
 		PropertyComp->SetAlive(false);
-		WholeDeath(this);
+		if (CampComp->CheckIsHero())
+		{
+			PropertyComp->AddDeathNum(1);
+		}
+		if (Attacker->CampComp->CheckIsHero())
+		{
+			if (CampComp->CheckIsHero())
+			{
+				Attacker->PropertyComp->AddKillNum(1);
+			}
+			Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
+			Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
+		}
+		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
+		OnActorDeath.Broadcast(this);
+		Destroy();
 	}
 }
 

@@ -2,7 +2,9 @@
 
 
 #include "CharacterProperty.h"
-
+#include"OurMobaGameMode.h"
+#include "Hero.h"
+#include"Skill.h"
 // Sets default values for this component's properties
 UCharacterProperty::UCharacterProperty()
 {
@@ -18,7 +20,6 @@ UCharacterProperty::UCharacterProperty()
 void UCharacterProperty::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// ...
 	
 }
@@ -49,6 +50,8 @@ bool UCharacterProperty::LevelUp()
 		AddBaseAttackSpeed(FBasePropertyDetail.AttackSpeedGrowth);
 		AddCurMaxHP(FBasePropertyDetail.HPGrowth);
 		AddCurMaxMP(FBasePropertyDetail.MPGrowth);
+		AddCurHP(FBasePropertyDetail.HPGrowth);
+		AddCurMP(FBasePropertyDetail.MPGrowth);
 		AddCurHPRecovery(FBasePropertyDetail.HPRecoveryGrowth);
 		AddCurMPRecovery(FBasePropertyDetail.MPRecoveryGrowth);
 		AddCurPhyAttack(FBasePropertyDetail.PhyAttackGrowth);
@@ -56,7 +59,14 @@ bool UCharacterProperty::LevelUp()
 		AddCurPhyDef(FBasePropertyDetail.PhyDefGrowth);
 		AddCurMagDef(FBasePropertyDetail.MagDefGrowth);
 		AddCurAttackSpeed(FBasePropertyDetail.AttackSpeedGrowth);
+		AddMoneyWorth(FBasePropertyDetail.MoneyWorthGrowth);
+		AddEXPWorth(FBasePropertyDetail.EXPWorthGrowth);
 		bIsLevelUp = false;
+		AHero* OwnerHero = Cast<AHero>(GetOwner());
+		if (OwnerHero)
+		{
+			OwnerHero->SkillComp->OwnerLevelUp();
+		}
 		return true;
 	}
 	else

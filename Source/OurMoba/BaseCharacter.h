@@ -1,17 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "CreatureCamp.h"
+#include "Perception\AIPerceptionComponent.h"
+#include "UObject/ObjectMacros.h"
+#include "Templates/SubclassOf.h"
+#include "Components/ActorComponent.h"
+#include "EngineDefines.h"
+#include "GenericTeamAgentInterface.h"
 #include "BaseCharacter.generated.h"
+class UBuff;
 class UParticleSystem;
 class UAnimiation;
 class UAnimMontage;
 class UCharacterProperty;
 class UCreatureCamp;
 class UAIManager;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActorDeathDelegate, AActor*, DeathActor);
 UCLASS(Blueprintable)
 class OURMOBA_API ABaseCharacter : public ACharacter
 {
@@ -48,10 +55,10 @@ public:
 		void CRoleResetAttack();
 
 	UFUNCTION(BlueprintCallable)
-		void ReceivePhyDamage(float PhyDamage);
+		void ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker);
 
 	UFUNCTION(BlueprintCallable)
-		void ReceiveMagDamage(float MagDamage);
+		void ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker);
 
 	UFUNCTION(BlueprintCallable)
 		void CPhyTraceDetect(TArray<FHitResult> HitResult);
@@ -66,13 +73,16 @@ public:
 		void DEBUGprint(float num);
 
 	UFUNCTION(BlueprintCallable)
-		void CheckIsDead();
+		void CheckIsDead(ABaseCharacter* Attacker);
 
 	UFUNCTION(BlueprintCallable)
 		void DeathOver();
 
 	UFUNCTION(BlueprintCallable)
 		TArray<ABaseCharacter*> GetAllEnemysInRadius(float Radius);
+
+	UFUNCTION(BlueprintCallable)
+		TArray<ABaseCharacter*> GetAllEnemysInRadiusToLocation(float Radius,FVector Location);
 
 	UFUNCTION(BlueprintCallable)
 		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, float Rate);
@@ -89,6 +99,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsEnemy(ABaseCharacter* UnknowCharacter) { return CampComp->CheckIsEnemy(UnknowCharacter->CampComp->GetCamp()); }
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void CDelay(float time);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
+	UFUNCTION(NetMulticast, UnReliable)
+		void MulticastPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
 
@@ -97,6 +116,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buff", meta = (AllowPrivateAccess = "true"))
+		UBuff* BuffComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Anim", meta = (AllowPrivateAccess = "true"))
 		UAnimiation* AnimiationComp;
@@ -115,4 +137,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
 		UParticleSystem* FireReact;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+		UAIManager* AIManger;
+
+	UPROPERTY(BlueprintAssignable)
+		FActorDeathDelegate OnActorDeath;
 };

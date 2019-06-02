@@ -6,6 +6,8 @@
 #include "BaseCharacter.h"
 #include"CharacterProperty.h"
 #include "Engine/World.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "GameFramework/Controller.h"
 AMobaController::AMobaController()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -44,10 +46,28 @@ void AMobaController::SetNewMoveDestination(FVector DestLocation)
 	if (MyPawn)
 	{
 		if (!MyPawn->PropertyComp->IsAlive()) DestLocation = MyPawn->GetActorLocation();
-		CMoveToLocation(this, DestLocation);
+		AController* MovePC = Cast<AController>(this);
+		CMoveToLocation(MovePC, DestLocation);
 	}
 }
 void AMobaController::OnSetDestinationPressed()
 {
 	MoveToMouseCursor();
+}
+
+void AMobaController::CMoveToLocation_Implementation(AController * PC, const FVector & DestLocation)
+{
+	if (Role < ROLE_Authority)
+	{
+		return;
+	}
+	if (PC)
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(PC, DestLocation);
+	}
+}
+
+bool AMobaController::CMoveToLocation_Validate(AController * PC, const FVector & DestLocation)
+{
+	return true;
 }
