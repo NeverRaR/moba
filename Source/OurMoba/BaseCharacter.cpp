@@ -31,6 +31,7 @@ ABaseCharacter::ABaseCharacter()
 	bIsAttacking = false;
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(105.0f, 240.0f);
+	GetCapsuleComponent()->SetIsReplicated(true);
 
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
