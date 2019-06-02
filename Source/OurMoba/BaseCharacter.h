@@ -11,7 +11,7 @@
 #include "EngineDefines.h"
 #include "GenericTeamAgentInterface.h"
 #include "BaseCharacter.generated.h"
-
+class UBuff;
 class UParticleSystem;
 class UAnimiation;
 class UAnimMontage;
@@ -38,6 +38,13 @@ protected:
 	
 
 public:	
+	//Recall
+	void Recall();
+	FVector OriginLocation;
+
+	//Reborn
+	void Reborn();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnSetAttackPressed();//将在远程单位中重写
@@ -82,6 +89,9 @@ public:
 		TArray<ABaseCharacter*> GetAllEnemysInRadius(float Radius);
 
 	UFUNCTION(BlueprintCallable)
+		TArray<ABaseCharacter*> GetAllEnemysInRadiusToLocation(float Radius,FVector Location);
+
+	UFUNCTION(BlueprintCallable)
 		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, float Rate);
 
 	UFUNCTION(BlueprintImplementableEvent)
@@ -99,6 +109,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void CDelay(float time);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
+	UFUNCTION(NetMulticast, UnReliable)
+		void MulticastPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
 
@@ -107,6 +123,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buff", meta = (AllowPrivateAccess = "true"))
+		UBuff* BuffComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Anim", meta = (AllowPrivateAccess = "true"))
 		UAnimiation* AnimiationComp;

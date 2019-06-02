@@ -4,7 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "UObject/ObjectMacros.h"
+#include "Templates/SubclassOf.h"
+#include "Components/ActorComponent.h"
+#include "EngineDefines.h"
+#include "GenericTeamAgentInterface.h"
+#include"Skill.h"
 #include "CharacterProperty.generated.h"
+
 USTRUCT(BlueprintType)
 struct FBaseProperty
 {
@@ -95,7 +102,6 @@ struct FBaseProperty
 	UPROPERTY(EditAnywhere)
 		float EXPWorthGrowth = 30.0f;
 };
-
 USTRUCT(BlueprintType)
 struct FCurProperty
 {

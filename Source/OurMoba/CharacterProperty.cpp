@@ -2,7 +2,9 @@
 
 
 #include "CharacterProperty.h"
-
+#include"OurMobaGameMode.h"
+#include "Hero.h"
+#include"Skill.h"
 // Sets default values for this component's properties
 UCharacterProperty::UCharacterProperty()
 {
@@ -18,7 +20,6 @@ UCharacterProperty::UCharacterProperty()
 void UCharacterProperty::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// ...
 	
 }
@@ -61,6 +62,11 @@ bool UCharacterProperty::LevelUp()
 		AddMoneyWorth(FBasePropertyDetail.MoneyWorthGrowth);
 		AddEXPWorth(FBasePropertyDetail.EXPWorthGrowth);
 		bIsLevelUp = false;
+		AHero* OwnerHero = Cast<AHero>(GetOwner());
+		if (OwnerHero)
+		{
+			OwnerHero->SkillComp->OwnerLevelUp();
+		}
 		return true;
 	}
 	else
