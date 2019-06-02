@@ -79,6 +79,8 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	SetMoveSpeed(PropertyComp->GetBaseMoveSpeed());
+
+	OriginLocation = GetActorLocation();
 }
 
 void ABaseCharacter::OnSetAttackPressed()
@@ -115,6 +117,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	InputComponent->BindAction("Attack", IE_Pressed, this, &ABaseCharacter::OnSetAttackPressed);
+	PlayerInputComponent->BindAction("Recall", IE_Pressed, this, &ABaseCharacter::Recall);
 
 }
 
@@ -313,4 +316,19 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 void ABaseCharacter::DeathOver()
 {
 	Destroy();
+}
+
+void ABaseCharacter::Recall()
+{
+	if (PropertyComp->GetCurHP() > 0)
+	{
+		PropertyComp->ResetCurProperty();
+		SetActorLocation(OriginLocation);
+	}
+}
+
+void ABaseCharacter::Reborn()
+{
+	PropertyComp->ResetCurProperty();
+	SetActorLocation(OriginLocation);
 }

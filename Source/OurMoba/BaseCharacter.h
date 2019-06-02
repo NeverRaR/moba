@@ -38,6 +38,13 @@ protected:
 	
 
 public:	
+	//Recall
+	void Recall();
+	FVector OriginLocation;
+
+	//Reborn
+	void Reborn();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnSetAttackPressed();//将在远程单位中重写
