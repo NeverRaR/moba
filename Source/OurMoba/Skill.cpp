@@ -41,6 +41,15 @@ int32 USkill::GetSkillLevel(int32 id)
 	return -1;
 }
 
+int32 USkill::GetMaxSkillLevel(int32 id)
+{
+	if (CheckIDIsLegal(id))
+	{
+		return SkillState[id].MaxSkillLevel;
+	}
+	return -1;
+}
+
 
 int32 USkill::SetSkillLevel(int32 id, int32 NewLevel)
 {
@@ -95,6 +104,43 @@ float USkill::GetSkillMagDamageGrowth(int32 id)
 	}
 	return -1.0f;
 }
+
+float USkill::GetSkillMPConsume(int32 id)
+{
+	if (CheckIDIsLegal(id))
+	{
+		return SkillState[id].MPConsume;
+	}
+	return -1.0f;
+}
+
+float USkill::SetSkillMPConsume(int32 id, float NewMPConsume)
+{
+	if (CheckIDIsLegal(id))
+	{
+		return SkillState[id].MPConsume = NewMPConsume;
+	}
+	return -1.0f;
+}
+
+float USkill::AddSkillMPConsume(int32 id, float DeltaMPConsume)
+{
+	if (CheckIDIsLegal(id))
+	{
+		return SkillState[id].MPConsume += DeltaMPConsume;
+	}
+	return -1.0f;
+}
+
+float USkill::GetSkillMPConsumeGrowth(int32 id)
+{
+	if (CheckIDIsLegal(id))
+	{
+		return SkillState[id].MPConsumeGrowth;
+	}
+	return -1.0f;
+}
+
 
 float USkill::GetSkillCD(int32 id)
 {
@@ -226,12 +272,17 @@ void USkill::SkillWholeColdDown(float DeltaTime)
 
 void USkill::SkillLevelUp(int32 id)
 {
+
 	if (CheckIDIsLegal(id))
 	{
-		AddSkillCD(id, -1*GetSkillCDGrowth(id));
-		AddSkillMagDamage(id, GetSkillMagDamageGrowth(id));
-		AddSkillLevel(id, 1);
-		AddSkillPoint(-1);
+		if (GetSkillLevel(id) < GetMaxSkillLevel(id))
+		{
+			AddSkillCD(id, -1 * GetSkillCDGrowth(id));
+			AddSkillMagDamage(id, GetSkillMagDamageGrowth(id));
+			AddSkillMPConsume(id, GetSkillMPConsumeGrowth(id));
+			AddSkillLevel(id, 1);
+			AddSkillPoint(-1);
+		}
 	}
 }
 

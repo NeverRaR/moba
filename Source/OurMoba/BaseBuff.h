@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BaseBuff.generated.h"
+class ABaseCharacter;
 class UParticleSystemComponent;
 UCLASS()
 class OURMOBA_API ABaseBuff : public AActor
@@ -22,7 +23,13 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 	virtual bool IsBuffEnd() ;
+
+	virtual bool BuffIsEffective(ABaseCharacter* OwnerPawn);
+
+	virtual bool EndBuff(ABaseCharacter* OwnerPawn);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float SustainTime;
 
@@ -58,6 +65,12 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float DeltaAttackSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaLeech;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaCD;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
 		UParticleSystemComponent* React;

@@ -17,6 +17,7 @@ public:
 	AHero();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
 	UFUNCTION(BlueprintCallable)
 		void	Skill1Upgrade();
 

@@ -33,6 +33,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void CheckAllBuff(float DeltaTime);
 
+	UFUNCTION(BlueprintCallable)
+		void ClearAllBuff();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<ABaseBuff*>  AllBuff;
 };

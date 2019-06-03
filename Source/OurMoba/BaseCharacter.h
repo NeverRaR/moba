@@ -55,7 +55,7 @@ public:
 		void CRoleResetAttack();
 
 	UFUNCTION(BlueprintCallable)
-		void ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker);
+		float ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker);
 
 	UFUNCTION(BlueprintCallable)
 		void ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker);

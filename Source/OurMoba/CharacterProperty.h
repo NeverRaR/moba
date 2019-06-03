@@ -101,6 +101,7 @@ struct FBaseProperty
 
 	UPROPERTY(EditAnywhere)
 		float EXPWorthGrowth = 30.0f;
+
 };
 USTRUCT(BlueprintType)
 struct FCurProperty
@@ -144,6 +145,9 @@ struct FCurProperty
 	
 	UPROPERTY(EditAnywhere)
 		float	CurEXP = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+		float Leech = 0.0f;
 	
 	UPROPERTY(EditAnywhere)
 		int32 CurLevel = 1;
@@ -485,6 +489,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 		float AddAidNum(float DeltaAidNum) { return FCurPropertyDetail.AidNum += DeltaAidNum; }
 
+	UFUNCTION(BlueprintCallable)
+		float GetCurLeech() { return FCurPropertyDetail.Leech; }
+
+	UFUNCTION(BlueprintCallable)
+		float SetLeech(float NewLeech) { return FCurPropertyDetail.Leech = NewLeech; }
+
+	UFUNCTION(BlueprintCallable)
+		float AddLeech(float DeltaLeech) { return FCurPropertyDetail.Leech += DeltaLeech; }
 
 	void HPRecovering(float DeltaTime);
 

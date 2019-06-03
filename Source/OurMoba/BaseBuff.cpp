@@ -4,6 +4,8 @@
 #include "BaseBuff.h"
 #include"Particles\ParticleSystem.h"
 #include"Particles\ParticleSystemComponent.h"
+#include"BaseCharacter.h"
+#include"CharacterProperty.h"
 // Sets default values
 ABaseBuff::ABaseBuff()
 {
@@ -34,4 +36,47 @@ bool ABaseBuff::IsBuffEnd()
 {
 	return CurTime >= SustainTime;
 }
-
+bool ABaseBuff::BuffIsEffective(ABaseCharacter* OwnerPawn)
+{
+	if (OwnerPawn)
+	{
+		UCharacterProperty* MyProperty = OwnerPawn->PropertyComp;
+		MyProperty->AddCurMaxHP(DeltaMaxHP);
+		MyProperty->AddCurMaxMP( DeltaMaxMP);
+		MyProperty->AddCurHP( DeltaMaxHP);
+		MyProperty->AddCurMP( DeltaMaxMP);
+		MyProperty->AddCurMPRecovery( DeltaMPRecovery);
+		MyProperty->AddCurHPRecovery( DeltaHPRecovery);
+		MyProperty->AddCurPhyAttack( DeltaPhyDamage);
+		MyProperty->AddCurMagAttack( DeltaMagDamage);
+		MyProperty->AddCurPhyDef( DeltaPhyDef);
+		MyProperty->AddCurMagDef( DeltaMagDef);
+		MyProperty->AddCurAttackSpeed( DeltaAttackSpeed);
+		MyProperty->AddCurMoveSpeed( DeltaMoveSpeed);
+		MyProperty->AddLeech( DeltaLeech );
+		 React->SetVisibility(true);
+		 return true;
+	}
+	return false;
+}
+bool ABaseBuff::EndBuff(ABaseCharacter* OwnerPawn)
+{
+	if (OwnerPawn)
+	{
+		UCharacterProperty* MyProperty = OwnerPawn->PropertyComp;
+		MyProperty->AddCurMaxHP(-DeltaMaxHP);
+		MyProperty->AddCurMaxMP(-DeltaMaxMP);
+		MyProperty->AddCurMPRecovery(-DeltaMPRecovery);
+		MyProperty->AddCurHPRecovery(-DeltaHPRecovery);
+		MyProperty->AddCurPhyAttack(-DeltaPhyDamage);
+		MyProperty->AddCurMagAttack(-DeltaMagDamage);
+		MyProperty->AddCurPhyDef(-DeltaPhyDef);
+		MyProperty->AddCurMagDef(-DeltaMagDef);
+		MyProperty->AddCurAttackSpeed(-DeltaAttackSpeed);
+		MyProperty->AddCurMoveSpeed(-DeltaMoveSpeed);
+		MyProperty->AddLeech(-DeltaLeech);
+		React->SetVisibility(false);
+		return true;
+	}
+	return false;
+}
