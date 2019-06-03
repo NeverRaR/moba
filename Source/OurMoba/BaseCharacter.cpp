@@ -21,6 +21,8 @@
 #include "AIManager.h"
 #include "OurMobaGameMode.h"
 #include"Kismet\KismetSystemLibrary.h"
+#include"Components\SkeletalMeshComponent.h"
+#include"Buff.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -61,6 +63,7 @@ ABaseCharacter::ABaseCharacter()
 	CursorToWorld->SetupAttachment(RootComponent);
 	CursorToWorld->DecalSize = FVector(48.0f, 96.0f, 96.0f);
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
+	CursorToWorld->SetWorldLocation(FVector(0.0f, 0.0f, -2000.0f));
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	AnimiationComp = CreateDefaultSubobject<UAnimiation>(TEXT("AnimiationComp"));
@@ -72,6 +75,7 @@ ABaseCharacter::ABaseCharacter()
 	
 	AIManger= CreateDefaultSubobject<UAIManager>(TEXT("AIManger"));
 
+	GetCharacterMovement()->MaxAcceleration = 1000.0f;
 }
 
 // Called when the game starts or when spawned
@@ -110,6 +114,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
+	GetCharacterMovement()->MaxWalkSpeed = PropertyComp->GetCurMoveSpeed();
 }
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -208,7 +213,7 @@ bool ABaseCharacter::ServerPlayMontage_Validate(UAnimMontage * AnimMontage, floa
 	return true;
 }
 
-void ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
+float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
 {
 	float PhyDef = PropertyComp->GetCurPhyDef();
 	float DamageResistance = PhyDef / (PhyDef + 150);
@@ -216,6 +221,7 @@ void ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
 	PropertyComp->AddCurHP(-CurDamage);
 	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
 	CheckIsDead(Attacker);
+	return CurDamage;
 }
 
 void ABaseCharacter::ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker)
@@ -243,7 +249,11 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 		{
 			if (CheckIsEnemy(Receiver))
 			{
-				Receiver->ReceivePhyDamage(Damage,this);
+				float CurDamage=Receiver->ReceivePhyDamage(Damage,this);
+				if (PropertyComp->IsAlive())
+				{
+					PropertyComp->AddCurHP(PropertyComp->GetCurLeech()*CurDamage);
+				}
 			}
 		}
 	}
@@ -254,9 +264,11 @@ void ABaseCharacter::CPhySingleDetect(ABaseCharacter * Target)
 
 	float Damage = PropertyComp->GetCurPhyAttack();
 	SetFireParticle(FireReact);
-	DEBUGprint(Damage);
-	Target->ReceivePhyDamage(Damage,this);
-	DEBUGprint(Target->PropertyComp->GetCurHP());
+	float CurDamage = Target->ReceivePhyDamage(Damage,this);
+	if (PropertyComp->IsAlive())
+	{
+		PropertyComp->AddCurHP(PropertyComp->GetCurLeech()*CurDamage);
+	}
 
 }
 
@@ -309,6 +321,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		}
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
 		OnActorDeath.Broadcast(this);
+		BuffComp->ClearAllBuff();
 		Destroy();
 	}
 }

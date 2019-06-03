@@ -20,15 +20,22 @@ struct FSkillBase
 	UPROPERTY(EditAnywhere)
 		float CurCD=0.0f;
 	UPROPERTY(EditAnywhere)
+		float MPConsume = 50.0f;
+	UPROPERTY(EditAnywhere)
+		float MPConsumeGrowth = 10.0f;
+	UPROPERTY(EditAnywhere)
 		float MagDamage=100.0f;
 	UPROPERTY(EditAnywhere)
 		int32 SkillLevel=0;
+	UPROPERTY(EditAnywhere)
+		int32 MaxSkillLevel = 6;
 	UPROPERTY(EditAnywhere)
 		float SkillCDGrowth=0.6f;
 	UPROPERTY(EditAnywhere)
 		float MagDamageGrowth=50.0f;
 	UPROPERTY(EditAnywhere)
 		float Range=1500.0f;
+	
 };
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class OURMOBA_API USkill : public UActorComponent
@@ -52,6 +59,9 @@ public:
 		int32 GetSkillLevel(int32 id);
 
 	UFUNCTION(BlueprintCallable)
+		int32 GetMaxSkillLevel(int32 id);
+
+	UFUNCTION(BlueprintCallable)
 		int32 SetSkillLevel(int32 id,int32 NewLevel);
 
 	UFUNCTION(BlueprintCallable)
@@ -71,6 +81,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 		float GetSkillMagDamageGrowth(int32 id);
 	
+	UFUNCTION(BlueprintCallable)
+		float GetSkillMPConsume(int32 id);
+
+	UFUNCTION(BlueprintCallable)
+		float SetSkillMPConsume(int32 id, float NewMPConsume);
+
+	UFUNCTION(BlueprintCallable)
+		float AddSkillMPConsume(int32 id, float DeltaMPConsume);
+
+	UFUNCTION(BlueprintCallable)
+		float GetSkillMPConsumeGrowth(int32 id);
 
 	//CD
 	UFUNCTION(BlueprintCallable)
