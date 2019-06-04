@@ -102,6 +102,11 @@ struct FBaseProperty
 	UPROPERTY(EditAnywhere)
 		float EXPWorthGrowth = 30.0f;
 
+	UPROPERTY(EditAnywhere)
+		float Leech = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+		float  CDReduction = 0.0f;
 };
 USTRUCT(BlueprintType)
 struct FCurProperty
@@ -163,6 +168,9 @@ struct FCurProperty
 
 	UPROPERTY(EditAnywhere)
 		float  Money = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+		float  CDReduction = 0.0f;
 
 };
 
@@ -269,10 +277,10 @@ public:
 		float AddCurMaxMP(float DeltaMP) { return  FCurPropertyDetail.MaxMP += DeltaMP; }
 	
 	UFUNCTION(BlueprintCallable)
-		float AddBaseMPRecovery(float DeltaMPRecovery) { return FBasePropertyDetail.MPRecovery; }
+		float AddBaseMPRecovery(float DeltaMPRecovery) { return FBasePropertyDetail.MPRecovery+= DeltaMPRecovery; }
 	
 	UFUNCTION(BlueprintCallable)
-		float AddCurMPRecovery(float DeltaMPRecovery) { return FCurPropertyDetail.MPRecovery; }
+		float AddCurMPRecovery(float DeltaMPRecovery) { return FCurPropertyDetail.MPRecovery+= DeltaMPRecovery; }
 
 
 
@@ -493,10 +501,37 @@ public:
 		float GetCurLeech() { return FCurPropertyDetail.Leech; }
 
 	UFUNCTION(BlueprintCallable)
-		float SetLeech(float NewLeech) { return FCurPropertyDetail.Leech = NewLeech; }
+		float SetCurLeech(float NewLeech) { return FCurPropertyDetail.Leech = NewLeech; }
 
 	UFUNCTION(BlueprintCallable)
-		float AddLeech(float DeltaLeech) { return FCurPropertyDetail.Leech += DeltaLeech; }
+		float AddCurLeech(float DeltaLeech) { return FCurPropertyDetail.Leech += DeltaLeech; }
+
+	UFUNCTION(BlueprintCallable)
+		float GetBaseLeech() { return FBasePropertyDetail.Leech; }
+
+	UFUNCTION(BlueprintCallable)
+		float SetBaseLeech(float NewLeech) { return FBasePropertyDetail.Leech = NewLeech; }
+
+	UFUNCTION(BlueprintCallable)
+		float AddBaseLeech(float DeltaLeech) { return FBasePropertyDetail.Leech += DeltaLeech; }
+
+	UFUNCTION(BlueprintCallable)
+		float GetCurCDReduction() { return FCurPropertyDetail.CDReduction; }
+
+	UFUNCTION(BlueprintCallable)
+		float SetCurCDReduction(float NewCDReduction) { return FCurPropertyDetail.CDReduction = NewCDReduction; }
+
+	UFUNCTION(BlueprintCallable)
+		float AddCurCDReduction(float DeltaCDReduction) { return FCurPropertyDetail.CDReduction += DeltaCDReduction; }
+
+	UFUNCTION(BlueprintCallable)
+		float GetBaseCDReduction() { return FBasePropertyDetail.CDReduction; }
+
+	UFUNCTION(BlueprintCallable)
+		float SetBaseCDReduction(float NewCDReduction) { return FBasePropertyDetail.CDReduction = NewCDReduction; }
+
+	UFUNCTION(BlueprintCallable)
+		float AddBaseCDReduction(float DeltaCDReduction) { return FBasePropertyDetail.CDReduction += DeltaCDReduction; }
 
 	void HPRecovering(float DeltaTime);
 

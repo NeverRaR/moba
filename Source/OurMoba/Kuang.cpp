@@ -26,8 +26,7 @@ void AKuang::Skill1Release()
 		{
 			if (SkillComp->GetSkillCurCD(0) < 0.001&&SkillComp->GetSkillLevel(0) > 0)
 			{
-				SkillComp->ResetSkillCurCD(0);
-				PropertyComp->AddCurMP(-1 * SkillComp->GetSkillMPConsume(0));
+				SkillComp->ReleaseSkill(0);
 				UGameplayStatics::SpawnEmitterAtLocation(this, Skill1React, MouseLocation);
 				TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, MouseLocation);
 				for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
