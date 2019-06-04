@@ -94,6 +94,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, float Rate);
 
+		virtual void DeathEffect(ABaseCharacter* Attacker);
+
+		virtual void AttackEffect(ABaseCharacter* Recevier);
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetFireParticle(UParticleSystem* React);
 
@@ -105,6 +109,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsEnemy(ABaseCharacter* UnknowCharacter) { return CampComp->CheckIsEnemy(UnknowCharacter->CampComp->GetCamp()); }
+
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void CDelay(float time);

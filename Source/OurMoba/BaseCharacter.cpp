@@ -23,6 +23,7 @@
 #include"Kismet\KismetSystemLibrary.h"
 #include"Components\SkeletalMeshComponent.h"
 #include"Buff.h"
+#include"BaseBuff.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -75,6 +76,7 @@ ABaseCharacter::ABaseCharacter()
 	
 	AIManger= CreateDefaultSubobject<UAIManager>(TEXT("AIManger"));
 
+	BuffComp= CreateDefaultSubobject<UBuff>(TEXT("BuffComp"));
 	GetCharacterMovement()->MaxAcceleration = 1000.0f;
 }
 
@@ -197,6 +199,21 @@ void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, fl
 	}
 }
 
+void ABaseCharacter::DeathEffect(ABaseCharacter * Attacker)
+{
+
+
+}
+
+void ABaseCharacter::AttackEffect(ABaseCharacter * Receiver)
+{
+	for (int32 i = 0; i < BuffComp->ReleaseDebuff.Num(); ++i)
+	{
+		ABaseBuff* Buff = GetWorld()->SpawnActor<ABaseBuff>(BuffComp->ReleaseDebuff[i]->GetClass());
+		Receiver->BuffComp->AddBuff(Buff);
+	}
+}
+
 void ABaseCharacter::MulticastPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
 {
 	PlayAnimMontage(AnimMontage, InPlayRate);
@@ -253,6 +270,7 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 				if (PropertyComp->IsAlive())
 				{
 					PropertyComp->AddCurHP(PropertyComp->GetCurLeech()*CurDamage);
+					AttackEffect(Receiver);
 				}
 			}
 		}
@@ -321,6 +339,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		}
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
 		OnActorDeath.Broadcast(this);
+		DeathEffect(Attacker);
 		BuffComp->ClearAllBuff();
 		Destroy();
 	}

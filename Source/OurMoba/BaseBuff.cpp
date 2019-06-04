@@ -7,6 +7,7 @@
 #include"BaseCharacter.h"
 #include"CharacterProperty.h"
 // Sets default values
+
 ABaseBuff::ABaseBuff()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -22,14 +23,19 @@ ABaseBuff::ABaseBuff()
 void ABaseBuff::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void ABaseBuff::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (Receiver)
+	{
+		if (React)
+		{
+			React->SetWorldLocation(Receiver->GetActorLocation());
+		}
+	}
 }
 
 bool ABaseBuff::IsBuffEnd()
@@ -40,6 +46,7 @@ bool ABaseBuff::BuffIsEffective(ABaseCharacter* OwnerPawn)
 {
 	if (OwnerPawn)
 	{
+		Receiver = OwnerPawn;
 		UCharacterProperty* MyProperty = OwnerPawn->PropertyComp;
 		MyProperty->AddCurMaxHP(DeltaMaxHP);
 		MyProperty->AddCurMaxMP( DeltaMaxMP);
@@ -53,8 +60,9 @@ bool ABaseBuff::BuffIsEffective(ABaseCharacter* OwnerPawn)
 		MyProperty->AddCurMagDef( DeltaMagDef);
 		MyProperty->AddCurAttackSpeed( DeltaAttackSpeed);
 		MyProperty->AddCurMoveSpeed( DeltaMoveSpeed);
-		MyProperty->AddLeech( DeltaLeech );
-		 React->SetVisibility(true);
+		MyProperty->AddCurLeech( DeltaLeech );
+		MyProperty->AddCurCDReduction(DeltaCDReduction);
+		React->SetVisibility(true);
 		 return true;
 	}
 	return false;
@@ -74,8 +82,8 @@ bool ABaseBuff::EndBuff(ABaseCharacter* OwnerPawn)
 		MyProperty->AddCurMagDef(-DeltaMagDef);
 		MyProperty->AddCurAttackSpeed(-DeltaAttackSpeed);
 		MyProperty->AddCurMoveSpeed(-DeltaMoveSpeed);
-		MyProperty->AddLeech(-DeltaLeech);
-		React->SetVisibility(false);
+		MyProperty->AddCurLeech(-DeltaCDReduction);
+		React->SetVisibility(true);
 		return true;
 	}
 	return false;

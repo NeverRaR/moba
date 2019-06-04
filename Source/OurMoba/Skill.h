@@ -142,6 +142,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SkillLevelUp(int32 id);
 
+	UFUNCTION(BlueprintCallable)
+		bool CheckCanBeReleased(int32 id);
+
+	UFUNCTION(BlueprintCallable)
+	    void  ReleaseSkill(int32 id);
 
 		void OwnerLevelUp();
 private:
@@ -151,5 +156,4 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	     int32 SkillPoint;
-
 };
