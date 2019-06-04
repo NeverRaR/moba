@@ -197,6 +197,7 @@ void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, fl
 	}
 }
 
+//Cast Animation to all Client(Server included)
 void ABaseCharacter::MulticastPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
 {
 	PlayAnimMontage(AnimMontage, InPlayRate);
@@ -321,7 +322,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		}
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
 		OnActorDeath.Broadcast(this);
-		BuffComp->ClearAllBuff();
+		//BuffComp->ClearAllBuff();
 		Destroy();
 	}
 }
@@ -344,4 +345,9 @@ void ABaseCharacter::Reborn()
 {
 	PropertyComp->ResetCurProperty();
 	SetActorLocation(OriginLocation);
+}
+
+void ABaseCharacter::ClientPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	PlayAnimMontage(AnimMontage, InPlayRate);
 }

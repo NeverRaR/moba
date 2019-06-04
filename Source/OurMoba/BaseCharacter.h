@@ -109,10 +109,13 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void CDelay(float time);
 
-	UFUNCTION(Server, Reliable, WithValidation)
+	UFUNCTION(Client, Unreliable, BlueprintCallable)
+		void ClientPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
 		void ServerPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
-	UFUNCTION(NetMulticast, UnReliable)
+	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable)
 		void MulticastPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
