@@ -339,12 +339,8 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		}
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
 		OnActorDeath.Broadcast(this);
-<<<<<<< HEAD
-		//BuffComp->ClearAllBuff();
-=======
 		DeathEffect(Attacker);
 		BuffComp->ClearAllBuff();
->>>>>>> origin/dev
 		Destroy();
 	}
 }
