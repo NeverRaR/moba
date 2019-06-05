@@ -92,6 +92,10 @@ void UBuff::RemoveBuff(ABaseBuff * NewBuff, TArray<ABaseBuff*>&Arr)
 			NewBuff->Destroy();
 		}
 	}
+	if (NewBuff)
+	{
+		NewBuff->EnforceEndBuff();
+	}
 }
 
 void UBuff::CheckAllBuff(float DeltaTime)

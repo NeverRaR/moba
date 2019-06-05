@@ -266,11 +266,11 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 		{
 			if (CheckIsEnemy(Receiver))
 			{
+				AttackEffect(Receiver);
 				float CurDamage=Receiver->ReceivePhyDamage(Damage,this);
 				if (PropertyComp->IsAlive())
 				{
 					PropertyComp->AddCurHP(PropertyComp->GetCurLeech()*CurDamage);
-					AttackEffect(Receiver);
 				}
 			}
 		}
@@ -281,7 +281,7 @@ void ABaseCharacter::CPhySingleDetect(ABaseCharacter * Target)
 {
 
 	float Damage = PropertyComp->GetCurPhyAttack();
-	SetFireParticle(FireReact);
+	SetFireParticle(FireReact,ComboIndex);
 	float CurDamage = Target->ReceivePhyDamage(Damage,this);
 	if (PropertyComp->IsAlive())
 	{
@@ -324,6 +324,8 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		SetActorEnableCollision(false);
 		UGameplayStatics::SpawnEmitterAtLocation(this, DeathReact, GetActorLocation());
 		PropertyComp->SetAlive(false);
+		BuffComp->ClearAllBuff();
+		check(BuffComp->UniqueBuff.Num()==0&& BuffComp->MultiBuff.Num() == 0)//检查是否清除buff成功
 		if (CampComp->CheckIsHero())
 		{
 			PropertyComp->AddDeathNum(1);
@@ -340,7 +342,6 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
 		OnActorDeath.Broadcast(this);
 		DeathEffect(Attacker);
-		BuffComp->ClearAllBuff();
 		Destroy();
 	}
 }

@@ -15,6 +15,7 @@ ARedBuff::ARedBuff()
 	Type = BuffType::RedBuff;
 	bIsDebuffInstigator = true;
 	AttachedDebuff = NewObject<ABurning>();
+	check(AttachedDebuff!=nullptr)
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleSystemMaterialAsset(TEXT("ParticleSystem'/Game/Game/Particle/P_Dragon_Spawn.P_Dragon_Spawn'"));
 	if (ParticleSystemMaterialAsset.Succeeded())
 	{

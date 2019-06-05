@@ -37,6 +37,9 @@ public:
 		virtual	void	Skill3Release();
 
 	UFUNCTION(BlueprintCallable)
+		void PhyDamageEnemy(TArray<ABaseCharacter*> Arr);
+
+	UFUNCTION(BlueprintCallable)
 		FVector GetMouseLocation();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))

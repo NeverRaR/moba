@@ -38,6 +38,8 @@ public:
 
 	virtual bool EndBuff(ABaseCharacter* OwnerPawn);
 
+	void	EnforceEndBuff();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		BuffType Type;
 

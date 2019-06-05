@@ -37,7 +37,11 @@ void ABaseBuff::Tick(float DeltaTime)
 		}
 	}
 }
-
+void ABaseBuff::EnforceEndBuff()
+{
+	React->SetVisibility(false);
+	Destroy();
+}
 bool ABaseBuff::IsBuffEnd()
 {
 	return CurTime >= SustainTime;
