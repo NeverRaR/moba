@@ -5,6 +5,7 @@
 #include "GameFramework/Controller.h"
 #include"Skill.h"
 #include "MobaController.h"
+#include"CharacterProperty.h"
 AHero::AHero()
 {
 	SkillComp = CreateDefaultSubobject<USkill>(TEXT("SkillComp"));
@@ -89,4 +90,20 @@ FVector AHero::GetMouseLocation()
 		return FVector(0, 0, 0);
 	}
 	return FVector(0, 0, 0);
+}
+
+
+void AHero::PhyDamageEnemy(TArray<ABaseCharacter*> Arr)
+{
+	float Damage = PropertyComp->GetCurPhyAttack();
+	for (int32 i = 0; i < Arr.Num(); ++i)
+	{
+		ABaseCharacter* Receiver = Arr[i];
+		AttackEffect(Receiver);
+		float CurDamage = Receiver->ReceivePhyDamage(Damage, this);
+		if (PropertyComp->IsAlive())
+		{
+			PropertyComp->AddCurHP(PropertyComp->GetCurLeech()*CurDamage);
+		}
+	}
 }

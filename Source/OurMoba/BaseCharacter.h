@@ -56,7 +56,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
-		void CRoleComboAttack(int32 NextIndex);
+		virtual void CRoleComboAttack(int32 NextIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void CRoleResetAttack();
@@ -99,7 +99,7 @@ public:
 		virtual void AttackEffect(ABaseCharacter* Recevier);
 
 	UFUNCTION(BlueprintImplementableEvent)
-		void SetFireParticle(UParticleSystem* React);
+		void SetFireParticle(UParticleSystem* React,int32 Combo);
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetMoveSpeed(float CurSpeed);

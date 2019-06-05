@@ -20,6 +20,7 @@ void ABlack::BeginPlay()
 void ABlack::DeathEffect(ABaseCharacter * Attacker)
 {
 	BlueBuff = GetWorld()->SpawnActor<ABlueBuff>(ABlueBuff::StaticClass());
+	check(BlueBuff!=nullptr)
 	Attacker->BuffComp->AddBuff(BlueBuff);
 
 }
