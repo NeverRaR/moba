@@ -35,7 +35,6 @@ protected:
 	uint32 bIsReadyToCombo : 1;
 	int32 ComboIndex = 0;
 	int32 DeathIndex = 0;
-	
 
 public:	
 	//Recall

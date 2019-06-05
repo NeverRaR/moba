@@ -86,6 +86,7 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 	SetMoveSpeed(PropertyComp->GetBaseMoveSpeed());
 
+	NetUpdateFrequency = 120.0f;
 	OriginLocation = GetActorLocation();
 }
 
