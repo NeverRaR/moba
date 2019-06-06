@@ -23,6 +23,7 @@
 #include"Kismet\KismetSystemLibrary.h"
 #include"Components\SkeletalMeshComponent.h"
 #include"Buff.h"
+#include"BaseBuff.h"
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -75,6 +76,7 @@ ABaseCharacter::ABaseCharacter()
 	
 	AIManger= CreateDefaultSubobject<UAIManager>(TEXT("AIManger"));
 
+	BuffComp= CreateDefaultSubobject<UBuff>(TEXT("BuffComp"));
 	GetCharacterMovement()->MaxAcceleration = 1000.0f;
 }
 
@@ -84,6 +86,7 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 	SetMoveSpeed(PropertyComp->GetBaseMoveSpeed());
 
+	NetUpdateFrequency = 120.0f;
 	OriginLocation = GetActorLocation();
 }
 
@@ -147,7 +150,6 @@ TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 {
 	TArray<AActor*> AllActor;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), AllActor);
-	DEBUGprint(AllActor.Num());
 	TArray<ABaseCharacter*> AllEnemysInRadius;
 	for (int32 i = 0; i < AllActor.Num(); ++i)
 	{
@@ -197,6 +199,22 @@ void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, fl
 	}
 }
 
+void ABaseCharacter::DeathEffect(ABaseCharacter * Attacker)
+{
+
+
+}
+
+void ABaseCharacter::AttackEffect(ABaseCharacter * Receiver)
+{
+	for (int32 i = 0; i < BuffComp->ReleaseDebuff.Num(); ++i)
+	{
+		ABaseBuff* Buff = GetWorld()->SpawnActor<ABaseBuff>(BuffComp->ReleaseDebuff[i]->GetClass());
+		Buff->Attacker = this;
+		Receiver->BuffComp->AddBuff(Buff);
+	}
+}
+
 void ABaseCharacter::MulticastPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
 {
 	PlayAnimMontage(AnimMontage, InPlayRate);
@@ -215,6 +233,7 @@ bool ABaseCharacter::ServerPlayMontage_Validate(UAnimMontage * AnimMontage, floa
 
 float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
 {
+	if (PhyDamage < 0.0f) return 0.0f;
 	float PhyDef = PropertyComp->GetCurPhyDef();
 	float DamageResistance = PhyDef / (PhyDef + 150);
 	float CurDamage = (1 - DamageResistance)*PhyDamage;
@@ -226,12 +245,11 @@ float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker
 
 void ABaseCharacter::ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker)
 {
+	if (MagDamage < 0.0f) return;
 	float MagDef = PropertyComp->GetCurMagDef();
 	float DamageResistance = MagDef/100;
 	float CurDamage = (1 - DamageResistance)*MagDamage;
-	DEBUGprint(CurDamage);
 	PropertyComp->AddCurHP(-CurDamage);
-	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
 	CheckIsDead(Attacker);
 }
 
@@ -249,6 +267,7 @@ void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
 		{
 			if (CheckIsEnemy(Receiver))
 			{
+				AttackEffect(Receiver);
 				float CurDamage=Receiver->ReceivePhyDamage(Damage,this);
 				if (PropertyComp->IsAlive())
 				{
@@ -263,7 +282,7 @@ void ABaseCharacter::CPhySingleDetect(ABaseCharacter * Target)
 {
 
 	float Damage = PropertyComp->GetCurPhyAttack();
-	SetFireParticle(FireReact);
+	SetFireParticle(FireReact,ComboIndex);
 	float CurDamage = Target->ReceivePhyDamage(Damage,this);
 	if (PropertyComp->IsAlive())
 	{
@@ -287,7 +306,6 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 			if (CheckIsEnemy(Receiver))
 			{
 				Receiver->ReceiveMagDamage(Damage,this);
-				DEBUGprint(Receiver->PropertyComp->GetCurHP());
 			}
 		}
 	}
@@ -306,22 +324,27 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		SetActorEnableCollision(false);
 		UGameplayStatics::SpawnEmitterAtLocation(this, DeathReact, GetActorLocation());
 		PropertyComp->SetAlive(false);
+		BuffComp->ClearAllBuff();
+		check(BuffComp->UniqueBuff.Num()==0&& BuffComp->MultiBuff.Num() == 0)//检查是否清除buff成功
 		if (CampComp->CheckIsHero())
 		{
 			PropertyComp->AddDeathNum(1);
 		}
-		if (Attacker->CampComp->CheckIsHero())
+		if (Attacker)
 		{
-			if (CampComp->CheckIsHero())
+			if (Attacker->CampComp->CheckIsHero())
 			{
-				Attacker->PropertyComp->AddKillNum(1);
+				if (CampComp->CheckIsHero())
+				{
+					Attacker->PropertyComp->AddKillNum(1);
+				}
+				Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
+				Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
 			}
-			Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
-			Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
 		}
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
 		OnActorDeath.Broadcast(this);
-		BuffComp->ClearAllBuff();
+		DeathEffect(Attacker);
 		Destroy();
 	}
 }
@@ -344,4 +367,9 @@ void ABaseCharacter::Reborn()
 {
 	PropertyComp->ResetCurProperty();
 	SetActorLocation(OriginLocation);
+}
+
+void ABaseCharacter::ClientPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	PlayAnimMontage(AnimMontage, InPlayRate);
 }

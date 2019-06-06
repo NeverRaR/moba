@@ -35,7 +35,6 @@ protected:
 	uint32 bIsReadyToCombo : 1;
 	int32 ComboIndex = 0;
 	int32 DeathIndex = 0;
-	
 
 public:	
 	//Recall
@@ -56,7 +55,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
-		void CRoleComboAttack(int32 NextIndex);
+		virtual void CRoleComboAttack(int32 NextIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void CRoleResetAttack();
@@ -94,8 +93,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, float Rate);
 
+		virtual void DeathEffect(ABaseCharacter* Attacker);
+
+		virtual void AttackEffect(ABaseCharacter* Recevier);
+
 	UFUNCTION(BlueprintImplementableEvent)
-		void SetFireParticle(UParticleSystem* React);
+		void SetFireParticle(UParticleSystem* React,int32 Combo);
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetMoveSpeed(float CurSpeed);
@@ -106,13 +109,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsEnemy(ABaseCharacter* UnknowCharacter) { return CampComp->CheckIsEnemy(UnknowCharacter->CampComp->GetCamp()); }
 
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void CDelay(float time);
 
-	UFUNCTION(Server, Reliable, WithValidation)
+	UFUNCTION(Client, Unreliable, BlueprintCallable)
+		void ClientPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
 		void ServerPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
-	UFUNCTION(NetMulticast, UnReliable)
+	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable)
 		void MulticastPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

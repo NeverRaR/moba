@@ -3,7 +3,8 @@
 
 #include "Skill.h"
 #include"OurMobaGameMode.h"
-
+#include"Hero.h"
+#include "CharacterProperty.h"
 // Sets default values for this component's properties
 USkill::USkill()
 {
@@ -283,6 +284,34 @@ void USkill::SkillLevelUp(int32 id)
 			AddSkillLevel(id, 1);
 			AddSkillPoint(-1);
 		}
+	}
+}
+
+bool USkill::CheckCanBeReleased(int32 id)
+{
+	if (CheckIDIsLegal(id))
+	{
+		AHero* OwnerPawn = Cast<AHero>(GetOwner());
+		if (OwnerPawn)
+		{
+			if (OwnerPawn->PropertyComp->GetCurMP() > GetSkillMPConsume(id) && GetSkillCurCD(id) < 0.0001&&GetSkillLevel(id)>0)
+			{
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+	return false;
+}
+
+void USkill::ReleaseSkill(int32 id)
+{
+	if (CheckIDIsLegal(id))
+	{
+		AHero* OwnerPawn = Cast<AHero>(GetOwner());
+		OwnerPawn->PropertyComp->AddCurMP(-GetSkillMPConsume(id));
+		SetSkillCurCD(id, (1-OwnerPawn->PropertyComp->GetCurCDReduction())*GetSkillCD(id));
 	}
 }
 

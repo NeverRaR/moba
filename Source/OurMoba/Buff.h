@@ -28,7 +28,7 @@ public:
 		void AddBuff(ABaseBuff*NewBuff);
 
 	UFUNCTION(BlueprintCallable)
-		void RemoveBuff(ABaseBuff*NewBuff);
+		void RemoveBuff(ABaseBuff*NewBuff, TArray<ABaseBuff*>&Arr);
 
 	UFUNCTION(BlueprintCallable)
 		void CheckAllBuff(float DeltaTime);
@@ -37,5 +37,11 @@ public:
 		void ClearAllBuff();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TArray<ABaseBuff*>  AllBuff;
+		TArray<ABaseBuff*>  MultiBuff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<ABaseBuff*>  UniqueBuff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<ABaseBuff*> ReleaseDebuff;
 };

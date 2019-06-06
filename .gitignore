@@ -6,7 +6,7 @@ Intermediate
 /Content/Paragon*/**/*.uasset
 !/Content/**/Animations/**/*.uasset
 !/Content/**/Meshes/*.uasset
-
+/Content/M5VFXVOL2
 
 # Visual Studio 2015 user specific files
 .vs/

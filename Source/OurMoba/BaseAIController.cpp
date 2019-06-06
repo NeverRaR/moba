@@ -32,7 +32,6 @@ ABaseAIController::ABaseAIController()
 
 void ABaseAIController::WhenPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-	//DEBUGprint(UpdatedActors.Num());
 	if (bIsInit)
 	{
 		for (int32 i = 0; i < UpdatedActors.Num(); ++i)

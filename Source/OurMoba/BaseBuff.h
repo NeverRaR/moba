@@ -7,6 +7,17 @@
 #include "BaseBuff.generated.h"
 class ABaseCharacter;
 class UParticleSystemComponent;
+UENUM(BlueprintType)
+enum class BuffType :uint8 //…Ë÷√uint8¿‡–Õ
+{
+	BlueBuff UMETA(DisplayName = "BlueBuff"),
+	RedBuff UMETA(DisplayName = "RedBuff"),
+	Burning UMETA(DisplayName = "Burning"),
+	KuangBuff1 UMETA(DisplayName = "KuangBuff1"),
+	Durance UMETA(DisplayName = "Durance"),
+	GhostForm UMETA(DisplayName = "GhostForm"),
+	DeathFlag UMETA(DisplayName = "DeathFlag")
+};
 UCLASS()
 class OURMOBA_API ABaseBuff : public AActor
 {
@@ -30,47 +41,70 @@ public:
 
 	virtual bool EndBuff(ABaseCharacter* OwnerPawn);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float SustainTime;
+	void	EnforceEndBuff();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float CurTime;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMaxHP;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMaxMP;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaHPRecovery;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMPRecovery;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaPhyDamage;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMagDamage;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaPhyDef;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMagDef;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMoveSpeed;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaAttackSpeed;
+		BuffType Type;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaLeech;
+		bool bIsUnique = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaCD;
+		bool bIsDebuffInstigator = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bIsChildBuff = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		ABaseBuff* AttachedDebuff ;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float SustainTime=0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float CurTime = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMaxHP = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMaxMP = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaHPRecovery = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMPRecovery = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaPhyDamage = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMagDamage = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaPhyDef = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMagDef = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMoveSpeed = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaAttackSpeed = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaLeech = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaCDReduction = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+		ABaseCharacter* Receiver;
+
+	UPROPERTY(EditAnywhere)
+		ABaseCharacter* Attacker;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
 		UParticleSystemComponent* React;
