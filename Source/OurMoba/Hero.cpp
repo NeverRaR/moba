@@ -38,7 +38,7 @@ void AHero::Skill1Upgrade()
 	}
 	if (SkillComp->GetSkillPoint() > 0)
 	{
-		SkillComp->SkillLevelUp(0);
+		MulticastSkill1Upgrade();
 	}
 }
 
@@ -51,7 +51,7 @@ void AHero::Skill2Upgrade()
 	}
 	if (SkillComp->GetSkillPoint() > 0)
 	{
-		SkillComp->SkillLevelUp(1);
+		MulticastSkill2Upgrade();
 	}
 }
 void AHero::Skill3Upgrade()
@@ -63,7 +63,7 @@ void AHero::Skill3Upgrade()
 	}
 	if (SkillComp->GetSkillPoint() > 0)
 	{
-		SkillComp->SkillLevelUp(2);
+		MulticastSkill3Upgrade();
 	}
 }
 
@@ -93,6 +93,36 @@ void AHero::ServerSkill3Upgrade_Implementation()
 }
 
 bool AHero::ServerSkill3Upgrade_Validate()
+{
+	return true;
+}
+
+void AHero::MulticastSkill1Upgrade_Implementation()
+{
+	SkillComp->SkillLevelUp(0);
+}
+
+bool AHero::MulticastSkill1Upgrade_Validate()
+{
+	return true;
+}
+
+void AHero::MulticastSkill2Upgrade_Implementation()
+{
+	SkillComp->SkillLevelUp(1);
+}
+
+bool AHero::MulticastSkill2Upgrade_Validate()
+{
+	return true;
+}
+
+void AHero::MulticastSkill3Upgrade_Implementation()
+{
+	SkillComp->SkillLevelUp(2);
+}
+
+bool AHero::MulticastSkill3Upgrade_Validate()
 {
 	return true;
 }

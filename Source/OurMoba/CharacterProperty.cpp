@@ -21,7 +21,7 @@ void UCharacterProperty::BeginPlay()
 {
 	Super::BeginPlay();
 	// ...
-	
+
 }
 
 
@@ -121,7 +121,7 @@ void UCharacterProperty::MPRecovering(float DeltaTime)
 
 bool UCharacterProperty::CheckLevelUp(float DeltaEXP)
 {
-	if (GetCurLevel() >= MaxLevel) 
+	if (GetCurLevel() >= MaxLevel)
 	{
 		SetLevel(MaxLevel);
 		SetEXP(FBasePropertyDetail.LevelRule[MaxLevel - 1] + 1.0);//防止经验和等级溢出
