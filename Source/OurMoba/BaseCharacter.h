@@ -33,17 +33,20 @@ protected:
 	uint32 bIsAttacking : 1;
 	uint32 bIsAlive : 1;
 	uint32 bIsReadyToCombo : 1;
+	uint32 bCanRecall : 1;
 	int32 ComboIndex = 0;
 	int32 DeathIndex = 0;
 
 public:	
 	//Recall
 	void Recall();
+	void SetRecall();
 	FVector OriginLocation;
+	FTimerHandle TimerHandle;
 
 	//Reborn
 	void Reborn();
-	FTimerHandle TimerHandle;
+	FTimerHandle TimerHandle1;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
