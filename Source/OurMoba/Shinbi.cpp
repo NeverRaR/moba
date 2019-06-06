@@ -63,6 +63,8 @@ void AShinbi::SkillBlink(FVector Target)
 	FVector Direction = Target - MyLocation;
 	FNavLocation  RealPoint;
 	Direction.Z = 0.0f;
+	if (Direction.Size() > SkillComp->GetSkillRange(0)) return;
+	if (!SkillComp->CheckCanBeReleased(0)) return;
 	UNavigationSystemV1* NavigationSys = UNavigationSystemV1::GetCurrent(GetWorld());
 	if (NavigationSys)
 	{
@@ -96,19 +98,12 @@ void AShinbi::Skill1Release()
 	FVector MyLocation = GetActorLocation();
 	FVector Direction = MouseLocation - MyLocation;
 	Direction.Z = 0.0f;
-
-	if (Direction.Size() < SkillComp->GetSkillRange(0))
+	if (Role == ROLE_Authority)
 	{
-		if (SkillComp->CheckCanBeReleased(0))
-		{
-			if (Role == ROLE_Authority)
-			{
-				SkillBlink(MouseLocation);
-			}
-			else
-			{
-				ServerSkillBlink(MouseLocation);
-			}
-		}
+		SkillBlink(MouseLocation);
+	}
+	else
+	{
+		ServerSkillBlink(MouseLocation);
 	}
 }
