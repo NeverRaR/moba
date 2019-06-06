@@ -43,6 +43,7 @@ public:
 
 	//Reborn
 	void Reborn();
+	FTimerHandle TimerHandle;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

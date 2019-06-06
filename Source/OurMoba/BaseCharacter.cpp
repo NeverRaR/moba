@@ -329,6 +329,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		if (CampComp->CheckIsHero())
 		{
 			PropertyComp->AddDeathNum(1);
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &ABaseCharacter::Reborn, 5.0f, false);
 		}
 		if (Attacker)
 		{
@@ -337,6 +338,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 				if (CampComp->CheckIsHero())
 				{
 					Attacker->PropertyComp->AddKillNum(1);
+					GetWorldTimerManager().SetTimer(TimerHandle, this, &ABaseCharacter::Reborn, 5.0f, false);
 				}
 				Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
 				Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
@@ -365,6 +367,8 @@ void ABaseCharacter::Recall()
 
 void ABaseCharacter::Reborn()
 {
+	SetActorEnableCollision(true);
+	PropertyComp->SetAlive(true);
 	PropertyComp->ResetCurProperty();
 	SetActorLocation(OriginLocation);
 }
