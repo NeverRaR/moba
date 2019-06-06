@@ -22,8 +22,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
 		float Skill1EffectRange;
 
+	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
+	virtual void MulticastSkillEffects(FVector EffectLocation);
 
-		virtual	void	Skill1Release() override;
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		void ServerSkillThunder(FVector Target);
 
-	
+	UFUNCTION(BlueprintCallable)
+		void SkillThunder(FVector Target);
+
+	virtual	void Skill1Release() override;
 };
