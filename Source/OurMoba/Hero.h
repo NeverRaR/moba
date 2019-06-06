@@ -36,6 +36,15 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
 		void ServerSkill3Upgrade();
 
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, WithValidation)
+		void MulticastSkill1Upgrade();
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Server, Reliable, WithValidation)
+		void MulticastSkill2Upgrade();
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, WithValidation)
+		void MulticastSkill3Upgrade();
+
 	UFUNCTION(BlueprintCallable)
 		virtual	void Skill1Release();
 

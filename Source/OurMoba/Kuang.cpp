@@ -84,16 +84,13 @@ void AKuang::Skill1Release()
 	Direction.Z = 0.0f;
 	if (Direction.Size() < SkillComp->GetSkillRange(0))
 	{
-		if (SkillComp->CheckCanBeReleased(0))
+		if (Role == ROLE_Authority)
 		{
-			if (Role == ROLE_Authority)
-			{
-				SkillThunder(MouseLocation);
-			}
-			else
-			{
-				ServerSkillThunder_Implementation(MouseLocation);
-			}
+			SkillThunder(MouseLocation);
+		}
+		else
+		{
+			ServerSkillThunder(MouseLocation);
 		}
 	}
 }
