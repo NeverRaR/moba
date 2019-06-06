@@ -294,7 +294,7 @@ bool USkill::CheckCanBeReleased(int32 id)
 		AHero* OwnerPawn = Cast<AHero>(GetOwner());
 		if (OwnerPawn)
 		{
-			if (OwnerPawn->PropertyComp->GetCurMP() > GetSkillMPConsume(id) && GetSkillCurCD(id) < 0.0001)
+			if (OwnerPawn->PropertyComp->GetCurMP() > GetSkillMPConsume(id) && GetSkillCurCD(id) < 0.0001&&GetSkillLevel(id)>0)
 			{
 				return true;
 			}

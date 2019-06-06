@@ -6,6 +6,10 @@
 #include"Kismet/KismetMathLibrary.h"
 #include"MobaController.h"
 #include"CharacterProperty.h"
+#include"Burning.h"
+#include"Kismet\GameplayStatics.h"
+#include"Particles\ParticleSystem.h"
+#include"Buff.h"
 void ATwinBlast::OnSetAttackPressed()
 {
 	if (bIsAttacking)
@@ -52,6 +56,26 @@ void ATwinBlast::TurnToMouseLocation()
 
 void ATwinBlast::Skill1Release()
 {
-
-
+	FVector MouseLocation = GetMouseLocation();
+	FVector MyLocaion = GetActorLocation();
+	FVector Direction = MouseLocation - MyLocaion;
+	Direction.Z = 0.0f;
+	if (Direction.Size() < SkillComp->GetSkillRange(0))
+	{
+		if (SkillComp->CheckCanBeReleased(0))
+		{
+			float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+			SkillComp->ReleaseSkill(0);
+			UGameplayStatics::SpawnEmitterAtLocation(this, Skill1React, MouseLocation);
+			TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, MouseLocation);
+			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+			{
+				ABurning* Burning = GetWorld()->SpawnActor<ABurning>(ABurning::StaticClass());
+				Burning->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.8f;
+				AllEnemysInRadius[i]->BuffComp->AddBuff(Burning);
+				AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+			}
+		}
+	}
 }
+
