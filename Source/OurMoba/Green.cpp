@@ -9,6 +9,9 @@
 
 void AGreen::DeathEffect(ABaseCharacter * Attacker)
 {
-	RedBuff = GetWorld()->SpawnActor<ARedBuff>(ARedBuff::StaticClass());
-	Attacker->BuffComp->AddBuff(RedBuff);
+	if (Attacker)
+	{
+		RedBuff = GetWorld()->SpawnActor<ARedBuff>(ARedBuff::StaticClass());
+		Attacker->BuffComp->AddBuff(RedBuff);
+	}
 }

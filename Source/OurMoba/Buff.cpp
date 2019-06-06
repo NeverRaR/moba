@@ -39,32 +39,35 @@ void UBuff::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 void UBuff::AddBuff(ABaseBuff * NewBuff)
 {
 	ABaseCharacter* OwnerPawn = Cast<ABaseCharacter>(GetOwner());
-	if (NewBuff->bIsDebuffInstigator)
+	if (OwnerPawn&&OwnerPawn->PropertyComp->IsAlive())
 	{
-		if (NewBuff->AttachedDebuff)
+		if (NewBuff->bIsDebuffInstigator)
 		{
-			ReleaseDebuff.Add(NewBuff->AttachedDebuff);
-		}
-	}
-	if (OwnerPawn)
-	{
-		if (NewBuff->bIsUnique)
-		{
-			for (int32 i = 0; i < UniqueBuff.Num(); ++i)
+			if (NewBuff->AttachedDebuff)
 			{
-				if (UniqueBuff[i]->Type == NewBuff->Type)
-				{
-					UniqueBuff[i]->CurTime = 0.0f;
-					return;
-				}
+				ReleaseDebuff.Add(NewBuff->AttachedDebuff);
 			}
-			NewBuff->BuffIsEffective(OwnerPawn);
-			UniqueBuff.Add(NewBuff);
 		}
-		else
+		if (OwnerPawn)
 		{
-			NewBuff->BuffIsEffective(OwnerPawn);
-			MultiBuff.Add(NewBuff);
+			if (NewBuff->bIsUnique)
+			{
+				for (int32 i = 0; i < UniqueBuff.Num(); ++i)
+				{
+					if (UniqueBuff[i]->Type == NewBuff->Type)
+					{
+						UniqueBuff[i]->CurTime = 0.0f;
+						return;
+					}
+				}
+				NewBuff->BuffIsEffective(OwnerPawn);
+				UniqueBuff.Add(NewBuff);
+			}
+			else
+			{
+				NewBuff->BuffIsEffective(OwnerPawn);
+				MultiBuff.Add(NewBuff);
+			}
 		}
 	}
 }
@@ -77,7 +80,6 @@ void UBuff::RemoveBuff(ABaseBuff * NewBuff, TArray<ABaseBuff*>&Arr)
 		if (OwnerPawn)
 		{
 			NewBuff->EndBuff(OwnerPawn);
-			UniqueBuff.Remove(NewBuff);
 			if (NewBuff->bIsDebuffInstigator)
 			{
 				if (NewBuff->AttachedDebuff)
@@ -100,30 +102,43 @@ void UBuff::RemoveBuff(ABaseBuff * NewBuff, TArray<ABaseBuff*>&Arr)
 
 void UBuff::CheckAllBuff(float DeltaTime)
 {
+	TArray<ABaseBuff*> Removed;
 	for (int32 i = 0; i < UniqueBuff.Num(); ++i)
 	{
 		if (UniqueBuff[i]->IsBuffEnd())
 		{
 			ABaseBuff* RemovedBuff = UniqueBuff[i];
 			RemoveBuff( RemovedBuff,UniqueBuff);
+			Removed.Add(RemovedBuff);
 		}
 		else
 		{
 			UniqueBuff[i]->CurTime += DeltaTime;
 		}
 	}
+	for (int32 i = 0; i < Removed.Num(); ++i)
+	{
+		UniqueBuff.Remove(Removed[i]);
+	}
+	Removed.Empty();
 	for (int32 i = 0; i < MultiBuff.Num(); ++i)
 	{
 		if (MultiBuff[i]->IsBuffEnd())
 		{
 			ABaseBuff* RemovedBuff = MultiBuff[i];
 			RemoveBuff(RemovedBuff, MultiBuff);
+			Removed.Add(RemovedBuff);
 		}
 		else
 		{
 			MultiBuff[i]->CurTime += DeltaTime;
 		}
 	}
+	for (int32 i = 0; i < Removed.Num(); ++i)
+	{
+		MultiBuff.Remove(Removed[i]);
+	}
+	Removed.Empty();
 }
 
 void UBuff::ClearAllBuff()
@@ -138,5 +153,7 @@ void UBuff::ClearAllBuff()
 		ABaseBuff* RemovedBuff = MultiBuff[i];
 		RemoveBuff(RemovedBuff, MultiBuff);
 	}
+	UniqueBuff.Empty();
+	MultiBuff.Empty();
 }
 
