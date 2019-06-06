@@ -22,5 +22,14 @@ class OURMOBA_API AShinbi : public AHero
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
 		float Skill1EffectRange;
 
-	virtual	void	Skill1Release() override;
+	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
+		virtual void MulticastSkillEffects(FVector EffectLocation);
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		void ServerSkillBlink(FVector target);
+
+	UFUNCTION(BlueprintCallable)
+		void SkillBlink(FVector target);
+
+	virtual	void Skill1Release() override;
 };

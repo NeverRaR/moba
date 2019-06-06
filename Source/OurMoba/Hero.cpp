@@ -31,6 +31,11 @@ void AHero::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
 
 void AHero::Skill1Upgrade()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerSkill1Upgrade();
+		return;
+	}
 	if (SkillComp->GetSkillPoint() > 0)
 	{
 		SkillComp->SkillLevelUp(0);
@@ -39,6 +44,11 @@ void AHero::Skill1Upgrade()
 
 void AHero::Skill2Upgrade()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerSkill2Upgrade();
+		return;
+	}
 	if (SkillComp->GetSkillPoint() > 0)
 	{
 		SkillComp->SkillLevelUp(1);
@@ -46,14 +56,54 @@ void AHero::Skill2Upgrade()
 }
 void AHero::Skill3Upgrade()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerSkill3Upgrade();
+		return;
+	}
 	if (SkillComp->GetSkillPoint() > 0)
 	{
 		SkillComp->SkillLevelUp(2);
 	}
 }
 
+void AHero::ServerSkill1Upgrade_Implementation()
+{
+	Skill1Upgrade();
+}
+
+bool AHero::ServerSkill1Upgrade_Validate()
+{
+	return true;
+}
+
+void AHero::ServerSkill2Upgrade_Implementation()
+{
+	Skill2Upgrade();
+}
+
+bool AHero::ServerSkill2Upgrade_Validate()
+{
+	return true;
+}
+
+void AHero::ServerSkill3Upgrade_Implementation()
+{
+	Skill3Upgrade();
+}
+
+bool AHero::ServerSkill3Upgrade_Validate()
+{
+	return true;
+}
+
 void AHero::Skill1Release()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerSkill1Release();
+		return;
+	}
 	if (SkillComp->GetSkillCurCD(0) < 0.001&&SkillComp->GetSkillLevel(0)>0)
 	{
 		SkillComp->ResetSkillCurCD(0);
@@ -62,7 +112,11 @@ void AHero::Skill1Release()
 
 void AHero::Skill2Release()
 {
-
+	if (Role < ROLE_Authority)
+	{
+		ServerSkill2Release();
+		return;
+	}
 	if (SkillComp->GetSkillCurCD(1) < 0.001&&SkillComp->GetSkillLevel(1) > 0)
 	{
 		SkillComp->ResetSkillCurCD(1);
@@ -71,11 +125,46 @@ void AHero::Skill2Release()
 
 void AHero::Skill3Release()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerSkill3Release();
+		return;
+	}
 	if (SkillComp->GetSkillCurCD(2) < 0.001&&SkillComp->GetSkillLevel(2) > 0)
 	{
 		SkillComp->ResetSkillCurCD(2);
 	}
 }
+
+void AHero::ServerSkill1Release_Implementation()
+{
+	Skill1Release();
+}
+bool AHero::ServerSkill1Release_Validate()
+{
+	return true;
+}
+
+void AHero::ServerSkill2Release_Implementation()
+{
+	Skill2Release();
+}
+
+bool AHero::ServerSkill2Release_Validate()
+{
+	return true;
+}
+
+void AHero::ServerSkill3Release_Implementation()
+{
+	Skill3Release();
+}
+
+bool AHero::ServerSkill3Release_Validate()
+{
+	return true;
+}
+
 FVector AHero::GetMouseLocation()
 {
 	AMobaController* MC = Cast<AMobaController>(GetController());

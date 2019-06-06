@@ -22,7 +22,7 @@ public:
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 			float TurnCoefficient = 10.0f;
 
-		virtual	void	Skill1Release() override;
+		virtual	void Skill1Release() override;
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
 			UParticleSystem* Skill1React;

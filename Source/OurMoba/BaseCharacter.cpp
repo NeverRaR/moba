@@ -86,6 +86,7 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 	SetMoveSpeed(PropertyComp->GetBaseMoveSpeed());
 
+	NetUpdateFrequency = 120.0f;
 	OriginLocation = GetActorLocation();
 }
 
@@ -364,4 +365,9 @@ void ABaseCharacter::Reborn()
 {
 	PropertyComp->ResetCurProperty();
 	SetActorLocation(OriginLocation);
+}
+
+void ABaseCharacter::ClientPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	PlayAnimMontage(AnimMontage, InPlayRate);
 }

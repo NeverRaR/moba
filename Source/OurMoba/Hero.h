@@ -19,22 +19,40 @@ public:
 
 
 	UFUNCTION(BlueprintCallable)
-		void	Skill1Upgrade();
+		void Skill1Upgrade();
 
 	UFUNCTION(BlueprintCallable)
-		void	Skill2Upgrade();
+		void Skill2Upgrade();
 
 	UFUNCTION(BlueprintCallable)
-		void	Skill3Upgrade();
+		void Skill3Upgrade();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		void ServerSkill1Upgrade();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		void ServerSkill2Upgrade();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		void ServerSkill3Upgrade();
 
 	UFUNCTION(BlueprintCallable)
-		virtual	void	Skill1Release();
+		virtual	void Skill1Release();
 
 	UFUNCTION(BlueprintCallable)
-		virtual	void	Skill2Release();
+		virtual	void Skill2Release();
 
 	UFUNCTION(BlueprintCallable)
-		virtual	void	Skill3Release();
+		virtual	void Skill3Release();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		virtual	void ServerSkill1Release();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		virtual	void ServerSkill2Release();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		virtual	void ServerSkill3Release();
 
 	UFUNCTION(BlueprintCallable)
 		void PhyDamageEnemy(TArray<ABaseCharacter*> Arr);
