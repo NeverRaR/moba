@@ -13,7 +13,10 @@ enum class BuffType :uint8 //…Ë÷√uint8¿‡–Õ
 	BlueBuff UMETA(DisplayName = "BlueBuff"),
 	RedBuff UMETA(DisplayName = "RedBuff"),
 	Burning UMETA(DisplayName = "Burning"),
-	KuangBuff1 UMETA(DisplayName = "KuangBuff1")
+	KuangBuff1 UMETA(DisplayName = "KuangBuff1"),
+	Durance UMETA(DisplayName = "Durance"),
+	GhostForm UMETA(DisplayName = "GhostForm"),
+	DeathFlag UMETA(DisplayName = "DeathFlag")
 };
 UCLASS()
 class OURMOBA_API ABaseBuff : public AActor
@@ -98,7 +101,10 @@ public:
 		float DeltaCDReduction = 0.0f;
 
 	UPROPERTY(EditAnywhere)
-		APawn* Receiver;
+		ABaseCharacter* Receiver;
+
+	UPROPERTY(EditAnywhere)
+		ABaseCharacter* Attacker;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle", meta = (AllowPrivateAccess = "true"))
 		UParticleSystemComponent* React;

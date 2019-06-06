@@ -150,7 +150,6 @@ TArray<ABaseCharacter*> ABaseCharacter::GetAllEnemysInRadius(float Radius)
 {
 	TArray<AActor*> AllActor;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), AllActor);
-	DEBUGprint(AllActor.Num());
 	TArray<ABaseCharacter*> AllEnemysInRadius;
 	for (int32 i = 0; i < AllActor.Num(); ++i)
 	{
@@ -211,6 +210,7 @@ void ABaseCharacter::AttackEffect(ABaseCharacter * Receiver)
 	for (int32 i = 0; i < BuffComp->ReleaseDebuff.Num(); ++i)
 	{
 		ABaseBuff* Buff = GetWorld()->SpawnActor<ABaseBuff>(BuffComp->ReleaseDebuff[i]->GetClass());
+		Buff->Attacker = this;
 		Receiver->BuffComp->AddBuff(Buff);
 	}
 }
@@ -233,6 +233,7 @@ bool ABaseCharacter::ServerPlayMontage_Validate(UAnimMontage * AnimMontage, floa
 
 float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
 {
+	if (PhyDamage < 0.0f) return 0.0f;
 	float PhyDef = PropertyComp->GetCurPhyDef();
 	float DamageResistance = PhyDef / (PhyDef + 150);
 	float CurDamage = (1 - DamageResistance)*PhyDamage;
@@ -244,12 +245,11 @@ float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker
 
 void ABaseCharacter::ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker)
 {
+	if (MagDamage < 0.0f) return;
 	float MagDef = PropertyComp->GetCurMagDef();
 	float DamageResistance = MagDef/100;
 	float CurDamage = (1 - DamageResistance)*MagDamage;
-	DEBUGprint(CurDamage);
 	PropertyComp->AddCurHP(-CurDamage);
-	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
 	CheckIsDead(Attacker);
 }
 
@@ -306,7 +306,6 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 			if (CheckIsEnemy(Receiver))
 			{
 				Receiver->ReceiveMagDamage(Damage,this);
-				DEBUGprint(Receiver->PropertyComp->GetCurHP());
 			}
 		}
 	}
@@ -331,14 +330,17 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		{
 			PropertyComp->AddDeathNum(1);
 		}
-		if (Attacker->CampComp->CheckIsHero())
+		if (Attacker)
 		{
-			if (CampComp->CheckIsHero())
+			if (Attacker->CampComp->CheckIsHero())
 			{
-				Attacker->PropertyComp->AddKillNum(1);
+				if (CampComp->CheckIsHero())
+				{
+					Attacker->PropertyComp->AddKillNum(1);
+				}
+				Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
+				Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
 			}
-			Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
-			Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
 		}
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
 		OnActorDeath.Broadcast(this);

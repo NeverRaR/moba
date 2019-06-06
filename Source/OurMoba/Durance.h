@@ -4,17 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "BaseBuff.h"
-#include "Burning.generated.h"
+#include "Durance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class OURMOBA_API ABurning : public ABaseBuff
+class OURMOBA_API ADurance : public ABaseBuff
 {
 	GENERATED_BODY()
 public:
-		ABurning();
-
-		virtual void Tick(float DeltaTime) override;
+		ADurance();
+		virtual bool BuffIsEffective(ABaseCharacter* OwnerPawn)override;
 };

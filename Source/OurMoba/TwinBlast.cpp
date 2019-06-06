@@ -12,25 +12,37 @@
 #include"Buff.h"
 void ATwinBlast::OnSetAttackPressed()
 {
-	if (bIsAttacking)
-	{
-		bIsReadyToCombo = true;
-	}
-	else
-	{
-		TurnToMouseLocation();
-		bIsAttacking = true;
-		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, true);
+	FVector MouseLocation = GetMouseLocation();
+	FVector MyLocaion = GetActorLocation();
+	FVector Direction = MouseLocation - MyLocaion;
+	Direction.Z = 0.0f;
+	if (Direction.Size() < PropertyComp->GetAttackRange()) {
+		if (bIsAttacking)
+		{
+			bIsReadyToCombo = true;
+		}
+		else
+		{
+			TurnToMouseLocation();
+			bIsAttacking = true;
+			PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, true);
+		}
 	}
 }
 
 void ATwinBlast::CRoleComboAttack(int32 NextIndex)
 {
-	if (bIsReadyToCombo)
-	{
-		TurnToMouseLocation();
-		bIsReadyToCombo = false;
-		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, PropertyComp->GetCurAttackSpeed());
+	FVector MouseLocation = GetMouseLocation();
+	FVector MyLocaion = GetActorLocation();
+	FVector Direction = MouseLocation - MyLocaion;
+	Direction.Z = 0.0f;
+	if (Direction.Size() < PropertyComp->GetAttackRange()) {
+		if (bIsReadyToCombo)
+		{
+			TurnToMouseLocation();
+			bIsReadyToCombo = false;
+			PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, PropertyComp->GetCurAttackSpeed());
+		}
 	}
 }
 
@@ -71,7 +83,8 @@ void ATwinBlast::Skill1Release()
 			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 			{
 				ABurning* Burning = GetWorld()->SpawnActor<ABurning>(ABurning::StaticClass());
-				Burning->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.8f;
+				Burning->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.4f;
+				Burning->Attacker = this;
 				AllEnemysInRadius[i]->BuffComp->AddBuff(Burning);
 				AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
 			}

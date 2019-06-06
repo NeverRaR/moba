@@ -4,10 +4,10 @@
 #include "Burning.h"
 #include"UObject/ConstructorHelpers.h"
 #include"Particles\ParticleSystemComponent.h"
+#include"BaseCharacter.h"
 ABurning::ABurning()
 {
 	SustainTime = 4.0f;
-	DeltaHPRecovery = -15.0f;
 	DeltaMoveSpeed = -200.0f;
 	bIsUnique = true;
 	Type = BuffType::Burning;
@@ -16,5 +16,18 @@ ABurning::ABurning()
 	if (ParticleSystemMaterialAsset.Succeeded())
 	{
 		React->Template = ParticleSystemMaterialAsset.Object;
+	}
+}
+
+void ABurning::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (Receiver)
+	{
+		if (React)
+		{
+			React->SetWorldLocation(Receiver->GetActorLocation());
+			Receiver->ReceiveMagDamage(20.0f*DeltaTime, Attacker);
+		}
 	}
 }

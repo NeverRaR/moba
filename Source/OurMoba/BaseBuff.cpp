@@ -34,6 +34,7 @@ void ABaseBuff::Tick(float DeltaTime)
 		if (React)
 		{
 			React->SetWorldLocation(Receiver->GetActorLocation());
+			React->SetWorldRotation(Receiver->GetActorRotation());
 		}
 	}
 }
@@ -87,7 +88,7 @@ bool ABaseBuff::EndBuff(ABaseCharacter* OwnerPawn)
 		MyProperty->AddCurAttackSpeed(-DeltaAttackSpeed);
 		MyProperty->AddCurMoveSpeed(-DeltaMoveSpeed);
 		MyProperty->AddCurLeech(-DeltaCDReduction);
-		React->SetVisibility(true);
+		React->SetVisibility(false);
 		return true;
 	}
 	return false;
