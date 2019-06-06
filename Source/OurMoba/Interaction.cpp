@@ -20,7 +20,7 @@ void UInteraction::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
 }
 
 
