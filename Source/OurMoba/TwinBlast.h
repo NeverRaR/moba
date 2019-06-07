@@ -28,5 +28,10 @@ public:
 			UParticleSystem* Skill1React;
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
+			UParticleSystem* Skill2React;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
 			float  Skill1EffectRange;
+
+		virtual	void Skill2Release() override;
 };
