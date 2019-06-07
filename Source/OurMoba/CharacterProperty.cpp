@@ -101,6 +101,7 @@ void UCharacterProperty::HPRecovering(float DeltaTime)
 			AddCurHP(FlameRecovery);
 			if (GetCurHP() > GetCurMaxHP()) SetCurHP(GetCurMaxHP());
 		}
+		else SetCurHP(GetCurMaxHP());
 	}
 
 }
@@ -115,6 +116,7 @@ void UCharacterProperty::MPRecovering(float DeltaTime)
 			AddCurMP(FlameRecovery);
 			if (GetCurMP() > GetCurMaxMP()) SetCurMP(GetCurMaxMP());
 		}
+		else  SetCurMP(GetCurMaxMP());
 	}
 
 }

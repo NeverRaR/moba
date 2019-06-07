@@ -10,6 +10,7 @@
 #include"CharacterProperty.h"
 #include"Durance.h"
 #include"Buff.h"
+#include"Rage.h"
 AKuang::AKuang()
 {
 
@@ -76,6 +77,16 @@ void AKuang::SkillLightDurance(FVector Target)
 	}
 }
 
+void AKuang::SkillFrenzy()
+{
+	SkillComp->ReleaseSkill(2);
+	ARage* Rage = GetWorld()->SpawnActor<ARage>(ARage::StaticClass());
+	Rage->SustainTime = 7.0f + SkillComp->GetSkillLevel(2)*2.0f;
+	Rage->DeltaAttackSpeed= (0.1 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurAttackSpeed();
+	Rage->DeltaPhyDamage= (0.1 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurPhyAttack();
+	BuffComp->AddBuff(Rage);
+}
+
 void AKuang::Skill1Release()
 {
 	FVector MouseLocation = GetMouseLocation();
@@ -108,4 +119,12 @@ void AKuang::Skill2Release()
 			SkillLightDurance(MouseLocation);
 		}
 	}
+}
+
+void AKuang::Skill3Release()
+{
+		if (SkillComp->CheckCanBeReleased(2))
+		{
+			SkillFrenzy();
+		}
 }
