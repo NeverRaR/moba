@@ -118,6 +118,10 @@ void ABaseCharacter::Tick(float DeltaTime)
 		}
 	}
 	GetCharacterMovement()->MaxWalkSpeed = PropertyComp->GetCurMoveSpeed();
+	/*if (PropertyComp->GetCurHP() > 0 && bIsAttacking == false)
+		bCanRecall = true;
+	else
+		bCanRecall = false;*/
 }
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -329,6 +333,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		if (CampComp->CheckIsHero())
 		{
 			PropertyComp->AddDeathNum(1);
+			GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn, 8.0f, false);
 		}
 		if (Attacker)
 		{
@@ -337,6 +342,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 				if (CampComp->CheckIsHero())
 				{
 					Attacker->PropertyComp->AddKillNum(1);
+					GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn, 8.0f, false);
 				}
 				Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
 				Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
@@ -345,7 +351,12 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
 		OnActorDeath.Broadcast(this);
 		DeathEffect(Attacker);
-		Destroy();
+		if (CampComp->CheckIsHero() || Attacker->CampComp->CheckIsHero())
+		{
+
+		}
+		else
+			Destroy();
 	}
 }
 
@@ -356,7 +367,12 @@ void ABaseCharacter::DeathOver()
 
 void ABaseCharacter::Recall()
 {
-	if (PropertyComp->GetCurHP() > 0)
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ABaseCharacter::SetRecall, 15.0f, false);
+}
+
+void ABaseCharacter::SetRecall()
+{
+	if (bCanRecall)
 	{
 		PropertyComp->ResetCurProperty();
 		SetActorLocation(OriginLocation);
@@ -365,6 +381,8 @@ void ABaseCharacter::Recall()
 
 void ABaseCharacter::Reborn()
 {
+	SetActorEnableCollision(true);
+	PropertyComp->SetAlive(true);
 	PropertyComp->ResetCurProperty();
 	SetActorLocation(OriginLocation);
 }
