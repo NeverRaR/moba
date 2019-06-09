@@ -26,9 +26,28 @@ void ATwinBlast::OnSetAttackPressed()
 		{
 			TurnToMouseLocation();
 			bIsAttacking = true;
+			if (Role < ROLE_Authority)
+			{
+				AttackTarget = MouseLocation;
+				ServerSetAttackTarget(MouseLocation);
+			}
+			else
+			{
+				AttackTarget = MouseLocation;
+			}
 			PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, true);
 		}
 	}
+}
+
+void ATwinBlast::ServerSetAttackTarget_Implementation(FVector Target)
+{
+	AttackTarget = Target;
+}
+
+bool ATwinBlast::ServerSetAttackTarget_Validate(FVector Target)
+{
+	return true;
 }
 
 void ATwinBlast::CRoleComboAttack(int32 NextIndex)
@@ -40,6 +59,15 @@ void ATwinBlast::CRoleComboAttack(int32 NextIndex)
 	if (Direction.Size() < PropertyComp->GetAttackRange()) {
 		if (bIsReadyToCombo)
 		{
+			if (Role < ROLE_Authority)
+			{
+				AttackTarget = MouseLocation;
+				ServerSetAttackTarget(MouseLocation);
+			}
+			else
+			{
+				AttackTarget = MouseLocation;
+			}
 			TurnToMouseLocation();
 			bIsReadyToCombo = false;
 			PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, PropertyComp->GetCurAttackSpeed());
@@ -65,6 +93,11 @@ void ATwinBlast::TurnToMouseLocation()
 	FRotator NewRotation = GetActorRotation();
 	NewRotation.Yaw = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), MouseLocaton).Yaw;
 	SetActorRotation(NewRotation);
+}
+
+void ATwinBlast::MulticastSkillEffects_Implementation(UParticleSystem* Particle, FVector EffectLocation)
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, Particle, EffectLocation);
 }
 
 void ATwinBlast::Skill1Release()
