@@ -7,31 +7,57 @@
 #include "TwinBlast.generated.h"
 class ABaseCharacter;
 /**
- * 
+ *
  */
 UCLASS()
 class OURMOBA_API ATwinBlast : public AHero
 {
 	GENERATED_BODY()
 public:
-		virtual void OnSetAttackPressed() override;
 
-		virtual void  CRoleComboAttack(int32 NextIndex)override;
-		void TurnToMouseLocation();
+	virtual void OnSetAttackPressed() override;
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite)
-			float TurnCoefficient = 10.0f;
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetAttackTarget(FVector Target);
 
-		virtual	void Skill1Release() override;
+	virtual void  CRoleComboAttack(int32 NextIndex)override;
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
-			UParticleSystem* Skill1React;
+	void TurnToMouseLocation();
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
-			UParticleSystem* Skill2React;
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetRotation(FRotator Rotation);
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
-			float  Skill1EffectRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float TurnCoefficient = 10.0f;
 
-		virtual	void Skill2Release() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FVector AttackTarget;
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
+		virtual void MulticastSkillEffects(UParticleSystem* Particle, FVector EffectLocation);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSkill1Shrapnel(FVector Target);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSkill2SelfHeal();
+
+	UFUNCTION(BlueprintCallable)
+		void Skill1Shrapnel(FVector Target);
+
+	UFUNCTION(BlueprintCallable)
+		void Skill2SelfHeal();
+
+	virtual	void Skill1Release() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
+		UParticleSystem* Skill1React;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
+		UParticleSystem* Skill2React;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
+		float  Skill1EffectRange;
+
+	virtual	void Skill2Release() override;
 };
