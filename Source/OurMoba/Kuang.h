@@ -29,19 +29,25 @@ public:
 		float Skill2EffectRange;
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
-	virtual void MulticastSkillEffects(FVector EffectLocation);
+	virtual void MulticastSkillEffects(UParticleSystem* Particle, FVector EffectLocation);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
-		void ServerSkillThunder(FVector Target);
+		void ServerSkill1Thunder(FVector Target);
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		void ServerSkill2LightDurance(FVector Target);
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		void ServerSkill3Frenzy();
 
 	UFUNCTION(BlueprintCallable)
-		void SkillThunder(FVector Target);
+		void Skill1Thunder(FVector Target);
 
 	UFUNCTION(BlueprintCallable)
-		void SkillLightDurance(FVector Target);
+		void Skill2LightDurance(FVector Target);
 
 	UFUNCTION(BlueprintCallable)
-		void SkillFrenzy();
+		void Skill3Frenzy();
 
 	virtual	void Skill1Release() override;
 
