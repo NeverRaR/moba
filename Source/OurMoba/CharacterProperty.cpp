@@ -21,7 +21,7 @@ void UCharacterProperty::BeginPlay()
 {
 	Super::BeginPlay();
 	// ...
-	
+
 }
 
 
@@ -101,6 +101,7 @@ void UCharacterProperty::HPRecovering(float DeltaTime)
 			AddCurHP(FlameRecovery);
 			if (GetCurHP() > GetCurMaxHP()) SetCurHP(GetCurMaxHP());
 		}
+		else SetCurHP(GetCurMaxHP());
 	}
 
 }
@@ -115,13 +116,14 @@ void UCharacterProperty::MPRecovering(float DeltaTime)
 			AddCurMP(FlameRecovery);
 			if (GetCurMP() > GetCurMaxMP()) SetCurMP(GetCurMaxMP());
 		}
+		else  SetCurMP(GetCurMaxMP());
 	}
 
 }
 
 bool UCharacterProperty::CheckLevelUp(float DeltaEXP)
 {
-	if (GetCurLevel() >= MaxLevel) 
+	if (GetCurLevel() >= MaxLevel)
 	{
 		SetLevel(MaxLevel);
 		SetEXP(FBasePropertyDetail.LevelRule[MaxLevel - 1] + 1.0);//防止经验和等级溢出

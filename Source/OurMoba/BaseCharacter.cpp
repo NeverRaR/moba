@@ -118,6 +118,10 @@ void ABaseCharacter::Tick(float DeltaTime)
 		}
 	}
 	GetCharacterMovement()->MaxWalkSpeed = PropertyComp->GetCurMoveSpeed();
+	/*if (PropertyComp->GetCurHP() > 0 && bIsAttacking == false)
+		bCanRecall = true;
+	else
+		bCanRecall = false;*/
 }
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -207,11 +211,14 @@ void ABaseCharacter::DeathEffect(ABaseCharacter * Attacker)
 
 void ABaseCharacter::AttackEffect(ABaseCharacter * Receiver)
 {
-	for (int32 i = 0; i < BuffComp->ReleaseDebuff.Num(); ++i)
+	if (Receiver&&Receiver->PropertyComp->IsAlive())
 	{
-		ABaseBuff* Buff = GetWorld()->SpawnActor<ABaseBuff>(BuffComp->ReleaseDebuff[i]->GetClass());
-		Buff->Attacker = this;
-		Receiver->BuffComp->AddBuff(Buff);
+		for (int32 i = 0; i < BuffComp->ReleaseDebuff.Num(); ++i)
+		{
+			ABaseBuff* Buff = GetWorld()->SpawnActor<ABaseBuff>(BuffComp->ReleaseDebuff[i]->GetClass());
+			Buff->Attacker = this;
+			Receiver->BuffComp->AddBuff(Buff);
+		}
 	}
 }
 
@@ -233,24 +240,31 @@ bool ABaseCharacter::ServerPlayMontage_Validate(UAnimMontage * AnimMontage, floa
 
 float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
 {
-	if (PhyDamage < 0.0f) return 0.0f;
-	float PhyDef = PropertyComp->GetCurPhyDef();
-	float DamageResistance = PhyDef / (PhyDef + 150);
-	float CurDamage = (1 - DamageResistance)*PhyDamage;
-	PropertyComp->AddCurHP(-CurDamage);
-	UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
-	CheckIsDead(Attacker);
-	return CurDamage;
+	if (Attacker&&Attacker->PropertyComp->IsAlive())
+	{
+		if (PhyDamage < 0.0f) return 0.0f;
+		float PhyDef = PropertyComp->GetCurPhyDef();
+		float DamageResistance = PhyDef / (PhyDef + 150);
+		float CurDamage = (1 - DamageResistance)*PhyDamage;
+		PropertyComp->AddCurHP(-CurDamage);
+		UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
+		CheckIsDead(Attacker);
+		return CurDamage;
+	}
+	else return 0.0f;
 }
 
 void ABaseCharacter::ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker)
 {
-	if (MagDamage < 0.0f) return;
-	float MagDef = PropertyComp->GetCurMagDef();
-	float DamageResistance = MagDef/100;
-	float CurDamage = (1 - DamageResistance)*MagDamage;
-	PropertyComp->AddCurHP(-CurDamage);
-	CheckIsDead(Attacker);
+	if (Attacker&&Attacker->PropertyComp->IsAlive())
+	{
+		if (MagDamage < 0.0f) return;
+		float MagDef = PropertyComp->GetCurMagDef();
+		float DamageResistance = MagDef / 100;
+		float CurDamage = (1 - DamageResistance)*MagDamage;
+		PropertyComp->AddCurHP(-CurDamage);
+		CheckIsDead(Attacker);
+	}
 }
 
 void ABaseCharacter::CPhyTraceDetect(TArray<FHitResult> HitResult)
@@ -329,6 +343,8 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		if (CampComp->CheckIsHero())
 		{
 			PropertyComp->AddDeathNum(1);
+			PropertyComp->AddCurMP(-99999.0f);
+			GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn, 8.0f, false);
 		}
 		if (Attacker)
 		{
@@ -342,10 +358,16 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 				Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
 			}
 		}
-		PlayNextMontage(AnimiationComp->DeathAnim, DeathIndex, 1.0f);
 		OnActorDeath.Broadcast(this);
 		DeathEffect(Attacker);
-		Destroy();
+		if (CampComp->CheckIsHero())
+		{
+
+		}
+		else
+		{
+			Destroy();
+		}
 	}
 }
 
@@ -356,7 +378,12 @@ void ABaseCharacter::DeathOver()
 
 void ABaseCharacter::Recall()
 {
-	if (PropertyComp->GetCurHP() > 0)
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ABaseCharacter::SetRecall, 15.0f, false);
+}
+
+void ABaseCharacter::SetRecall()
+{
+	if (bCanRecall)
 	{
 		PropertyComp->ResetCurProperty();
 		SetActorLocation(OriginLocation);
@@ -365,7 +392,10 @@ void ABaseCharacter::Recall()
 
 void ABaseCharacter::Reborn()
 {
+	SetActorEnableCollision(true);
+	PropertyComp->SetAlive(true);
 	PropertyComp->ResetCurProperty();
+	CRoleResetAttack();
 	SetActorLocation(OriginLocation);
 }
 

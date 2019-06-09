@@ -40,7 +40,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SkillLightDurance(FVector Target);
 
+	UFUNCTION(BlueprintCallable)
+		void SkillFrenzy();
+
 	virtual	void Skill1Release() override;
 
 	virtual	void Skill2Release() override;
+
+	virtual	void Skill3Release() override;
 };

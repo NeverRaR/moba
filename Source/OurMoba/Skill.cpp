@@ -276,13 +276,20 @@ void USkill::SkillLevelUp(int32 id)
 
 	if (CheckIDIsLegal(id))
 	{
-		if (GetSkillLevel(id) < GetMaxSkillLevel(id))
+		AHero* HeroOwner = Cast<AHero>(GetOwner());
+		if (HeroOwner)
 		{
-			AddSkillCD(id, -1 * GetSkillCDGrowth(id));
-			AddSkillMagDamage(id, GetSkillMagDamageGrowth(id));
-			AddSkillMPConsume(id, GetSkillMPConsumeGrowth(id));
-			AddSkillLevel(id, 1);
-			AddSkillPoint(-1);
+			if (SkillState[id].SkillRule[GetSkillLevel(id)] <= HeroOwner->PropertyComp->GetCurLevel())
+			{
+				if (GetSkillLevel(id) < GetMaxSkillLevel(id))
+				{
+					AddSkillCD(id, -1 * GetSkillCDGrowth(id));
+					AddSkillMagDamage(id, GetSkillMagDamageGrowth(id));
+					AddSkillMPConsume(id, GetSkillMPConsumeGrowth(id));
+					AddSkillLevel(id, 1);
+					AddSkillPoint(-1);
+				}
+			}
 		}
 	}
 }
@@ -319,4 +326,6 @@ void USkill::OwnerLevelUp()
 {
 	AddSkillPoint(1);
 }
+
+
 

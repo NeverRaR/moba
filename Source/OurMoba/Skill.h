@@ -35,6 +35,8 @@ struct FSkillBase
 		float MagDamageGrowth=50.0f;
 	UPROPERTY(EditAnywhere)
 		float Range=1500.0f;
+	UPROPERTY(EditAnywhere)
+		TArray<int32> SkillRule = { 1,3,5,7,9,11 };
 	
 };
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -149,6 +151,8 @@ public:
 	    void  ReleaseSkill(int32 id);
 
 		void OwnerLevelUp();
+
+		void DeathSilent();
 private:
 
 	UPROPERTY(EditAnywhere)

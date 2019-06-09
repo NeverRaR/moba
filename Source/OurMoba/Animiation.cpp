@@ -23,7 +23,7 @@ void UAnimiation::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
 }
 
 // Called every frame
@@ -37,14 +37,14 @@ UAnimMontage * UAnimiation::GetAnimByTypeAndIndex(AnimationType Type, int32 Inde
 {
 	switch (Type)
 	{
-		case AnimationType::Attack:
-			return AttackAnim[Index];
-		case AnimationType::Death:
-			return DeathAnim[Index];
-		case AnimationType::Recall:
-			return RecalAnim[Index];
-		default:
-			return nullptr;
+	case AnimationType::Attack:
+		return AttackAnim[Index];
+	case AnimationType::Death:
+		return DeathAnim[Index];
+	case AnimationType::Recall:
+		return RecalAnim[Index];
+	default:
+		return nullptr;
 	}
 }
 
@@ -70,8 +70,8 @@ UAnimMontage * UAnimiation::GetRandomAnimByType(AnimationType Type)
 	switch (Type)
 	{
 	case AnimationType::Attack:
-		 RNumber%=AttackAnim.Num();
-		 break;
+		RNumber %= AttackAnim.Num();
+		break;
 	case AnimationType::Death:
 		RNumber %= DeathAnim.Num();
 		break;

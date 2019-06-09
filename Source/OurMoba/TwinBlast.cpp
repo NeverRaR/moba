@@ -10,6 +10,7 @@
 #include"Kismet\GameplayStatics.h"
 #include"Particles\ParticleSystem.h"
 #include"Buff.h"
+#include"Components\SkeletalMeshComponent.h"
 void ATwinBlast::OnSetAttackPressed()
 {
 	FVector MouseLocation = GetMouseLocation();
@@ -92,3 +93,20 @@ void ATwinBlast::Skill1Release()
 	}
 }
 
+void ATwinBlast::Skill2Release()
+{
+	if (SkillComp->CheckCanBeReleased(1))
+	{
+		SkillComp->ReleaseSkill(1);
+
+		UGameplayStatics::SpawnEmitterAtLocation(this, Skill2React,GetActorLocation());
+		if (PropertyComp->IsAlive())
+		{
+			PropertyComp->AddCurHP(SkillComp->GetSkillLevel(1) * 50 + 100);
+			ABaseBuff* SpeedUp= GetWorld()->SpawnActor<ABaseBuff>(ABaseBuff::StaticClass());
+			SpeedUp->SustainTime = 4.0f;
+			SpeedUp->DeltaMoveSpeed =PropertyComp->GetCurMoveSpeed()*(0.3f+0.05f*SkillComp->GetSkillLevel(1));
+			BuffComp->AddBuff(SpeedUp);
+		}
+	}
+}

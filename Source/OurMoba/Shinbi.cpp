@@ -157,7 +157,7 @@ void AShinbi::Skill3Release()
 	FVector Direction = MouseLocation - MyLocation;
 	Direction.Z = 0.0f;
 
-	if (Direction.Size() < SkillComp->GetSkillRange(0))
+	if (Direction.Size() < SkillComp->GetSkillRange(2))
 	{
 		if (SkillComp->CheckCanBeReleased(2))
 		{
