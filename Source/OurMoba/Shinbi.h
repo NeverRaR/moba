@@ -34,6 +34,12 @@ class OURMOBA_API AShinbi : public AHero
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
 		void ServerSkill1Blink(FVector target);
 
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		void ServerSkill2BecomeGhost();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
+		void ServerSkill3DeathTarget(FVector target);
+
 	UFUNCTION(BlueprintCallable)
 		void Skill3DeathTarget(FVector target);
 

@@ -51,7 +51,7 @@ void AShinbi::ServerSkill1Blink_Implementation(FVector Target)
 			{
 				AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
 			}
-			MulticastSkillEffects(RealPoint.Location);
+			MulticastSkillEffects(Skill1React, RealPoint.Location);
 		}
 	}
 }
@@ -68,6 +68,34 @@ void AShinbi::Skill2BecomeGhost()
 	GhostForm->DeltaAttackSpeed = (0.1 + SkillComp->GetSkillLevel(1)*0.05)*PropertyComp->GetCurAttackSpeed();
 	GhostForm->DeltaMoveSpeed = (0.2 + SkillComp->GetSkillLevel(1)*0.1)*PropertyComp->GetCurMoveSpeed();
 	BuffComp->AddBuff(GhostForm);
+}
+
+void AShinbi::ServerSkill2BecomeGhost_Implementation()
+{
+	if (SkillComp->CheckCanBeReleased(1))
+	{
+		return;
+	}
+	SkillComp->ReleaseSkill(1);
+	AGhostForm* GhostForm = GetWorld()->SpawnActor<AGhostForm>(AGhostForm::StaticClass());
+	GhostForm->DeltaAttackSpeed = (0.1 + SkillComp->GetSkillLevel(1)*0.05)*PropertyComp->GetCurAttackSpeed();
+	GhostForm->DeltaMoveSpeed = (0.2 + SkillComp->GetSkillLevel(1)*0.1)*PropertyComp->GetCurMoveSpeed();
+	BuffComp->AddBuff(GhostForm);
+}
+
+bool AShinbi::ServerSkill2BecomeGhost_Validate()
+{
+	return true;
+}
+
+void AShinbi::ServerSkill3DeathTarget_Implementation(FVector target)
+{
+
+}
+
+bool AShinbi::ServerSkill3DeathTarget_Validate(FVector target)
+{
+	return true;
 }
 
 void AShinbi::Skill3DeathTarget(FVector target)
@@ -134,19 +162,23 @@ void AShinbi::Skill1Release()
 	Direction.Z = 0.0f;
 	if (Role == ROLE_Authority)
 	{
-		SkillBlink(MouseLocation);
+		Skill1Blink(MouseLocation);
 	}
 	else
 	{
-		ServerSkillBlink(MouseLocation);
+		ServerSkill1Blink(MouseLocation);
 	}
 }
 
 void AShinbi::Skill2Release()
 {
-	if (SkillComp->CheckCanBeReleased(1))
+	if (Role == ROLE_Authority)
 	{
-		BecomeGhost();
+		Skill2BecomeGhost();
+	}
+	else if (Role < ROLE_Authority)
+	{
+		ServerSkill2BecomeGhost();
 	}
 }
 
@@ -161,7 +193,7 @@ void AShinbi::Skill3Release()
 	{
 		if (SkillComp->CheckCanBeReleased(2))
 		{
-			DeathTarget(MouseLocation);
+			Skill3DeathTarget(MouseLocation);
 		}
 	}
 }
