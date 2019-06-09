@@ -46,7 +46,22 @@ bool AKuang::ServerSkill1Thunder_Validate(FVector Target)
 
 void AKuang::ServerSkill2LightDurance_Implementation(FVector Target)
 {
-
+	FVector MyLocaion = GetActorLocation();
+	FVector Direction = Target - MyLocaion;
+	Direction.Z = 0.0f;
+	if (Direction.Size() > SkillComp->GetSkillRange(1)) return;
+	if (!SkillComp->CheckCanBeReleased(1)) return;
+	SkillComp->ReleaseSkill(1);
+	MulticastSkillEffects(Skill2React, Target);
+	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill2EffectRange, Target);
+	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+	{
+		ADurance* Durance = GetWorld()->SpawnActor<ADurance>(ADurance::StaticClass());
+		Durance->SustainTime = 1.5 + SkillComp->GetSkillLevel(1)*0.25f;
+		AllEnemysInRadius[i]->BuffComp->AddBuff(Durance);
+		AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+	}
 }
 
 bool AKuang::ServerSkill2LightDurance_Validate(FVector Target)
@@ -89,7 +104,7 @@ void AKuang::Skill2LightDurance(FVector Target)
 	if (Direction.Size() > SkillComp->GetSkillRange(1)) return;
 	if (!SkillComp->CheckCanBeReleased(1)) return;
 	SkillComp->ReleaseSkill(1);
-	UGameplayStatics::SpawnEmitterAtLocation(this, Skill2React, Target);
+	MulticastSkillEffects(Skill2React, Target);
 	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill2EffectRange, Target);
 	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
@@ -132,6 +147,10 @@ void AKuang::Skill2Release()
 	{
 		Skill2LightDurance(MouseLocation);
 	}
+	else if (Role < ROLE_Authority)
+	{
+		ServerSkill2LightDurance(MouseLocation);
+	}
 }
 
 void AKuang::Skill3Release()
@@ -139,5 +158,9 @@ void AKuang::Skill3Release()
 	if (Role == ROLE_Authority)
 	{
 		Skill3Frenzy();
+	}
+	else if (Role < ROLE_Authority)
+	{
+		ServerSkill3Frenzy();
 	}
 }
