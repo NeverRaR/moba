@@ -33,6 +33,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector AttackTarget;
 
+	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
+		virtual void MulticastSkillEffects(UParticleSystem* Particle, FVector EffectLocation);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSkill1Shrapnel(FVector Target);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSkill2SelfHeal();
+
+	UFUNCTION(BlueprintCallable)
+		void Skill1Shrapnel(FVector Target);
+
+	UFUNCTION(BlueprintCallable)
+		void Skill2SelfHeal();
+
 	virtual	void Skill1Release() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
@@ -43,9 +58,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
 		float  Skill1EffectRange;
-
-	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
-		virtual void MulticastSkillEffects(UParticleSystem* Particle, FVector EffectLocation);
 
 	virtual	void Skill2Release() override;
 };
