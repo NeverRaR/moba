@@ -86,6 +86,8 @@ void AKuang::Skill2LightDurance(FVector Target)
 	FVector MyLocaion = GetActorLocation();
 	FVector Direction = Target - MyLocaion;
 	Direction.Z = 0.0f;
+	if (Direction.Size() > SkillComp->GetSkillRange(1)) return;
+	if (!SkillComp->CheckCanBeReleased(1)) return;
 	SkillComp->ReleaseSkill(1);
 	UGameplayStatics::SpawnEmitterAtLocation(this, Skill2React, Target);
 	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill2EffectRange, Target);
@@ -101,6 +103,7 @@ void AKuang::Skill2LightDurance(FVector Target)
 
 void AKuang::Skill3Frenzy()
 {
+	if (!SkillComp->CheckCanBeReleased(2)) return;
 	SkillComp->ReleaseSkill(2);
 	ARage* Rage = GetWorld()->SpawnActor<ARage>(ARage::StaticClass());
 	Rage->SustainTime = 7.0f + SkillComp->GetSkillLevel(2)*2.0f;
@@ -112,40 +115,28 @@ void AKuang::Skill3Frenzy()
 void AKuang::Skill1Release()
 {
 	FVector MouseLocation = GetMouseLocation();
-	FVector MyLocaion = GetActorLocation();
-	FVector Direction = MouseLocation - MyLocaion;
-	Direction.Z = 0.0f;
-	if (Direction.Size() < SkillComp->GetSkillRange(0))
+	if (Role == ROLE_Authority)
 	{
-		if (Role == ROLE_Authority)
-		{
-			Skill1Thunder(MouseLocation);
-		}
-		else
-		{
-			ServerSkill1Thunder(MouseLocation);
-		}
+		Skill1Thunder(MouseLocation);
+	}
+	else if(Role < ROLE_Authority)
+	{
+		ServerSkill1Thunder(MouseLocation);
 	}
 }
 
 void AKuang::Skill2Release()
 {
 	FVector MouseLocation = GetMouseLocation();
-	FVector MyLocaion = GetActorLocation();
-	FVector Direction = MouseLocation - MyLocaion;
-	Direction.Z = 0.0f;
-	if (Direction.Size() < SkillComp->GetSkillRange(1))
+	if (Role == ROLE_Authority)
 	{
-		if (SkillComp->CheckCanBeReleased(1))
-		{
-			Skill2LightDurance(MouseLocation);
-		}
+		Skill2LightDurance(MouseLocation);
 	}
 }
 
 void AKuang::Skill3Release()
 {
-	if (SkillComp->CheckCanBeReleased(2))
+	if (Role == ROLE_Authority)
 	{
 		Skill3Frenzy();
 	}
