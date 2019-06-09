@@ -32,22 +32,22 @@ class OURMOBA_API AShinbi : public AHero
 		virtual void MulticastSkillEffects(UParticleSystem* Particle, FVector EffectLocation);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
-		void ServerSkill1Blink(FVector target);
+		void ServerSkill1Blink(FVector Target);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
 		void ServerSkill2BecomeGhost();
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
-		void ServerSkill3DeathTarget(FVector target);
+		void ServerSkill3DeathTarget(FVector Target);
 
 	UFUNCTION(BlueprintCallable)
-		void Skill3DeathTarget(FVector target);
+		void Skill3DeathTarget(FVector Target);
 
 	UFUNCTION(BlueprintCallable)
 		void Skill2BecomeGhost();
 
 	UFUNCTION(BlueprintCallable)
-		void Skill1Blink(FVector target);
+		void Skill1Blink(FVector Target);
 
 	virtual	void Skill1Release() override;
 

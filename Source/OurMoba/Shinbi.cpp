@@ -65,6 +65,7 @@ bool AShinbi::ServerSkill1Blink_Validate(FVector Target)
 
 void AShinbi::Skill2BecomeGhost()
 {
+	if (!SkillComp->CheckCanBeReleased(1)) return;
 	SkillComp->ReleaseSkill(1);
 	AGhostForm* GhostForm= GetWorld()->SpawnActor<AGhostForm>(AGhostForm::StaticClass());
 	GhostForm->DeltaAttackSpeed = (0.1 + SkillComp->GetSkillLevel(1)*0.05)*PropertyComp->GetCurAttackSpeed();
@@ -74,10 +75,7 @@ void AShinbi::Skill2BecomeGhost()
 
 void AShinbi::ServerSkill2BecomeGhost_Implementation()
 {
-	if (SkillComp->CheckCanBeReleased(1))
-	{
-		return;
-	}
+	if (!SkillComp->CheckCanBeReleased(1)) return;
 	SkillComp->ReleaseSkill(1);
 	AGhostForm* GhostForm = GetWorld()->SpawnActor<AGhostForm>(AGhostForm::StaticClass());
 	GhostForm->DeltaAttackSpeed = (0.1 + SkillComp->GetSkillLevel(1)*0.05)*PropertyComp->GetCurAttackSpeed();
@@ -90,21 +88,44 @@ bool AShinbi::ServerSkill2BecomeGhost_Validate()
 	return true;
 }
 
-void AShinbi::ServerSkill3DeathTarget_Implementation(FVector target)
+void AShinbi::ServerSkill3DeathTarget_Implementation(FVector Target)
 {
-
+	FVector MyLocation = GetActorLocation();
+	FVector Direction = Target - MyLocation;
+	if (Direction.Size() > SkillComp->GetSkillRange(2)) return;
+	if (!SkillComp->CheckCanBeReleased(2)) return;
+	SkillComp->ReleaseSkill(2);
+	MulticastSkillEffects(Skill3React, Target);
+	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill3EffectRange, Target);
+	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(2);
+	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+	{
+		if (AllEnemysInRadius[i]->PropertyComp->IsAlive())
+		{
+			ADeathFlag* DeathFlag = GetWorld()->SpawnActor<ADeathFlag>(ADeathFlag::StaticClass());
+			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.8f;
+			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*-0.4f;
+			DeathFlag->Attacker = this;
+			AllEnemysInRadius[i]->BuffComp->AddBuff(DeathFlag);
+			AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+		}
+	}
 }
 
-bool AShinbi::ServerSkill3DeathTarget_Validate(FVector target)
+bool AShinbi::ServerSkill3DeathTarget_Validate(FVector Target)
 {
 	return true;
 }
 
-void AShinbi::Skill3DeathTarget(FVector target)
+void AShinbi::Skill3DeathTarget(FVector Target)
 {
+	FVector MyLocation = GetActorLocation();
+	FVector Direction = Target - MyLocation;
+	if (Direction.Size() > SkillComp->GetSkillRange(2)) return;
+	if (!SkillComp->CheckCanBeReleased(2)) return;
 	SkillComp->ReleaseSkill(2);
-	UGameplayStatics::SpawnEmitterAtLocation(this, Skill3React, target);
-	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill3EffectRange, target);
+	MulticastSkillEffects(Skill3React, Target);
+	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill3EffectRange, Target);
 	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(2);
 	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 	{
@@ -184,15 +205,13 @@ void AShinbi::Skill2Release()
 void AShinbi::Skill3Release()
 {
 	FVector MouseLocation = GetMouseLocation();
-	FVector MyLocation = GetActorLocation();
-	FVector Direction = MouseLocation - MyLocation;
-	Direction.Z = 0.0f;
 
-	if (Direction.Size() < SkillComp->GetSkillRange(2))
+	if (Role == ROLE_Authority)
 	{
-		if (SkillComp->CheckCanBeReleased(2))
-		{
-			Skill3DeathTarget(MouseLocation);
-		}
+		Skill3DeathTarget(MouseLocation);
+	}
+	else if (Role < ROLE_Authority)
+	{
+		ServerSkill3DeathTarget(MouseLocation);
 	}
 }
