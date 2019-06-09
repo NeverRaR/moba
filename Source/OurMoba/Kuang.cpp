@@ -71,7 +71,13 @@ bool AKuang::ServerSkill2LightDurance_Validate(FVector Target)
 
 void AKuang::ServerSkill3Frenzy_Implementation()
 {
-
+	if (!SkillComp->CheckCanBeReleased(2)) return;
+	SkillComp->ReleaseSkill(2);
+	ARage* Rage = GetWorld()->SpawnActor<ARage>(ARage::StaticClass());
+	Rage->SustainTime = 7.0f + SkillComp->GetSkillLevel(2)*2.0f;
+	Rage->DeltaAttackSpeed = (0.1 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurAttackSpeed();
+	Rage->DeltaPhyDamage = (0.1 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurPhyAttack();
+	BuffComp->AddBuff(Rage);
 }
 
 bool AKuang::ServerSkill3Frenzy_Validate()
