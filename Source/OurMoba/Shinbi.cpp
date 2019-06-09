@@ -17,12 +17,12 @@
 #include"GhostForm.h"
 #include"Buff.h"
 #include"DeathFlag.h"
-void AShinbi::MulticastSkillEffects_Implementation(FVector EffectLocation)
+void AShinbi::MulticastSkillEffects_Implementation(UParticleSystem* Particle, FVector EffectLocation)
 {
-	UGameplayStatics::SpawnEmitterAtLocation(this, Skill1React, EffectLocation);
+	UGameplayStatics::SpawnEmitterAtLocation(this, Particle, EffectLocation);
 }
 
-void AShinbi::ServerSkillBlink_Implementation(FVector Target)
+void AShinbi::ServerSkill1Blink_Implementation(FVector Target)
 {
 	FVector MyLocation = GetActorLocation();
 	FVector Direction = Target - MyLocation;
@@ -34,7 +34,7 @@ void AShinbi::ServerSkillBlink_Implementation(FVector Target)
 		if (NavigationSys->ProjectPointToNavigation(Target, RealPoint, FVector(500.0f, 500.0f, 500.0f)))
 		{
 			SkillComp->ReleaseSkill(0);
-			MulticastSkillEffects(MyLocation);
+			MulticastSkillEffects(Skill1React, MyLocation);
 			float Radius, Hight;
 			GetCapsuleComponent()->GetScaledCapsuleSize(Radius, Hight);
 			RealPoint.Location.Z += Hight;
@@ -56,12 +56,12 @@ void AShinbi::ServerSkillBlink_Implementation(FVector Target)
 	}
 }
 
-bool AShinbi::ServerSkillBlink_Validate(FVector Target)
+bool AShinbi::ServerSkill1Blink_Validate(FVector Target)
 {
 	return true;
 }
 
-void AShinbi::BecomeGhost()
+void AShinbi::Skill2BecomeGhost()
 {
 	SkillComp->ReleaseSkill(1);
 	AGhostForm* GhostForm= GetWorld()->SpawnActor<AGhostForm>(AGhostForm::StaticClass());
@@ -70,7 +70,7 @@ void AShinbi::BecomeGhost()
 	BuffComp->AddBuff(GhostForm);
 }
 
-void AShinbi::DeathTarget(FVector target)
+void AShinbi::Skill3DeathTarget(FVector target)
 {
 	SkillComp->ReleaseSkill(2);
 	UGameplayStatics::SpawnEmitterAtLocation(this, Skill3React, target);
@@ -90,7 +90,7 @@ void AShinbi::DeathTarget(FVector target)
 	}
 }
 
-void AShinbi::SkillBlink(FVector Target)
+void AShinbi::Skill1Blink(FVector Target)
 {
 	FVector MyLocation = GetActorLocation();
 	FVector Direction = Target - MyLocation;
@@ -104,7 +104,7 @@ void AShinbi::SkillBlink(FVector Target)
 		if (NavigationSys->ProjectPointToNavigation(Target, RealPoint, FVector(500.0f, 500.0f, 500.0f)))
 		{
 			SkillComp->ReleaseSkill(0);
-			MulticastSkillEffects(MyLocation);
+			MulticastSkillEffects(Skill1React, MyLocation);
 			float Radius, Hight;
 			GetCapsuleComponent()->GetScaledCapsuleSize(Radius, Hight);
 			RealPoint.Location.Z += Hight;
@@ -121,7 +121,7 @@ void AShinbi::SkillBlink(FVector Target)
 			{
 				AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
 			}
-			MulticastSkillEffects(RealPoint.Location);
+			MulticastSkillEffects(Skill1React, RealPoint.Location);
 		}
 	}
 }

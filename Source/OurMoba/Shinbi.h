@@ -29,19 +29,19 @@ class OURMOBA_API AShinbi : public AHero
 		float Skill3EffectRange;
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
-		virtual void MulticastSkillEffects(FVector EffectLocation);
+		virtual void MulticastSkillEffects(UParticleSystem* Particle, FVector EffectLocation);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, WithValidation)
-		void ServerSkillBlink(FVector target);
+		void ServerSkill1Blink(FVector target);
 
 	UFUNCTION(BlueprintCallable)
-		void BecomeGhost();
+		void Skill3DeathTarget(FVector target);
 
 	UFUNCTION(BlueprintCallable)
-		void DeathTarget(FVector target);
+		void Skill2BecomeGhost();
 
 	UFUNCTION(BlueprintCallable)
-		void SkillBlink(FVector target);
+		void Skill1Blink(FVector target);
 
 	virtual	void Skill1Release() override;
 
