@@ -21,7 +21,11 @@ public:
 		void ServerSetAttackTarget(FVector Target);
 
 	virtual void  CRoleComboAttack(int32 NextIndex)override;
+
 	void TurnToMouseLocation();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetRotation(FRotator Rotation);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float TurnCoefficient = 10.0f;

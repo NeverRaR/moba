@@ -92,7 +92,24 @@ void ATwinBlast::TurnToMouseLocation()
 	}
 	FRotator NewRotation = GetActorRotation();
 	NewRotation.Yaw = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), MouseLocaton).Yaw;
-	SetActorRotation(NewRotation);
+	if (Role == ROLE_Authority)
+	{
+		SetActorRotation(NewRotation);
+	}
+	else if (Role < ROLE_Authority)
+	{
+		ServerSetRotation(NewRotation);
+	}
+}
+
+void ATwinBlast::ServerSetRotation_Implementation(FRotator Rotation)
+{
+	SetActorRotation(Rotation);
+}
+
+bool ATwinBlast::ServerSetRotation_Validate(FRotator Rotation)
+{
+	return true;
 }
 
 void ATwinBlast::MulticastSkillEffects_Implementation(UParticleSystem* Particle, FVector EffectLocation)
