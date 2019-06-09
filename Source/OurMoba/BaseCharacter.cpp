@@ -362,7 +362,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		DeathEffect(Attacker);
 		if (CampComp->CheckIsHero())
 		{
-
+			GetMesh()->SetVisibility(false);
 		}
 		else
 		{
@@ -395,6 +395,7 @@ void ABaseCharacter::Reborn()
 	SetActorEnableCollision(true);
 	PropertyComp->SetAlive(true);
 	PropertyComp->ResetCurProperty();
+	GetMesh()->SetVisibility(true);
 	CRoleResetAttack();
 	SetActorLocation(OriginLocation);
 }
