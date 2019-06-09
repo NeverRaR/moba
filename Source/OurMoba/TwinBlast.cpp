@@ -145,7 +145,18 @@ bool ATwinBlast::ServerSkill1Shrapnel_Validate(FVector Target)
 
 void ATwinBlast::ServerSkill2SelfHeal_Implementation()
 {
+	if (!SkillComp->CheckCanBeReleased(1)) return;
+	SkillComp->ReleaseSkill(1);
 
+	MulticastSkillEffects(Skill2React, GetActorLocation());
+	if (PropertyComp->IsAlive())
+	{
+		PropertyComp->AddCurHP(SkillComp->GetSkillLevel(1) * 50 + 100);
+		ABaseBuff* SpeedUp = GetWorld()->SpawnActor<ABaseBuff>(ABaseBuff::StaticClass());
+		SpeedUp->SustainTime = 4.0f;
+		SpeedUp->DeltaMoveSpeed = PropertyComp->GetCurMoveSpeed()*(0.3f + 0.05f*SkillComp->GetSkillLevel(1));
+		BuffComp->AddBuff(SpeedUp);
+	}
 }
 
 bool ATwinBlast::ServerSkill2SelfHeal_Validate()
@@ -176,7 +187,18 @@ void ATwinBlast::Skill1Shrapnel(FVector Target)
 
 void ATwinBlast::Skill2SelfHeal()
 {
+	if (!SkillComp->CheckCanBeReleased(1)) return;
+	SkillComp->ReleaseSkill(1);
 
+	MulticastSkillEffects(Skill2React, GetActorLocation());
+	if (PropertyComp->IsAlive())
+	{
+		PropertyComp->AddCurHP(SkillComp->GetSkillLevel(1) * 50 + 100);
+		ABaseBuff* SpeedUp = GetWorld()->SpawnActor<ABaseBuff>(ABaseBuff::StaticClass());
+		SpeedUp->SustainTime = 4.0f;
+		SpeedUp->DeltaMoveSpeed = PropertyComp->GetCurMoveSpeed()*(0.3f + 0.05f*SkillComp->GetSkillLevel(1));
+		BuffComp->AddBuff(SpeedUp);
+	}
 }
 
 void ATwinBlast::Skill1Release()
@@ -194,18 +216,12 @@ void ATwinBlast::Skill1Release()
 
 void ATwinBlast::Skill2Release()
 {
-	if (SkillComp->CheckCanBeReleased(1))
+	if (Role == ROLE_Authority)
 	{
-		SkillComp->ReleaseSkill(1);
-
-		UGameplayStatics::SpawnEmitterAtLocation(this, Skill2React,GetActorLocation());
-		if (PropertyComp->IsAlive())
-		{
-			PropertyComp->AddCurHP(SkillComp->GetSkillLevel(1) * 50 + 100);
-			ABaseBuff* SpeedUp= GetWorld()->SpawnActor<ABaseBuff>(ABaseBuff::StaticClass());
-			SpeedUp->SustainTime = 4.0f;
-			SpeedUp->DeltaMoveSpeed =PropertyComp->GetCurMoveSpeed()*(0.3f+0.05f*SkillComp->GetSkillLevel(1));
-			BuffComp->AddBuff(SpeedUp);
-		}
+		Skill2SelfHeal();
+	}
+	else if (Role < ROLE_Authority)
+	{
+		ServerSkill2SelfHeal();
 	}
 }
