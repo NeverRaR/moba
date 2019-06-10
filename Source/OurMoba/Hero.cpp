@@ -2,14 +2,17 @@
 
 #include "Hero.h"
 #include"GameFramework\Actor.h"
-#include "GameFramework/Controller.h"
+#include"GameFramework/Controller.h"
 #include"Skill.h"
-#include "MobaController.h"
+#include"Equipment.h"
+#include"MobaController.h"
 #include"CharacterProperty.h"
 AHero::AHero()
 {
+	EquipmentComp = CreateDefaultSubobject<UEquipment>(TEXT("EquipmentComp"));//创建装备的实例
+
 	SkillComp = CreateDefaultSubobject<USkill>(TEXT("SkillComp"));
-	
+
 	CampComp->SetGroup(CharacterGroup::Hero);
 }
 void AHero::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
@@ -27,6 +30,11 @@ void AHero::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
 	InputComponent->BindAction("Skill2Release", IE_Pressed, this, &AHero::Skill2Release);
 
 	InputComponent->BindAction("Skill3Release", IE_Pressed, this, &AHero::Skill3Release);
+}
+
+void AHero::SetupEquipmentComponent(class UInputComponent* EquipmentComponent)
+{
+
 }
 
 void AHero::Skill1Upgrade()
