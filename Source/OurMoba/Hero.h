@@ -6,6 +6,7 @@
 #include "BaseCharacter.h"
 #include "Hero.generated.h"
 class USkill;
+class UEquipment;
 /**
  * 
  */
@@ -16,8 +17,8 @@ class OURMOBA_API AHero : public ABaseCharacter
 public:
 	AHero();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-
+	
+	
 	UFUNCTION(BlueprintCallable)
 		void Skill1Upgrade();
 
@@ -72,4 +73,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
 		USkill* SkillComp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
+		UEquipment* EquipmentComp;
 };
