@@ -33,6 +33,6 @@ public:
 		int32  MaxEquipment = 6;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TArray<ABaseEquipment*>  AEquipment;
+		TArray<ABaseEquipment*>  AllEquipment;
 
 };

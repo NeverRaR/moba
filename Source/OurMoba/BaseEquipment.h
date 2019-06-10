@@ -5,12 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BaseEquipment.generated.h"
-class AHero;
-class UParticleSystemComponent;
 UENUM(BlueprintType)
 enum class EquipmentType :uint8 //设置uint8类型
 {
-	EquipmentOne UMETA(DisplayName = "EquipmentOne"),
+	EquipmentOne UMETA(DisplayName = "EquipmentOne")
 /*
     EquipmentTwo UMETA(DisplayName = "EquipmentTwo"),
     EquipmentThree UMETA(DisplayName = "EquipmentThree"),
@@ -21,8 +19,10 @@ enum class EquipmentType :uint8 //设置uint8类型
 	EquipmentEight UMETA(DisplayName = "EquipmentEight")
 */
 };
-
+class AHero;
+class UParticleSystemComponent;
 UCLASS()  
+class OURMOBA_API ABaseEquipment : public AActor
 {
 	GENERATED_BODY()
 	
@@ -41,8 +41,6 @@ public:
 	virtual bool EquipmentIsEffective(AHero* OwnerPawn);//装备生效的方法
 
 	virtual bool EndEquipment(AHero* OwnerPawn);//装备结束生效的方法
-
-	virtual bool GoldEnough(float CurGold);//判断金钱是否足够
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EquipmentType Type;
@@ -88,5 +86,4 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		AHero* Receiver;
-
 };
