@@ -27,6 +27,9 @@
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
+	//Is true when the character is Base_Dawn or Base_Dusk
+	bIsBase = false;
+
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ComboIndex = 0;
@@ -357,6 +360,14 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 				}
 				Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
 				Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
+			}
+		}
+		if (bIsBase)
+		{
+			AOurMobaGameMode* GM = Cast<AOurMobaGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+			if (GM) 
+			{
+				GM->GameOver();
 			}
 		}
 		OnActorDeath.Broadcast(this);
