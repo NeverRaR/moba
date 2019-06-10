@@ -33,41 +33,37 @@ void ABaseEquipment::Tick(float DeltaTime)
 
 bool ABaseEquipment::EquipmentIsEffective(AHero* OwnerPawn)
 {
-	if (GoldEnough)
+	if (OwnerPawn)
 	{
-		if (OwnerPawn)
-		{
-			Receiver = OwnerPawn;
-			UCharacterProperty* MyProperty = OwnerPawn->PropertyComp;
-			MyProperty->AddBaseMaxHP(DeltaMaxHP);
-			MyProperty->AddBaseMaxMP(DeltaMaxMP);
-			MyProperty->AddBaseHPRecovery(DeltaHPRecovery);
-			MyProperty->AddBaseMPRecovery(DeltaMPRecovery);
-			MyProperty->AddBasePhyAttack(DeltaPhyDamage);
-			MyProperty->AddBaseMagAttack(DeltaMagDamage);
-			MyProperty->AddBasePhyDef(DeltaPhyDef);
-			MyProperty->AddBaseMagDef(DeltaMagDef);
-			MyProperty->AddBaseAttackSpeed(DeltaAttackSpeed);
-			MyProperty->AddBaseMoveSpeed(DeltaMoveSpeed);
-			MyProperty->AddBaseAttackSpeed(DeltaLeech);
-			MyProperty->AddBaseCDReduction(DeltaCDReduction);
-
-			MyProperty->AddCurMaxHP(DeltaMaxHP);
-			MyProperty->AddCurMaxMP(DeltaMaxMP);
-			MyProperty->AddCurHP(DeltaMaxHP);
-			MyProperty->AddCurMP(DeltaMaxMP);
-			MyProperty->AddCurMPRecovery(DeltaMPRecovery);
-			MyProperty->AddCurHPRecovery(DeltaHPRecovery);
-			MyProperty->AddCurPhyAttack(DeltaPhyDamage);
-			MyProperty->AddCurMagAttack(DeltaMagDamage);
-			MyProperty->AddCurPhyDef(DeltaPhyDef);
-			MyProperty->AddCurMagDef(DeltaMagDef);
-			MyProperty->AddCurAttackSpeed(DeltaAttackSpeed);
-			MyProperty->AddCurMoveSpeed(DeltaMoveSpeed);
-			MyProperty->AddCurLeech(DeltaLeech);
-			MyProperty->AddCurCDReduction(DeltaCDReduction);
-			return true;
-		}
+		Receiver = OwnerPawn;
+		UCharacterProperty* MyProperty = OwnerPawn->PropertyComp;
+		MyProperty->AddBaseMaxHP(DeltaMaxHP);
+		MyProperty->AddBaseMaxMP(DeltaMaxMP);
+		MyProperty->AddBaseHPRecovery(DeltaHPRecovery);
+		MyProperty->AddBaseMPRecovery(DeltaMPRecovery);
+		MyProperty->AddBasePhyAttack(DeltaPhyDamage);
+		MyProperty->AddBaseMagAttack(DeltaMagDamage);
+		MyProperty->AddBasePhyDef(DeltaPhyDef);
+		MyProperty->AddBaseMagDef(DeltaMagDef);
+		MyProperty->AddBaseAttackSpeed(DeltaAttackSpeed);
+		MyProperty->AddBaseMoveSpeed(DeltaMoveSpeed);
+		MyProperty->AddBaseAttackSpeed(DeltaLeech);
+		MyProperty->AddBaseCDReduction(DeltaCDReduction);
+		MyProperty->AddCurMaxHP(DeltaMaxHP);
+		MyProperty->AddCurMaxMP(DeltaMaxMP);
+		MyProperty->AddCurHP(DeltaMaxHP);
+		MyProperty->AddCurMP(DeltaMaxMP);
+		MyProperty->AddCurMPRecovery(DeltaMPRecovery);
+		MyProperty->AddCurHPRecovery(DeltaHPRecovery);
+		MyProperty->AddCurPhyAttack(DeltaPhyDamage);
+		MyProperty->AddCurMagAttack(DeltaMagDamage);
+		MyProperty->AddCurPhyDef(DeltaPhyDef);
+		MyProperty->AddCurMagDef(DeltaMagDef);
+		MyProperty->AddCurAttackSpeed(DeltaAttackSpeed);
+		MyProperty->AddCurMoveSpeed(DeltaMoveSpeed);
+		MyProperty->AddCurLeech(DeltaLeech);
+		MyProperty->AddCurCDReduction(DeltaCDReduction);
+		return true;
 	}
 	return false;
 }
@@ -108,13 +104,5 @@ bool ABaseEquipment::EndEquipment(AHero* OwnerPawn)
 		return true;
 	}
 	return false;
-}
-
-bool ABaseEquipment::GoldEnough(float CurGold)
-{
-	if (Receiver->PropertyComp->GetCurMoney() >= NeedGold)
-	{
-
-	}
 }
 

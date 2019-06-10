@@ -40,12 +40,17 @@ void UEquipment::AddEquipment(ABaseEquipment*NewEquipment)
 {
 	AHero* OwnerPawn = Cast<AHero>(GetOwner());
 	if (OwnerPawn)
-		if(<= MaxEquipment)//不会超出最大装备数量
-			if ()
+	{
+		if (AllEquipment.Num() < MaxEquipment)//不会超出最大装备数量
+		{
+			if (OwnerPawn->PropertyComp->GetCurMoney() >= NewEquipment->NeedGold)
 			{
 				NewEquipment->EquipmentIsEffective(OwnerPawn); //添加进去
-				//把钱扣掉
+				AllEquipment.Add(NewEquipment);
+				OwnerPawn->PropertyComp->AddMoney(-1 * NewEquipment->NeedGold);
 			}
+		}
+	}
 }
 
 void UEquipment::RemoveEquipment(ABaseEquipment*NewEquipment, TArray<ABaseEquipment*>&Arr)
@@ -56,8 +61,8 @@ void UEquipment::RemoveEquipment(ABaseEquipment*NewEquipment, TArray<ABaseEquipm
 		if (OwnerPawn)
 		{
 			NewEquipment->EndEquipment(OwnerPawn);
-			 //把钱加回去
-			 //把指针在数组里面remove掉
+			AllEquipment.Remove(NewEquipment);
+			OwnerPawn->PropertyComp->AddMoney(NewEquipment->NeedGold*0.6);
 		}
 	}
 }

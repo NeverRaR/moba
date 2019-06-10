@@ -31,12 +31,6 @@ void AHero::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
 
 	InputComponent->BindAction("Skill3Release", IE_Pressed, this, &AHero::Skill3Release);
 }
-
-void AHero::SetupEquipmentComponent(class UInputComponent* EquipmentComponent)
-{
-
-}
-
 void AHero::Skill1Upgrade()
 {
 	if (Role < ROLE_Authority)
