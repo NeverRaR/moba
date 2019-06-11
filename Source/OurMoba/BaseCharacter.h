@@ -36,8 +36,12 @@ protected:
 	uint32 bCanRecall : 1;
 	int32 ComboIndex = 0;
 	int32 DeathIndex = 0;
+	float RebornTime = 6.0f;
 
 public:	
+	UPROPERTY(EditAnywhere)
+	uint32 bIsBase : 1;
+
 	//Recall
 	void Recall();
 	void SetRecall();

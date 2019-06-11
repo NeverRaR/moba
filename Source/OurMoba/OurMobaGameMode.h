@@ -20,4 +20,6 @@ class OURMOBA_API AOurMobaGameMode : public AGameMode
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
+	void GameOver();
 };
