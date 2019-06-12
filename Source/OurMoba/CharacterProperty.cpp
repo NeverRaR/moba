@@ -5,13 +5,13 @@
 #include"OurMobaGameMode.h"
 #include "Hero.h"
 #include"Skill.h"
+#include"Net/UnrealNetwork.h"
 // Sets default values for this component's properties
 UCharacterProperty::UCharacterProperty()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 	// ...
 }
 
@@ -21,7 +21,7 @@ void UCharacterProperty::BeginPlay()
 {
 	Super::BeginPlay();
 	// ...
-
+	
 }
 
 
@@ -139,5 +139,12 @@ bool UCharacterProperty::CheckLevelUp(float DeltaEXP)
 		bIsLevelUp = false;
 	}
 	return LevelUp();
+}
+
+void UCharacterProperty::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(UCharacterProperty, FCurPropertyDetail);
 }
 
