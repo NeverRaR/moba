@@ -45,6 +45,7 @@ public:
 	//Recall
 	void Recall();
 	void SetRecall();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector OriginLocation;
 	FTimerHandle TimerHandle;
 

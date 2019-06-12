@@ -5,6 +5,7 @@
 #include "Perception\AIPerceptionComponent.h"
 #include"Perception\AISenseConfig_Sight.h"
 #include "BaseCharacter.h"
+#include"CharacterProperty.h"
 
 ABaseAIController::ABaseAIController()
 {
@@ -63,7 +64,7 @@ void ABaseAIController::CheckAllTarget()
 			ABaseCharacter* UnknowPawn= Cast<ABaseCharacter>(PerceptionActors[i]);
 			if (UnknowPawn)
 			{
-				if (BasePawn->CheckIsEnemy(UnknowPawn))
+				if (BasePawn->CheckIsEnemy(UnknowPawn)&& UnknowPawn->PropertyComp->IsAlive())
 				{
 					Enemys.AddUnique(PerceptionActors[i]);
 					RefreshHateList(PerceptionActors[i]);

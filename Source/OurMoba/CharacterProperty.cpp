@@ -31,6 +31,7 @@ void UCharacterProperty::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	HPRecovering(DeltaTime);
 	MPRecovering(DeltaTime);
+	AddMoney(DeltaTime);
 	// ...
 }
 
