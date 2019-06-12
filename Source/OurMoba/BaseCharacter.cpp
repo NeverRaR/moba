@@ -10,7 +10,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "MobaController.h"
@@ -327,7 +326,6 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 }
 void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 {
-	RebornTime = RebornTime + PropertyComp->GetCurLevel();
 	if (PropertyComp->GetCurHP() < 0.0001)
 	{
 
@@ -345,7 +343,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		{
 			PropertyComp->AddDeathNum(1);
 			PropertyComp->AddCurMP(-99999.0f);
-			GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn, RebornTime, false);
+			GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn, 0.2*RebornTime + 2*PropertyComp->GetCurLevel(), false);
 		}
 		if (Attacker)
 		{
