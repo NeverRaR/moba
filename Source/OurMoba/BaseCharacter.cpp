@@ -73,6 +73,7 @@ ABaseCharacter::ABaseCharacter()
 
 	PropertyComp = CreateDefaultSubobject<UCharacterProperty>(TEXT("PropertyComp"));
 	PropertyComp->SetAlive(true);
+	PropertyComp->SetIsReplicated(true);
 
 	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
 	
