@@ -73,7 +73,6 @@ ABaseCharacter::ABaseCharacter()
 
 	PropertyComp = CreateDefaultSubobject<UCharacterProperty>(TEXT("PropertyComp"));
 	PropertyComp->SetAlive(true);
-	PropertyComp->SetIsReplicated(true);
 
 	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
 	
@@ -347,7 +346,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		{
 			PropertyComp->AddDeathNum(1);
 			PropertyComp->AddCurMP(-99999.0f);
-			GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn,0.3*RebornTime +2*PropertyComp->GetCurLevel() , false);
+			GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn,0.3*RebornTime +2*PropertyComp->GetCurLevel(), false);
 		}
 		if (Attacker)
 		{
