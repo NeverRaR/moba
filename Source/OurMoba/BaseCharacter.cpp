@@ -365,7 +365,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 			AOurMobaGameMode* GM = Cast<AOurMobaGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 			if (GM) 
 			{
-				GM->GameOver();
+				GM->GameOver(CampComp->GetCamp());
 			}
 		}
 		OnActorDeath.Broadcast(this);
