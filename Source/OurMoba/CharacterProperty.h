@@ -545,7 +545,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Property", meta = (AllowPrivateAccess = "true"))
 		FBaseProperty FBasePropertyDetail;
 
-	UPROPERTY(EditAnywhere, Category = "Property", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, Category = "Property", meta = (AllowPrivateAccess = "true"))
 		FCurProperty FCurPropertyDetail;
 
 	uint32 bIsLevelUp : 1;
