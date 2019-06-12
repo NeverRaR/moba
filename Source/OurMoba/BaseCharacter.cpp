@@ -330,7 +330,6 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 }
 void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 {
-	RebornTime = RebornTime + PropertyComp->GetCurLevel();
 	if (PropertyComp->GetCurHP() < 0.0001)
 	{
 
@@ -348,6 +347,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		{
 			PropertyComp->AddDeathNum(1);
 			PropertyComp->AddCurMP(-99999.0f);
+			RebornTime = RebornTime + PropertyComp->GetCurLevel();
 			GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn, RebornTime, false);
 		}
 		if (Attacker)
