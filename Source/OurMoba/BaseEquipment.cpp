@@ -37,6 +37,7 @@ bool ABaseEquipment::EquipmentIsEffective(AHero* OwnerPawn)
 	{
 		Receiver = OwnerPawn;
 		UCharacterProperty* MyProperty = OwnerPawn->PropertyComp;
+		MyProperty->AddMoney(-NeedGold);
 		MyProperty->AddBaseMaxHP(DeltaMaxHP);
 		MyProperty->AddBaseMaxMP(DeltaMaxMP);
 		MyProperty->AddBaseHPRecovery(DeltaHPRecovery);
@@ -74,6 +75,8 @@ bool ABaseEquipment::EndEquipment(AHero* OwnerPawn)
 	{
 		Receiver = OwnerPawn;
 		UCharacterProperty* MyProperty = OwnerPawn->PropertyComp;
+		MyProperty->AddMoney(NeedGold);
+
 		MyProperty->AddBaseMaxHP(-DeltaMaxHP);
 		MyProperty->AddBaseMaxMP(-DeltaMaxMP);
 		MyProperty->AddBaseHPRecovery(-DeltaHPRecovery);

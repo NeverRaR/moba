@@ -53,17 +53,17 @@ void UEquipment::AddEquipment(ABaseEquipment*NewEquipment)
 	}
 }
 
-void UEquipment::RemoveEquipment(ABaseEquipment*NewEquipment, TArray<ABaseEquipment*>&Arr)
+void UEquipment::RemoveEquipment(ABaseEquipment*NewEquipment)
 {
-	if (Arr.Contains(NewEquipment))
+	
+	AHero* OwnerPawn = Cast<AHero>(GetOwner());
+	if (OwnerPawn&&NewEquipment)
 	{
-		AHero* OwnerPawn = Cast<AHero>(GetOwner());
-		if (OwnerPawn)
-		{
-			NewEquipment->EndEquipment(OwnerPawn);
-			AllEquipment.Remove(NewEquipment);
-			OwnerPawn->PropertyComp->AddMoney(NewEquipment->NeedGold*0.6);
-		}
+		NewEquipment->EndEquipment(OwnerPawn);
+		AllEquipment.Remove(NewEquipment);
+		OwnerPawn->PropertyComp->AddMoney(NewEquipment->NeedGold*0.6);
+		NewEquipment->Destroy();
 	}
+
 }
 
