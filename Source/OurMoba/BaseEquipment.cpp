@@ -75,7 +75,7 @@ bool ABaseEquipment::EndEquipment(AHero* OwnerPawn)
 	{
 		Receiver = OwnerPawn;
 		UCharacterProperty* MyProperty = OwnerPawn->PropertyComp;
-		MyProperty->AddMoney(NeedGold);
+		MyProperty->AddMoney(0.6 * NeedGold);
 
 		MyProperty->AddBaseMaxHP(-DeltaMaxHP);
 		MyProperty->AddBaseMaxMP(-DeltaMaxMP);
