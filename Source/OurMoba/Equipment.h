@@ -27,7 +27,7 @@ public:
 		void AddEquipment(ABaseEquipment*NewEquipment);  //增加装备的方法
 		
 	UFUNCTION(BlueprintCallable)
-		void RemoveEquipment(ABaseEquipment*NewEquipment, TArray<ABaseEquipment*>&Arr);
+		void RemoveEquipment(ABaseEquipment*NewEquipment);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32  MaxEquipment = 6;
