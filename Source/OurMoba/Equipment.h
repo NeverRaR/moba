@@ -25,21 +25,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UFUNCTION(BlueprintCallable)
 		void AddEquipment(ABaseEquipment*NewEquipment);  //增加装备的方法
-
-	UFUNCTION(Server, Reliable, WithValidation)
-		void ServerAddEquipmentToClient(ABaseEquipment*NewEquipment, AHero* TargetPawn);
-
-	UFUNCTION(BlueprintCallable)
-		void AddEquipmentToServer(ABaseEquipment*NewEquipment, AHero* TargetPawn);
 		
 	UFUNCTION(BlueprintCallable)
 		void RemoveEquipment(ABaseEquipment*NewEquipment);
-
-	UFUNCTION(Server, Reliable, WithValidation)
-		void ServerRemoveEquipmentFromClient(ABaseEquipment*NewEquipment, AHero* TargetPawn);
-
-	UFUNCTION(BlueprintCallable)
-		void RemoveEquipmentFromServer(ABaseEquipment*NewEquipment, AHero* TargetPawn);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32  MaxEquipment = 6;
