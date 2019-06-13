@@ -39,15 +39,49 @@ void UEquipment::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 void UEquipment::AddEquipment(ABaseEquipment*NewEquipment)
 {
 	AHero* OwnerPawn = Cast<AHero>(GetOwner());
-	if (OwnerPawn)
+	check(OwnerPawn)
+	if (GetOwnerRole() < ROLE_Authority)
+	{
+		ServerAddEquipmentToClient(NewEquipment, OwnerPawn);
+	}
+	else if (GetOwnerRole() == ROLE_Authority)
+	{
+		AddEquipmentToServer(NewEquipment, OwnerPawn);
+	}
+}
+
+void UEquipment::ServerAddEquipmentToClient_Implementation(ABaseEquipment * NewEquipment, AHero* TargetPawn)
+{
+	if (TargetPawn)
+	{
+		if (NewEquipment && AllEquipment.Num() < MaxEquipment)//不会超出最大装备数量
+		{
+			if (TargetPawn->PropertyComp->GetCurMoney() >= NewEquipment->NeedGold)
+			{
+				NewEquipment->EquipmentIsEffective(TargetPawn); //添加进去
+				AllEquipment.Add(NewEquipment);
+				TargetPawn->PropertyComp->AddMoney(-1 * NewEquipment->NeedGold);
+			}
+		}
+	}
+}
+
+bool UEquipment::ServerAddEquipmentToClient_Validate(ABaseEquipment * NewEquipment, AHero* TargetPawn)
+{
+	return true;
+}
+
+void UEquipment::AddEquipmentToServer(ABaseEquipment * NewEquipment, AHero * TargetPawn)
+{
+	if (TargetPawn)
 	{
 		if (AllEquipment.Num() < MaxEquipment)//不会超出最大装备数量
 		{
-			if (OwnerPawn->PropertyComp->GetCurMoney() >= NewEquipment->NeedGold)
+			if (TargetPawn->PropertyComp->GetCurMoney() >= NewEquipment->NeedGold)
 			{
-				NewEquipment->EquipmentIsEffective(OwnerPawn); //添加进去
+				NewEquipment->EquipmentIsEffective(TargetPawn); //添加进去
 				AllEquipment.Add(NewEquipment);
-				OwnerPawn->PropertyComp->AddMoney(-1 * NewEquipment->NeedGold);
+				TargetPawn->PropertyComp->AddMoney(-1 * NewEquipment->NeedGold);
 			}
 		}
 	}
@@ -55,7 +89,6 @@ void UEquipment::AddEquipment(ABaseEquipment*NewEquipment)
 
 void UEquipment::RemoveEquipment(ABaseEquipment*NewEquipment)
 {
-	
 	AHero* OwnerPawn = Cast<AHero>(GetOwner());
 	if (OwnerPawn&&NewEquipment)
 	{
@@ -67,3 +100,16 @@ void UEquipment::RemoveEquipment(ABaseEquipment*NewEquipment)
 
 }
 
+void UEquipment::RemoveEquipmentFromServer(ABaseEquipment * NewEquipment, AHero * TargetPawn)
+{
+}
+
+void UEquipment::ServerRemoveEquipmentFromClient_Implementation(ABaseEquipment * NewEquipment, AHero* TargetPawn)
+{
+	RemoveEquipment(NewEquipment);
+}
+
+bool UEquipment::ServerRemoveEquipmentFromClient_Validate(ABaseEquipment * NewEquipment, AHero* TargetPawn)
+{
+	return true;
+}
