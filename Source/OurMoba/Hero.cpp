@@ -41,6 +41,7 @@ void AHero::Skill1Upgrade()
 	if (SkillComp->GetSkillPoint() > 0)
 	{
 		MulticastSkill1Upgrade();
+		UISkill1Upgrade();
 	}
 }
 
