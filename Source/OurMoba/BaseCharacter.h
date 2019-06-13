@@ -39,9 +39,13 @@ protected:
 	float RebornTime = 6.0f;
 
 public:	
+	UPROPERTY(EditAnywhere)
+	uint32 bIsBase : 1;
+
 	//Recall
 	void Recall();
 	void SetRecall();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector OriginLocation;
 	FTimerHandle TimerHandle;
 

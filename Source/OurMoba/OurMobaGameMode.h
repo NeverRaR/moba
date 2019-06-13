@@ -10,6 +10,7 @@
 #include "Components/ActorComponent.h"
 #include "EngineDefines.h"
 #include "GenericTeamAgentInterface.h"
+#include"CreatureCamp.h"
 #include "OurMobaGameMode.generated.h"
 
 /**
@@ -20,4 +21,6 @@ class OURMOBA_API AOurMobaGameMode : public AGameMode
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
+	void GameOver(CharacterCamp Camp);
 };

@@ -10,7 +10,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "MobaController.h"
@@ -27,6 +26,9 @@
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
+	//Is true when the character is Base_Dawn or Base_Dusk
+	bIsBase = false;
+
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ComboIndex = 0;
@@ -71,6 +73,7 @@ ABaseCharacter::ABaseCharacter()
 
 	PropertyComp = CreateDefaultSubobject<UCharacterProperty>(TEXT("PropertyComp"));
 	PropertyComp->SetAlive(true);
+	PropertyComp->SetIsReplicated(true);
 
 	CampComp = CreateDefaultSubobject<UCreatureCamp>(TEXT("CampComp"));
 	
@@ -327,7 +330,6 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 }
 void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 {
-	RebornTime = RebornTime + PropertyComp->GetCurLevel();
 	if (PropertyComp->GetCurHP() < 0.0001)
 	{
 
@@ -345,7 +347,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		{
 			PropertyComp->AddDeathNum(1);
 			PropertyComp->AddCurMP(-99999.0f);
-			GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn, RebornTime, false);
+			GetWorldTimerManager().SetTimer(TimerHandle1, this, &ABaseCharacter::Reborn,0.3*RebornTime +2*PropertyComp->GetCurLevel(), false);
 		}
 		if (Attacker)
 		{
@@ -357,6 +359,14 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 				}
 				Attacker->PropertyComp->CheckLevelUp(PropertyComp->GetEXPWorth());
 				Attacker->PropertyComp->AddMoney(PropertyComp->GetMoneyWorth());
+			}
+		}
+		if (bIsBase)
+		{
+			AOurMobaGameMode* GM = Cast<AOurMobaGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+			if (GM) 
+			{
+				GM->GameOver(CampComp->GetCamp());
 			}
 		}
 		OnActorDeath.Broadcast(this);
