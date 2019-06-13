@@ -61,7 +61,7 @@ void UEquipment::RemoveEquipment(ABaseEquipment*NewEquipment)
 	{
 		NewEquipment->EndEquipment(OwnerPawn);
 		AllEquipment.Remove(NewEquipment);
-		OwnerPawn->PropertyComp->AddMoney(NewEquipment->NeedGold*0.6);
+		OwnerPawn->PropertyComp->AddMoney(NewEquipment->NeedGold*0.3);
 		NewEquipment->Destroy();
 	}
 
