@@ -48,7 +48,7 @@ bool ABaseEquipment::EquipmentIsEffective(AHero* OwnerPawn)
 		MyProperty->AddBaseMagDef(DeltaMagDef);
 		MyProperty->AddBaseAttackSpeed(DeltaAttackSpeed);
 		MyProperty->AddBaseMoveSpeed(DeltaMoveSpeed);
-		MyProperty->AddBaseAttackSpeed(DeltaLeech);
+		MyProperty->AddBaseLeech(DeltaLeech);
 		MyProperty->AddBaseCDReduction(DeltaCDReduction);
 		MyProperty->AddCurMaxHP(DeltaMaxHP);
 		MyProperty->AddCurMaxMP(DeltaMaxMP);
@@ -87,7 +87,7 @@ bool ABaseEquipment::EndEquipment(AHero* OwnerPawn)
 		MyProperty->AddBaseMagDef(-DeltaMagDef);
 		MyProperty->AddBaseAttackSpeed(-DeltaAttackSpeed);
 		MyProperty->AddBaseMoveSpeed(-DeltaMoveSpeed);
-		MyProperty->AddBaseAttackSpeed(-DeltaLeech);
+		MyProperty->AddBaseLeech(-DeltaLeech);
 		MyProperty->AddBaseCDReduction(-DeltaCDReduction);
 
 		MyProperty->AddCurMaxHP(-DeltaMaxHP);
