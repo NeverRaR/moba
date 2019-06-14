@@ -29,6 +29,87 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void RemoveEquipment(ABaseEquipment*NewEquipment);
 
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyGold(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurHP(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurMP(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurMaxHP(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurMaxMP(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurHPRecovery(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurMPRecovery(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurPhyAttack(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurMagAttack(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurPhyDef(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurMagDef(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurAttackSpeed(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurMoveSpeed(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurLeech(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurCDReduction(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseMaxHP(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseMaxMP(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseHPRecovery(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseMPRecovery(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBasePhyAttack(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseMagAttack(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBasePhyDef(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseMagDef(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseAttackSpeed(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseMoveSpeed(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseLeech(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyBaseCDReduction(float Amount, AHero* TargetPawn);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32  MaxEquipment = 6;
 
