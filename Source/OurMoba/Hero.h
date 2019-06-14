@@ -69,6 +69,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FVector GetMouseLocation();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void UISkill1Upgrade();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void UISkill2Upgrade();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void UISkill3Upgrade();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill", meta = (AllowPrivateAccess = "true"))
 		USkill* SkillComp;

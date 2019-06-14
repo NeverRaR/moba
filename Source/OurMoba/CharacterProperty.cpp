@@ -146,5 +146,7 @@ void UCharacterProperty::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&Ou
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(UCharacterProperty, FCurPropertyDetail);
+	
+	DOREPLIFETIME(UCharacterProperty, FBasePropertyDetail);
 }
 

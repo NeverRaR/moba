@@ -10,7 +10,7 @@
 AHero::AHero()
 {
 	EquipmentComp = CreateDefaultSubobject<UEquipment>(TEXT("EquipmentComp"));//创建装备的实例
-
+	EquipmentComp->SetIsReplicated(true);
 	SkillComp = CreateDefaultSubobject<USkill>(TEXT("SkillComp"));
 
 	CampComp->SetGroup(CharacterGroup::Hero);
@@ -41,6 +41,7 @@ void AHero::Skill1Upgrade()
 	if (SkillComp->GetSkillPoint() > 0)
 	{
 		MulticastSkill1Upgrade();
+		UISkill1Upgrade();
 	}
 }
 

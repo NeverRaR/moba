@@ -542,7 +542,7 @@ public:
 
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Property", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, EditAnywhere, Category = "Property", meta = (AllowPrivateAccess = "true"))
 		FBaseProperty FBasePropertyDetail;
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Property", meta = (AllowPrivateAccess = "true"))
