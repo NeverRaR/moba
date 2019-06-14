@@ -92,8 +92,6 @@ bool ABaseEquipment::EndEquipment(AHero* OwnerPawn)
 
 		MyProperty->AddCurMaxHP(-DeltaMaxHP);
 		MyProperty->AddCurMaxMP(-DeltaMaxMP);
-		MyProperty->AddCurHP(-DeltaMaxHP);
-		MyProperty->AddCurMP(-DeltaMaxMP);
 		MyProperty->AddCurMPRecovery(-DeltaMPRecovery);
 		MyProperty->AddCurHPRecovery(-DeltaHPRecovery);
 		MyProperty->AddCurPhyAttack(-DeltaPhyDamage);

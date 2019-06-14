@@ -95,10 +95,8 @@ void UEquipment::RemoveEquipment(ABaseEquipment*NewEquipment)
 		{
 			ServerModifyGold(NewEquipment->NeedGold * 0.6, OwnerPawn);
 			ServerModifyCurMaxHP(-NewEquipment->DeltaMaxHP, OwnerPawn);
-			ServerModifyCurHP(-NewEquipment->DeltaMaxHP, OwnerPawn);
 			ServerModifyCurHPRecovery(-NewEquipment->DeltaHPRecovery, OwnerPawn);
 			ServerModifyCurMaxMP(-NewEquipment->DeltaMaxMP, OwnerPawn);
-			ServerModifyCurMP(-NewEquipment->DeltaMaxMP, OwnerPawn);
 			ServerModifyCurMPRecovery(-NewEquipment->DeltaMPRecovery, OwnerPawn);
 			ServerModifyCurPhyAttack(-NewEquipment->DeltaPhyDamage, OwnerPawn);
 			ServerModifyCurPhyDef(-NewEquipment->DeltaPhyDef, OwnerPawn);
