@@ -47,6 +47,36 @@ void UEquipment::AddEquipment(ABaseEquipment*NewEquipment)
 			{
 				NewEquipment->EquipmentIsEffective(OwnerPawn); //Ìí¼Ó½øÈ¥
 				AllEquipment.Add(NewEquipment);
+				if (GetOwnerRole() < ROLE_Authority)
+				{
+					ServerModifyGold(NewEquipment->NeedGold * -1.0, OwnerPawn);
+					ServerModifyCurMaxHP(NewEquipment->DeltaMaxHP, OwnerPawn);
+					ServerModifyCurHP(NewEquipment->DeltaMaxHP, OwnerPawn);
+					ServerModifyCurHPRecovery(NewEquipment->DeltaHPRecovery, OwnerPawn);
+					ServerModifyCurMaxMP(NewEquipment->DeltaMaxMP, OwnerPawn);
+					ServerModifyCurMP(NewEquipment->DeltaMaxMP, OwnerPawn);
+					ServerModifyCurMPRecovery(NewEquipment->DeltaMPRecovery, OwnerPawn);
+					ServerModifyCurPhyAttack(NewEquipment->DeltaPhyDamage, OwnerPawn);
+					ServerModifyCurPhyDef(NewEquipment->DeltaPhyDef, OwnerPawn);
+					ServerModifyCurMagAttack(NewEquipment->DeltaMagDamage, OwnerPawn);
+					ServerModifyCurMagDef(NewEquipment->DeltaMagDef, OwnerPawn);
+					ServerModifyCurAttackSpeed(NewEquipment->DeltaAttackSpeed, OwnerPawn);
+					ServerModifyCurMoveSpeed(NewEquipment->DeltaMoveSpeed, OwnerPawn);
+					ServerModifyCurLeech(NewEquipment->DeltaLeech, OwnerPawn);
+					ServerModifyCurCDReduction(NewEquipment->DeltaCDReduction, OwnerPawn);
+					ServerModifyBaseMaxHP(NewEquipment->DeltaMaxHP, OwnerPawn);
+					ServerModifyBaseHPRecovery(NewEquipment->DeltaHPRecovery, OwnerPawn);
+					ServerModifyBaseMaxMP(NewEquipment->DeltaMaxMP, OwnerPawn);
+					ServerModifyBaseMPRecovery(NewEquipment->DeltaMPRecovery, OwnerPawn);
+					ServerModifyBasePhyAttack(NewEquipment->DeltaPhyDamage, OwnerPawn);
+					ServerModifyBasePhyDef(NewEquipment->DeltaPhyDef, OwnerPawn);
+					ServerModifyBaseMagAttack(NewEquipment->DeltaMagDamage, OwnerPawn);
+					ServerModifyBaseMagDef(NewEquipment->DeltaMagDef, OwnerPawn);
+					ServerModifyBaseAttackSpeed(NewEquipment->DeltaAttackSpeed, OwnerPawn);
+					ServerModifyBaseMoveSpeed(NewEquipment->DeltaMoveSpeed, OwnerPawn);
+					ServerModifyBaseLeech(NewEquipment->DeltaLeech, OwnerPawn);
+					ServerModifyBaseCDReduction(NewEquipment->DeltaCDReduction, OwnerPawn);
+				}
 			}
 		}
 	}
@@ -61,6 +91,36 @@ void UEquipment::RemoveEquipment(ABaseEquipment*NewEquipment)
 		NewEquipment->EndEquipment(OwnerPawn);
 		AllEquipment.Remove(NewEquipment);
 		NewEquipment->Destroy();
+		if (GetOwnerRole() < ROLE_Authority)
+		{
+			ServerModifyGold(NewEquipment->NeedGold * 0.6, OwnerPawn);
+			ServerModifyCurMaxHP(-NewEquipment->DeltaMaxHP, OwnerPawn);
+			ServerModifyCurHP(-NewEquipment->DeltaMaxHP, OwnerPawn);
+			ServerModifyCurHPRecovery(-NewEquipment->DeltaHPRecovery, OwnerPawn);
+			ServerModifyCurMaxMP(-NewEquipment->DeltaMaxMP, OwnerPawn);
+			ServerModifyCurMP(-NewEquipment->DeltaMaxMP, OwnerPawn);
+			ServerModifyCurMPRecovery(-NewEquipment->DeltaMPRecovery, OwnerPawn);
+			ServerModifyCurPhyAttack(-NewEquipment->DeltaPhyDamage, OwnerPawn);
+			ServerModifyCurPhyDef(-NewEquipment->DeltaPhyDef, OwnerPawn);
+			ServerModifyCurMagAttack(-NewEquipment->DeltaMagDamage, OwnerPawn);
+			ServerModifyCurMagDef(-NewEquipment->DeltaMagDef, OwnerPawn);
+			ServerModifyCurAttackSpeed(-NewEquipment->DeltaAttackSpeed, OwnerPawn);
+			ServerModifyCurMoveSpeed(-NewEquipment->DeltaMoveSpeed, OwnerPawn);
+			ServerModifyCurLeech(-NewEquipment->DeltaLeech, OwnerPawn);
+			ServerModifyCurCDReduction(-NewEquipment->DeltaCDReduction, OwnerPawn);
+			ServerModifyBaseMaxHP(-NewEquipment->DeltaMaxHP, OwnerPawn);
+			ServerModifyBaseHPRecovery(-NewEquipment->DeltaHPRecovery, OwnerPawn);
+			ServerModifyBaseMaxMP(-NewEquipment->DeltaMaxMP, OwnerPawn);
+			ServerModifyBaseMPRecovery(-NewEquipment->DeltaMPRecovery, OwnerPawn);
+			ServerModifyBasePhyAttack(-NewEquipment->DeltaPhyDamage, OwnerPawn);
+			ServerModifyBasePhyDef(-NewEquipment->DeltaPhyDef, OwnerPawn);
+			ServerModifyBaseMagAttack(-NewEquipment->DeltaMagDamage, OwnerPawn);
+			ServerModifyBaseMagDef(-NewEquipment->DeltaMagDef, OwnerPawn);
+			ServerModifyBaseAttackSpeed(-NewEquipment->DeltaAttackSpeed, OwnerPawn);
+			ServerModifyBaseMoveSpeed(-NewEquipment->DeltaMoveSpeed, OwnerPawn);
+			ServerModifyBaseLeech(-NewEquipment->DeltaLeech, OwnerPawn);
+			ServerModifyBaseCDReduction(-NewEquipment->DeltaCDReduction, OwnerPawn);
+		}
 	}
 }
 
@@ -70,6 +130,16 @@ void UEquipment::ServerModifyGold_Implementation(float Amount, AHero * TargetPaw
 }
 
 bool UEquipment::ServerModifyGold_Validate(float Amount, AHero * TargetPawn)
+{
+	return true;
+}
+
+void UEquipment::ServerModifyCurMaxHP_Implementation(float Amount, AHero * TargetPawn)
+{
+	TargetPawn->PropertyComp->AddCurMaxHP(Amount);
+}
+
+bool UEquipment::ServerModifyCurMaxHP_Validate(float Amount, AHero * TargetPawn)
 {
 	return true;
 }
@@ -84,12 +154,23 @@ bool UEquipment::ServerModifyCurHP_Validate(float Amount, AHero * TargetPawn)
 	return true;
 }
 
+
 void UEquipment::ServerModifyCurHPRecovery_Implementation(float Amount, AHero * TargetPawn)
 {
 	TargetPawn->PropertyComp->AddCurHPRecovery(Amount);
 }
 
 bool UEquipment::ServerModifyCurHPRecovery_Validate(float Amount, AHero * TargetPawn)
+{
+	return true;
+}
+
+void UEquipment::ServerModifyCurMaxMP_Implementation(float Amount, AHero * TargetPawn)
+{
+	TargetPawn->PropertyComp->AddCurMaxMP(Amount);
+}
+
+bool UEquipment::ServerModifyCurMaxMP_Validate(float Amount, AHero * TargetPawn)
 {
 	return true;
 }

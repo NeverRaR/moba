@@ -39,6 +39,12 @@ public:
 		void ServerModifyCurMP(float Amount, AHero* TargetPawn);
 
 	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurMaxHP(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerModifyCurMaxMP(float Amount, AHero* TargetPawn);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
 		void ServerModifyCurHPRecovery(float Amount, AHero* TargetPawn);
 
 	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
