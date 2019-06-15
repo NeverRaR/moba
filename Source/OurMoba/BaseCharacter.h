@@ -85,11 +85,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void CMagTraceDetect(TArray<FHitResult> HitResult);
 
+	UFUNCTION(BlueprintCallable)
+		void InitCamp();
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void DEBUGprint(float num);
 
 	UFUNCTION(BlueprintImplementableEvent)
-		void CInitCamp(CharacterCamp Camp);
+		void BlueprintInitCamp();
 
 	UFUNCTION(BlueprintCallable)
 		void CheckIsDead(ABaseCharacter* Attacker);
