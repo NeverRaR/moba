@@ -91,6 +91,7 @@ void ABaseCharacter::BeginPlay()
 
 	NetUpdateFrequency = 120.0f;
 	OriginLocation = GetActorLocation();
+
 }
 
 void ABaseCharacter::OnSetAttackPressed()
@@ -328,6 +329,10 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 	}
 
 }
+void ABaseCharacter::InitCamp()
+{
+	BlueprintInitCamp();
+}
 void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 {
 	if (PropertyComp->GetCurHP() < 0.0001)
@@ -373,7 +378,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		DeathEffect(Attacker);
 		if (CampComp->CheckIsHero())
 		{
-			GetMesh()->SetVisibility(false);
+			MulticastSetDeath(false);
 		}
 		else
 		{
@@ -406,7 +411,7 @@ void ABaseCharacter::Reborn()
 	SetActorEnableCollision(true);
 	PropertyComp->SetAlive(true);
 	PropertyComp->ResetCurProperty();
-	GetMesh()->SetVisibility(true);
+	MulticastSetDeath(true);
 	CRoleResetAttack();
 	SetActorLocation(OriginLocation);
 }
@@ -414,4 +419,14 @@ void ABaseCharacter::Reborn()
 void ABaseCharacter::ClientPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
 {
 	PlayAnimMontage(AnimMontage, InPlayRate);
+}
+
+void ABaseCharacter::MulticastSetDeath_Implementation(bool Status)
+{
+	GetMesh()->SetVisibility(Status);
+}
+
+bool ABaseCharacter::MulticastSetDeath_Validate(bool Status)
+{
+	return true;
 }

@@ -10,6 +10,7 @@
 #include "Components/ActorComponent.h"
 #include "EngineDefines.h"
 #include "GenericTeamAgentInterface.h"
+#include"CreatureCamp.h"
 #include "BaseCharacter.generated.h"
 class UBuff;
 class UParticleSystem;
@@ -84,8 +85,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void CMagTraceDetect(TArray<FHitResult> HitResult);
 
+	UFUNCTION(BlueprintCallable)
+		void InitCamp();
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void DEBUGprint(float num);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void BlueprintInitCamp();
 
 	UFUNCTION(BlueprintCallable)
 		void CheckIsDead(ABaseCharacter* Attacker);
@@ -130,6 +137,9 @@ public:
 
 	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable)
 		void MulticastPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
+	UFUNCTION(NetMulticast, Reliable, WithValidation, BlueprintCallable)
+		void MulticastSetDeath(bool Status);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
