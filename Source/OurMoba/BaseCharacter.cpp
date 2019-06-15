@@ -226,6 +226,11 @@ void ABaseCharacter::AttackEffect(ABaseCharacter * Receiver)
 	}
 }
 
+void ABaseCharacter::MulticastEffects_Implementation(UParticleSystem * Particle, FVector EffectLocation)
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, Particle, EffectLocation);
+}
+
 void ABaseCharacter::MulticastPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
 {
 	PlayAnimMontage(AnimMontage, InPlayRate);
@@ -251,7 +256,10 @@ float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker
 		float DamageResistance = PhyDef / (PhyDef + 150);
 		float CurDamage = (1 - DamageResistance)*PhyDamage;
 		PropertyComp->AddCurHP(-CurDamage);
-		UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
+		if (Role == ROLE_Authority)
+		{
+			MulticastEffects(HitReact, GetActorLocation());
+		}
 		CheckIsDead(Attacker);
 		return CurDamage;
 	}
@@ -344,7 +352,10 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 			MC->SetNewMoveDestination(GetActorLocation());
 		}
 		SetActorEnableCollision(false);
-		UGameplayStatics::SpawnEmitterAtLocation(this, DeathReact, GetActorLocation());
+		if (Role == ROLE_Authority)
+		{
+			MulticastEffects(DeathReact, GetActorLocation());
+		}
 		PropertyComp->SetAlive(false);
 		BuffComp->ClearAllBuff();
 		check(BuffComp->UniqueBuff.Num()==0&& BuffComp->MultiBuff.Num() == 0)//检查是否清除buff成功

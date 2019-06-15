@@ -116,6 +116,11 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetFireParticle(UParticleSystem* React,int32 Combo);
 
+	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
+		virtual void MulticastEffects(UParticleSystem* Particle, FVector EffectLocation);
+
+
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetMoveSpeed(float CurSpeed);
 
