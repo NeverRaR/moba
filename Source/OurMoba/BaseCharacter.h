@@ -10,6 +10,7 @@
 #include "Components/ActorComponent.h"
 #include "EngineDefines.h"
 #include "GenericTeamAgentInterface.h"
+#include"CreatureCamp.h"
 #include "BaseCharacter.generated.h"
 class UBuff;
 class UParticleSystem;
@@ -86,6 +87,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void DEBUGprint(float num);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void CInitCamp(CharacterCamp Camp);
 
 	UFUNCTION(BlueprintCallable)
 		void CheckIsDead(ABaseCharacter* Attacker);
