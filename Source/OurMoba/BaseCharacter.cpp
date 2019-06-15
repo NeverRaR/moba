@@ -329,6 +329,10 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 	}
 
 }
+void ABaseCharacter::InitCamp()
+{
+	BlueprintInitCamp();
+}
 void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 {
 	if (PropertyComp->GetCurHP() < 0.0001)
