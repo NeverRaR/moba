@@ -146,6 +146,9 @@ public:
 	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable)
 		void MulticastPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void DeathParticleEffect();
+
 	UFUNCTION(NetMulticast, Reliable, WithValidation, BlueprintCallable)
 		void MulticastSetDeath(bool Status);
 
