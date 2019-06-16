@@ -124,17 +124,17 @@ void ATwinBlast::ServerSkill1Shrapnel_Implementation(FVector Target)
 	Direction.Z = 0.0f;
 	if (Direction.Size() > SkillComp->GetSkillRange(0)) return;
 	if (!SkillComp->CheckCanBeReleased(0)) return;
-	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+	float Damage =1.5*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 	SkillComp->ReleaseSkill(0);
 	MulticastSkillEffects(Skill1React, Target);
-	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, Target);
-	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+	auto AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, Target);
+	for (auto &i : AllEnemysInRadius)
 	{
 		ABurning* Burning = GetWorld()->SpawnActor<ABurning>(ABurning::StaticClass());
-		Burning->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.4f;
+		Burning->DeltaMoveSpeed = i->PropertyComp->GetCurMoveSpeed()*-0.4f;
 		Burning->Attacker = this;
-		AllEnemysInRadius[i]->BuffComp->AddBuff(Burning);
-		AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+		i->BuffComp->AddBuff(Burning);
+		i->ReceiveMagDamage(Damage, this);
 	}
 }
 
@@ -171,17 +171,17 @@ void ATwinBlast::Skill1Shrapnel(FVector Target)
 	Direction.Z = 0.0f;
 	if (Direction.Size() > SkillComp->GetSkillRange(0)) return;
 	if (!SkillComp->CheckCanBeReleased(0)) return;
-	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+	float Damage = 1.5*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 	SkillComp->ReleaseSkill(0);
 	MulticastSkillEffects(Skill1React, Target);
-	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, Target);
-	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+	auto AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, Target);
+	for (auto &i : AllEnemysInRadius)
 	{
 		ABurning* Burning = GetWorld()->SpawnActor<ABurning>(ABurning::StaticClass());
-		Burning->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.4f;
+		Burning->DeltaMoveSpeed = i->PropertyComp->GetCurMoveSpeed()*-0.4f;
 		Burning->Attacker = this;
-		AllEnemysInRadius[i]->BuffComp->AddBuff(Burning);
-		AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+		i->BuffComp->AddBuff(Burning);
+		i->ReceiveMagDamage(Damage, this);
 	}
 }
 

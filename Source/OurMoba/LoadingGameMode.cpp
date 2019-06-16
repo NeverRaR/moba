@@ -8,5 +8,5 @@ void ALoadingGameMode::GotoNewLevel(const FString& LevelUrl, bool bAbsolute)
 {
 	if (Role < ROLE_Authority) return;
 
-	GetWorld()->ServerTravel(LevelUrl, bAbsolute, true);
+	GetWorld()->ServerTravel(LevelUrl, bAbsolute);
 }

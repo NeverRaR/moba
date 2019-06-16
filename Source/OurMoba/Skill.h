@@ -150,12 +150,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	    void  ReleaseSkill(int32 id);
 
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, WithValidation)
+		void MulticastSetSkillCD(int32 id, float time);
+
 		void OwnerLevelUp();
 
 		void DeathSilent();
 private:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Replicated)
 		TArray<FSkillBase> SkillState;
 
 	UPROPERTY(EditAnywhere)

@@ -10,6 +10,7 @@
 #include "Components/ActorComponent.h"
 #include "EngineDefines.h"
 #include "GenericTeamAgentInterface.h"
+#include"CreatureCamp.h"
 #include "BaseCharacter.generated.h"
 class UBuff;
 class UParticleSystem;
@@ -34,19 +35,19 @@ protected:
 	uint32 bIsAlive : 1;
 	uint32 bIsReadyToCombo : 1;
 	uint32 bCanRecall : 1;
-	int32 ComboIndex = 0;
-	int32 DeathIndex = 0;
-	float RebornTime = 6.0f;
+	int32 ComboIndex{ 0 };
+	int32 DeathIndex{ 0 };
+	float RebornTime{ 6.0f };
 
-public:	
+public:
 	UPROPERTY(EditAnywhere)
-	uint32 bIsBase : 1;
+		uint32 bIsBase : 1;
 
 	//Recall
 	void Recall();
 	void SetRecall();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector OriginLocation;
+		FVector OriginLocation;
 	FTimerHandle TimerHandle;
 
 	//Reborn
@@ -84,8 +85,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void CMagTraceDetect(TArray<FHitResult> HitResult);
 
+	UFUNCTION(BlueprintCallable)
+		void InitCamp();
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void DEBUGprint(float num);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void BlueprintInitCamp();
 
 	UFUNCTION(BlueprintCallable)
 		void CheckIsDead(ABaseCharacter* Attacker);
@@ -97,17 +104,22 @@ public:
 		TArray<ABaseCharacter*> GetAllEnemysInRadius(float Radius);
 
 	UFUNCTION(BlueprintCallable)
-		TArray<ABaseCharacter*> GetAllEnemysInRadiusToLocation(float Radius,FVector Location);
+		TArray<ABaseCharacter*> GetAllEnemysInRadiusToLocation(float Radius, FVector Location);
 
 	UFUNCTION(BlueprintCallable)
-		void PlayNextMontage(TArray<UAnimMontage*> Arr,int32& Index, float Rate);
+		void PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, float Rate);
 
-		virtual void DeathEffect(ABaseCharacter* Attacker);
+	virtual void DeathEffect(ABaseCharacter* Attacker);
 
-		virtual void AttackEffect(ABaseCharacter* Recevier);
+	virtual void AttackEffect(ABaseCharacter* Recevier);
 
 	UFUNCTION(BlueprintImplementableEvent)
-		void SetFireParticle(UParticleSystem* React,int32 Combo);
+		void SetFireParticle(UParticleSystem* React, int32 Combo);
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
+		virtual void MulticastEffects(UParticleSystem* Particle, FVector EffectLocation);
+
+
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetMoveSpeed(float CurSpeed);
@@ -128,8 +140,14 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
 		void ServerPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerNotifyGameOver();
+
 	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable)
 		void MulticastPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void DeathParticleEffect();
 
 	UFUNCTION(NetMulticast, Reliable, WithValidation, BlueprintCallable)
 		void MulticastSetDeath(bool Status);
@@ -146,7 +164,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buff", meta = (AllowPrivateAccess = "true"))
 		UBuff* BuffComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Anim", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anim", meta = (AllowPrivateAccess = "true"))
 		UAnimiation* AnimiationComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
