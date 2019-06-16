@@ -41,7 +41,7 @@ void AShinbi::ServerSkill1Blink_Implementation(FVector Target)
 			GetCapsuleComponent()->GetScaledCapsuleSize(Radius, Hight);
 			RealPoint.Location.Z += Hight;
 			SetActorLocation(RealPoint.Location);
-			float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+			float Damage =0.4*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 			TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, RealPoint.Location);
 			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 			{
@@ -160,7 +160,7 @@ void AShinbi::Skill1Blink(FVector Target)
 			GetCapsuleComponent()->GetScaledCapsuleSize(Radius, Hight);
 			RealPoint.Location.Z += Hight;
 			SetActorLocation(RealPoint.Location);
-			float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+			float Damage = 0.4*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 			TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, RealPoint.Location);
 			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 			{

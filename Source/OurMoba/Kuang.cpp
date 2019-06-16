@@ -54,7 +54,7 @@ void AKuang::ServerSkill2LightDurance_Implementation(FVector Target)
 	SkillComp->ReleaseSkill(1);
 	MulticastSkillEffects(Skill2React, Target);
 	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill2EffectRange, Target);
-	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+	float Damage = 0.6*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 	{
 		ADurance* Durance = GetWorld()->SpawnActor<ADurance>(ADurance::StaticClass());
@@ -112,7 +112,7 @@ void AKuang::Skill2LightDurance(FVector Target)
 	SkillComp->ReleaseSkill(1);
 	MulticastSkillEffects(Skill2React, Target);
 	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill2EffectRange, Target);
-	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+	float Damage = 0.6*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 	{
 		ADurance* Durance = GetWorld()->SpawnActor<ADurance>(ADurance::StaticClass());
