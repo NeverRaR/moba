@@ -54,11 +54,11 @@ void AKuang::ServerSkill2LightDurance_Implementation(FVector Target)
 	SkillComp->ReleaseSkill(1);
 	MulticastSkillEffects(Skill2React, Target);
 	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill2EffectRange, Target);
-	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+	float Damage = 0.6*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 	{
 		ADurance* Durance = GetWorld()->SpawnActor<ADurance>(ADurance::StaticClass());
-		Durance->SustainTime = 1.5 + SkillComp->GetSkillLevel(1)*0.25f;
+		Durance->SustainTime = 1.2 + SkillComp->GetSkillLevel(1)*0.2f;
 		AllEnemysInRadius[i]->BuffComp->AddBuff(Durance);
 		AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
 	}
@@ -74,9 +74,9 @@ void AKuang::ServerSkill3Frenzy_Implementation()
 	if (!SkillComp->CheckCanBeReleased(2)) return;
 	SkillComp->ReleaseSkill(2);
 	ARage* Rage = GetWorld()->SpawnActor<ARage>(ARage::StaticClass());
-	Rage->SustainTime = 7.0f + SkillComp->GetSkillLevel(2)*2.0f;
-	Rage->DeltaAttackSpeed = (0.1 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurAttackSpeed();
-	Rage->DeltaPhyDamage = (0.1 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurPhyAttack();
+	Rage->SustainTime = 7.0f + SkillComp->GetSkillLevel(2)*1.0f;
+	Rage->DeltaAttackSpeed = (0.2 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurAttackSpeed();
+	Rage->DeltaPhyDamage = (0.2 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurPhyAttack();
 	BuffComp->AddBuff(Rage);
 }
 
@@ -112,11 +112,11 @@ void AKuang::Skill2LightDurance(FVector Target)
 	SkillComp->ReleaseSkill(1);
 	MulticastSkillEffects(Skill2React, Target);
 	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill2EffectRange, Target);
-	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+	float Damage = 0.6*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 	{
 		ADurance* Durance = GetWorld()->SpawnActor<ADurance>(ADurance::StaticClass());
-		Durance->SustainTime = 1.5 + SkillComp->GetSkillLevel(1)*0.25f;
+		Durance->SustainTime = 1.2 + SkillComp->GetSkillLevel(1)*0.2f;
 		AllEnemysInRadius[i]->BuffComp->AddBuff(Durance);
 		AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
 	}
@@ -127,9 +127,9 @@ void AKuang::Skill3Frenzy()
 	if (!SkillComp->CheckCanBeReleased(2)) return;
 	SkillComp->ReleaseSkill(2);
 	ARage* Rage = GetWorld()->SpawnActor<ARage>(ARage::StaticClass());
-	Rage->SustainTime = 7.0f + SkillComp->GetSkillLevel(2)*2.0f;
-	Rage->DeltaAttackSpeed= (0.1 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurAttackSpeed();
-	Rage->DeltaPhyDamage= (0.1 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurPhyAttack();
+	Rage->SustainTime = 7.0f + SkillComp->GetSkillLevel(2)*1.0f;
+	Rage->DeltaAttackSpeed= (0.2 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurAttackSpeed();
+	Rage->DeltaPhyDamage= (0.2 + SkillComp->GetSkillLevel(2)*0.05)*PropertyComp->GetCurPhyAttack();
 	BuffComp->AddBuff(Rage);
 }
 

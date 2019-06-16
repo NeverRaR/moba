@@ -41,7 +41,7 @@ void AShinbi::ServerSkill1Blink_Implementation(FVector Target)
 			GetCapsuleComponent()->GetScaledCapsuleSize(Radius, Hight);
 			RealPoint.Location.Z += Hight;
 			SetActorLocation(RealPoint.Location);
-			float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+			float Damage =0.4*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 			TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, RealPoint.Location);
 			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 			{
@@ -78,7 +78,7 @@ void AShinbi::ServerSkill2BecomeGhost_Implementation()
 	if (!SkillComp->CheckCanBeReleased(1)) return;
 	SkillComp->ReleaseSkill(1);
 	AGhostForm* GhostForm = GetWorld()->SpawnActor<AGhostForm>(AGhostForm::StaticClass());
-	GhostForm->DeltaAttackSpeed = (0.1 + SkillComp->GetSkillLevel(1)*0.05)*PropertyComp->GetCurAttackSpeed();
+	GhostForm->DeltaAttackSpeed = (0.2 + SkillComp->GetSkillLevel(1)*0.1)*PropertyComp->GetCurAttackSpeed();
 	GhostForm->DeltaMoveSpeed = (0.2 + SkillComp->GetSkillLevel(1)*0.1)*PropertyComp->GetCurMoveSpeed();
 	BuffComp->AddBuff(GhostForm);
 }
@@ -103,8 +103,8 @@ void AShinbi::ServerSkill3DeathTarget_Implementation(FVector Target)
 		if (AllEnemysInRadius[i]->PropertyComp->IsAlive())
 		{
 			ADeathFlag* DeathFlag = GetWorld()->SpawnActor<ADeathFlag>(ADeathFlag::StaticClass());
-			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.8f;
-			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*-0.4f;
+			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.5f);
+			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.2f);
 			DeathFlag->Attacker = this;
 			AllEnemysInRadius[i]->BuffComp->AddBuff(DeathFlag);
 			AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
@@ -132,8 +132,8 @@ void AShinbi::Skill3DeathTarget(FVector Target)
 		if (AllEnemysInRadius[i]->PropertyComp->IsAlive())
 		{
 			ADeathFlag* DeathFlag = GetWorld()->SpawnActor<ADeathFlag>(ADeathFlag::StaticClass());
-			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.8f;
-			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*-0.4f;
+			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.1f - 0.5f);
+			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.1f - 0.2f);
 			DeathFlag->Attacker = this;
 			AllEnemysInRadius[i]->BuffComp->AddBuff(DeathFlag);
 			AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
@@ -160,7 +160,7 @@ void AShinbi::Skill1Blink(FVector Target)
 			GetCapsuleComponent()->GetScaledCapsuleSize(Radius, Hight);
 			RealPoint.Location.Z += Hight;
 			SetActorLocation(RealPoint.Location);
-			float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
+			float Damage = 0.4*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
 			TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, RealPoint.Location);
 			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
 			{

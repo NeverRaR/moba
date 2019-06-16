@@ -226,6 +226,11 @@ void ABaseCharacter::AttackEffect(ABaseCharacter * Receiver)
 	}
 }
 
+void ABaseCharacter::MulticastEffects_Implementation(UParticleSystem * Particle, FVector EffectLocation)
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, Particle, EffectLocation);
+}
+
 void ABaseCharacter::MulticastPlayMontage_Implementation(UAnimMontage * AnimMontage, float InPlayRate, FName StartSectionName)
 {
 	PlayAnimMontage(AnimMontage, InPlayRate);
@@ -251,7 +256,10 @@ float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker
 		float DamageResistance = PhyDef / (PhyDef + 150);
 		float CurDamage = (1 - DamageResistance)*PhyDamage;
 		PropertyComp->AddCurHP(-CurDamage);
-		UGameplayStatics::SpawnEmitterAtLocation(this, HitReact, GetActorLocation());
+		if (Role == ROLE_Authority)
+		{
+			MulticastEffects(HitReact, GetActorLocation());
+		}
 		CheckIsDead(Attacker);
 		return CurDamage;
 	}
@@ -329,6 +337,10 @@ void ABaseCharacter::CMagTraceDetect(TArray<FHitResult> HitResult)
 	}
 
 }
+void ABaseCharacter::InitCamp()
+{
+	BlueprintInitCamp();
+}
 void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 {
 	if (PropertyComp->GetCurHP() < 0.0001)
@@ -368,6 +380,10 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 			if (GM) 
 			{
 				GM->GameOver(CampComp->GetCamp());
+			}
+			else
+			{
+				ServerNotifyGameOver();
 			}
 		}
 		OnActorDeath.Broadcast(this);
@@ -423,6 +439,19 @@ void ABaseCharacter::MulticastSetDeath_Implementation(bool Status)
 }
 
 bool ABaseCharacter::MulticastSetDeath_Validate(bool Status)
+{
+	return true;
+}
+
+void ABaseCharacter::ServerNotifyGameOver_Implementation()
+{
+	AOurMobaGameMode* GM = Cast<AOurMobaGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM)
+	{
+		GM->GameOver(CampComp->GetCamp());
+	}
+}
+bool ABaseCharacter::ServerNotifyGameOver_Validate()
 {
 	return true;
 }
