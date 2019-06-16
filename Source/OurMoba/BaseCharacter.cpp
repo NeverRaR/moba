@@ -103,7 +103,7 @@ void ABaseCharacter::OnSetAttackPressed()
 	else
 	{
 		bIsAttacking = true;
-		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, true);
+		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, PropertyComp->GetCurAttackSpeed());
 	}
 }
 // Called every frame
