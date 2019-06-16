@@ -384,6 +384,10 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 			{
 				GM->GameOver(CampComp->GetCamp());
 			}
+			else
+			{
+				ServerNotifyGameOver();
+			}
 		}
 		OnActorDeath.Broadcast(this);
 		DeathEffect(Attacker);
@@ -438,6 +442,19 @@ void ABaseCharacter::MulticastSetDeath_Implementation(bool Status)
 }
 
 bool ABaseCharacter::MulticastSetDeath_Validate(bool Status)
+{
+	return true;
+}
+
+void ABaseCharacter::ServerNotifyGameOver_Implementation()
+{
+	AOurMobaGameMode* GM = Cast<AOurMobaGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM)
+	{
+		GM->GameOver(CampComp->GetCamp());
+	}
+}
+bool ABaseCharacter::ServerNotifyGameOver_Validate()
 {
 	return true;
 }
