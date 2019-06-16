@@ -5,6 +5,7 @@
 #include"OurMobaGameMode.h"
 #include"Hero.h"
 #include "CharacterProperty.h"
+#include "Net/UnrealNetwork.h"
 // Sets default values for this component's properties
 USkill::USkill()
 {
@@ -314,12 +315,23 @@ bool USkill::CheckCanBeReleased(int32 id)
 
 void USkill::ReleaseSkill(int32 id)
 {
+	AHero* OwnerPawn = Cast<AHero>(GetOwner());
+	MulticastSetSkillCD(id, (1 - OwnerPawn->PropertyComp->GetCurCDReduction())*GetSkillCD(id));
+}
+
+void USkill::MulticastSetSkillCD_Implementation(int32 id, float time)
+{
 	if (CheckIDIsLegal(id))
 	{
 		AHero* OwnerPawn = Cast<AHero>(GetOwner());
 		OwnerPawn->PropertyComp->AddCurMP(-GetSkillMPConsume(id));
-		SetSkillCurCD(id, (1-OwnerPawn->PropertyComp->GetCurCDReduction())*GetSkillCD(id));
+		SetSkillCurCD(id, time);
 	}
+}
+
+bool USkill::MulticastSetSkillCD_Validate(int32 id, float time)
+{
+	return true;
 }
 
 void USkill::OwnerLevelUp()
@@ -327,5 +339,10 @@ void USkill::OwnerLevelUp()
 	AddSkillPoint(1);
 }
 
+void USkill::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(USkill, SkillState);
+}
 
