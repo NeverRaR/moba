@@ -132,8 +132,8 @@ void AShinbi::Skill3DeathTarget(FVector Target)
 		if (AllEnemysInRadius[i]->PropertyComp->IsAlive())
 		{
 			ADeathFlag* DeathFlag = GetWorld()->SpawnActor<ADeathFlag>(ADeathFlag::StaticClass());
-			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.5f);
-			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.2f);
+			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.1f - 0.5f);
+			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.1f - 0.2f);
 			DeathFlag->Attacker = this;
 			AllEnemysInRadius[i]->BuffComp->AddBuff(DeathFlag);
 			AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
