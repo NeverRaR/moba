@@ -78,7 +78,7 @@ void AShinbi::ServerSkill2BecomeGhost_Implementation()
 	if (!SkillComp->CheckCanBeReleased(1)) return;
 	SkillComp->ReleaseSkill(1);
 	AGhostForm* GhostForm = GetWorld()->SpawnActor<AGhostForm>(AGhostForm::StaticClass());
-	GhostForm->DeltaAttackSpeed = (0.1 + SkillComp->GetSkillLevel(1)*0.05)*PropertyComp->GetCurAttackSpeed();
+	GhostForm->DeltaAttackSpeed = (0.2 + SkillComp->GetSkillLevel(1)*0.1)*PropertyComp->GetCurAttackSpeed();
 	GhostForm->DeltaMoveSpeed = (0.2 + SkillComp->GetSkillLevel(1)*0.1)*PropertyComp->GetCurMoveSpeed();
 	BuffComp->AddBuff(GhostForm);
 }
@@ -103,8 +103,8 @@ void AShinbi::ServerSkill3DeathTarget_Implementation(FVector Target)
 		if (AllEnemysInRadius[i]->PropertyComp->IsAlive())
 		{
 			ADeathFlag* DeathFlag = GetWorld()->SpawnActor<ADeathFlag>(ADeathFlag::StaticClass());
-			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.8f;
-			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*-0.4f;
+			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.5f);
+			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.2f);
 			DeathFlag->Attacker = this;
 			AllEnemysInRadius[i]->BuffComp->AddBuff(DeathFlag);
 			AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
@@ -132,8 +132,8 @@ void AShinbi::Skill3DeathTarget(FVector Target)
 		if (AllEnemysInRadius[i]->PropertyComp->IsAlive())
 		{
 			ADeathFlag* DeathFlag = GetWorld()->SpawnActor<ADeathFlag>(ADeathFlag::StaticClass());
-			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*-0.8f;
-			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*-0.4f;
+			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.5f);
+			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.2f);
 			DeathFlag->Attacker = this;
 			AllEnemysInRadius[i]->BuffComp->AddBuff(DeathFlag);
 			AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
