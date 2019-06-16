@@ -22,8 +22,8 @@ UCLASS()
 class OURMOBA_API ABaseBuff : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ABaseBuff();
 
@@ -31,11 +31,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual bool IsBuffEnd() ;
+	virtual bool IsBuffEnd();
 
 	virtual bool BuffIsEffective(ABaseCharacter* OwnerPawn);
 
@@ -56,49 +56,49 @@ public:
 		bool bIsChildBuff = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		ABaseBuff* AttachedDebuff ;
+		ABaseBuff* AttachedDebuff;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float SustainTime=0.0f;
+		float SustainTime = { 0.0f };
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float CurTime = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMaxHP = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMaxMP = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaHPRecovery = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMPRecovery = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaPhyDamage = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMagDamage = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaPhyDef = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMagDef = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaMoveSpeed = 0.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaAttackSpeed = 0.0f;
+		float CurTime{ 0.0f };
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaLeech = 0.0f;
+		float DeltaMaxHP{ 0.0f };
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DeltaCDReduction = 0.0f;
+		float DeltaMaxMP{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaHPRecovery{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMPRecovery{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaPhyDamage{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMagDamage{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaPhyDef{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMagDef{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaMoveSpeed{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaAttackSpeed{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaLeech{ 0.0f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeltaCDReduction{ 0.0f };
 
 	UPROPERTY(EditAnywhere)
 		ABaseCharacter* Receiver;
