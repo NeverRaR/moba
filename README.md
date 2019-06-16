@@ -37,12 +37,12 @@ https://github.com/NeverRaR/moba/tree/master
 3. 修复CharacterProperty部分属性未暴露给蓝图的bug
 - 5.29
 1. HP/MP的UI
-2. 联机·初步完成人物移动 转向还未设置
+2. 联机·初步完成人物移动，转向还未设置
 - 5.30
 1. 完成了经验和金钱交互，完善了士兵AI
 - 6.1
 1. 小怪刷新（还未实现阵营对立）
-2. 船新版本git statusgit status重写了AI Controller，优化了普通单位ai，实现了所有普通单位的模型以及动画
+2. 重写了AI Controller，优化了普通单位ai，实现了所有普通单位的模型以及动画
 3. 英雄选择关卡制作、英雄选择界面
 - 6.2
 1. 增加功能：英雄普通攻击动画 联机同步
@@ -98,9 +98,10 @@ https://github.com/NeverRaR/moba/tree/master
 2. 修正选择关卡，新增开始界面
 3. 小地图
 - 6.16
-1. 调小怪位置
+1. 调整小怪位置
 2. 完善了联网系统，基本release版本完成
 3. 增加等待客户端响应机制,完善了技能伤害
+4. 改善UI表现
 
 ## 项目开发文档
 
