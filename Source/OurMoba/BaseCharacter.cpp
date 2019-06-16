@@ -352,10 +352,7 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 			MC->SetNewMoveDestination(GetActorLocation());
 		}
 		SetActorEnableCollision(false);
-		if (Role == ROLE_Authority)
-		{
-			MulticastEffects(DeathReact, GetActorLocation());
-		}
+		UGameplayStatics::SpawnEmitterAtLocation(this, DeathReact, GetActorLocation());
 		PropertyComp->SetAlive(false);
 		BuffComp->ClearAllBuff();
 		check(BuffComp->UniqueBuff.Num()==0&& BuffComp->MultiBuff.Num() == 0)//检查是否清除buff成功
