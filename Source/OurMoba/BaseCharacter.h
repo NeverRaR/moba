@@ -135,6 +135,9 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
 		void ServerPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+		void ServerNotifyGameOver();
+
 	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable)
 		void MulticastPlayMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
