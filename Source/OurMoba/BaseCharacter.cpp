@@ -363,7 +363,8 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		DeathParticleEffect();
 		PropertyComp->SetAlive(false);
 		BuffComp->ClearAllBuff();
-		check(BuffComp->UniqueBuff.Num()==0&& BuffComp->MultiBuff.Num() == 0)//检查是否清除buff成功
+		check(BuffComp->UniqueBuff.Num() == 0 && BuffComp->MultiBuff.Num() == 0)//检查是否清除buff成功
+			WholeDeath(nullptr);
 		if (CampComp->CheckIsHero())
 		{
 			PropertyComp->AddDeathNum(1);
