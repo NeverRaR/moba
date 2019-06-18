@@ -42,16 +42,16 @@ void AShinbi::ServerSkill1Blink_Implementation(FVector Target)
 			RealPoint.Location.Z += Hight;
 			SetActorLocation(RealPoint.Location);
 			float Damage =0.4*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
-			TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, RealPoint.Location);
-			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+			auto AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, RealPoint.Location);
+			for (auto &i : AllEnemysInRadius)
 			{
-				AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+				i->ReceiveMagDamage(Damage, this);
 			}
 			AllEnemysInRadius.Empty();
 			AllEnemysInRadius = GetAllEnemysInRadius(Skill1EffectRange);
-			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+			for (auto &i : AllEnemysInRadius)
 			{
-				AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+				i->ReceiveMagDamage(Damage, this);
 			}
 			MulticastSkillEffects(Skill1React, RealPoint.Location);
 		}
@@ -96,18 +96,18 @@ void AShinbi::ServerSkill3DeathTarget_Implementation(FVector Target)
 	if (!SkillComp->CheckCanBeReleased(2)) return;
 	SkillComp->ReleaseSkill(2);
 	MulticastSkillEffects(Skill3React, Target);
-	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill3EffectRange, Target);
+	auto AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill3EffectRange, Target);
 	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(2);
-	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+	for (auto &i : AllEnemysInRadius)
 	{
-		if (AllEnemysInRadius[i]->PropertyComp->IsAlive())
+		if (i->PropertyComp->IsAlive())
 		{
 			ADeathFlag* DeathFlag = GetWorld()->SpawnActor<ADeathFlag>(ADeathFlag::StaticClass());
-			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.5f);
-			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.2f);
+			DeathFlag->DeltaMoveSpeed = i->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.5f);
+			DeathFlag->DeltaPhyDef = i->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.2f);
 			DeathFlag->Attacker = this;
-			AllEnemysInRadius[i]->BuffComp->AddBuff(DeathFlag);
-			AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+			i->BuffComp->AddBuff(DeathFlag);
+			i->ReceiveMagDamage(Damage, this);
 		}
 	}
 }
@@ -125,18 +125,18 @@ void AShinbi::Skill3DeathTarget(FVector Target)
 	if (!SkillComp->CheckCanBeReleased(2)) return;
 	SkillComp->ReleaseSkill(2);
 	MulticastSkillEffects(Skill3React, Target);
-	TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill3EffectRange, Target);
+	auto AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill3EffectRange, Target);
 	float Damage = PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(2);
-	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+	for (auto &i : AllEnemysInRadius)
 	{
-		if (AllEnemysInRadius[i]->PropertyComp->IsAlive())
+		if (i->PropertyComp->IsAlive())
 		{
 			ADeathFlag* DeathFlag = GetWorld()->SpawnActor<ADeathFlag>(ADeathFlag::StaticClass());
-			DeathFlag->DeltaMoveSpeed = AllEnemysInRadius[i]->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.1f - 0.5f);
-			DeathFlag->DeltaPhyDef = AllEnemysInRadius[i]->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.1f - 0.2f);
+			DeathFlag->DeltaMoveSpeed = i->PropertyComp->GetCurMoveSpeed()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.5f);
+			DeathFlag->DeltaPhyDef = i->PropertyComp->GetCurPhyDef()*(SkillComp->GetSkillLevel(2)*-0.05f - 0.2f);
 			DeathFlag->Attacker = this;
-			AllEnemysInRadius[i]->BuffComp->AddBuff(DeathFlag);
-			AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+			i->BuffComp->AddBuff(DeathFlag);
+			i->ReceiveMagDamage(Damage, this);
 		}
 	}
 }
@@ -161,16 +161,16 @@ void AShinbi::Skill1Blink(FVector Target)
 			RealPoint.Location.Z += Hight;
 			SetActorLocation(RealPoint.Location);
 			float Damage = 0.4*PropertyComp->GetCurMagAttack() + SkillComp->GetSkillMagDamage(0);
-			TArray<ABaseCharacter*> AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, RealPoint.Location);
-			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+			auto AllEnemysInRadius = GetAllEnemysInRadiusToLocation(Skill1EffectRange, RealPoint.Location);
+			for (auto &i : AllEnemysInRadius)
 			{
-				AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+				i->ReceiveMagDamage(Damage, this);
 			}
 			AllEnemysInRadius.Empty();
 			AllEnemysInRadius = GetAllEnemysInRadius(Skill1EffectRange);
-			for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+			for (auto &i : AllEnemysInRadius)
 			{
-				AllEnemysInRadius[i]->ReceiveMagDamage(Damage, this);
+				i->ReceiveMagDamage(Damage, this);
 			}
 			MulticastSkillEffects(Skill1React, RealPoint.Location);
 		}

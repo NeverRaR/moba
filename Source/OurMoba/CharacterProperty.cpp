@@ -21,7 +21,7 @@ void UCharacterProperty::BeginPlay()
 {
 	Super::BeginPlay();
 	// ...
-	
+
 }
 
 
@@ -144,9 +144,9 @@ bool UCharacterProperty::CheckLevelUp(float DeltaEXP)
 void UCharacterProperty::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
+
 	DOREPLIFETIME(UCharacterProperty, FCurPropertyDetail);
-	
+
 	DOREPLIFETIME(UCharacterProperty, FBasePropertyDetail);
 }
 
