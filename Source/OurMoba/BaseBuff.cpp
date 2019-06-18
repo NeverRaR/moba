@@ -93,7 +93,8 @@ bool ABaseBuff::EndBuff(ABaseCharacter* OwnerPawn)
 		MyProperty->AddCurMagDef(-DeltaMagDef);
 		MyProperty->AddCurAttackSpeed(-DeltaAttackSpeed);
 		MyProperty->AddCurMoveSpeed(-DeltaMoveSpeed);
-		MyProperty->AddCurLeech(-DeltaCDReduction);
+		MyProperty->AddCurLeech(-DeltaLeech);
+		MyProperty->AddCurCDReduction(-DeltaCDReduction);
 		React->SetVisibility(false);
 		return true;
 	}
