@@ -103,7 +103,7 @@ void ABaseCharacter::OnSetAttackPressed()
 	else
 	{
 		bIsAttacking = true;
-		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, true);
+		PlayNextMontage(AnimiationComp->AttackAnim, ComboIndex, PropertyComp->GetCurAttackSpeed());
 	}
 }
 // Called every frame
@@ -209,7 +209,14 @@ void ABaseCharacter::PlayNextMontage(TArray<UAnimMontage*> Arr, int32& Index, fl
 
 void ABaseCharacter::DeathEffect(ABaseCharacter * Attacker)
 {
-
+	TArray<ABaseCharacter*> AllEnemysInRadius=GetAllEnemysInRadius(1000.0f);
+	for (int32 i = 0; i < AllEnemysInRadius.Num(); ++i)
+	{
+		if (AllEnemysInRadius[i]->CampComp->CheckIsHero())
+		{
+			AllEnemysInRadius[i]->PropertyComp->CheckLevelUp(0.4*PropertyComp->GetEXPWorth());
+		}
+	}
 
 }
 
@@ -249,7 +256,7 @@ bool ABaseCharacter::ServerPlayMontage_Validate(UAnimMontage * AnimMontage, floa
 
 float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker)
 {
-	if (Attacker&&Attacker->PropertyComp->IsAlive())
+	if (Attacker&&PropertyComp->IsAlive())
 	{
 		if (PhyDamage < 0.0f) return 0.0f;
 		float PhyDef = PropertyComp->GetCurPhyDef();
@@ -268,7 +275,7 @@ float ABaseCharacter::ReceivePhyDamage(float PhyDamage, ABaseCharacter* Attacker
 
 void ABaseCharacter::ReceiveMagDamage(float MagDamage, ABaseCharacter* Attacker)
 {
-	if (Attacker&&Attacker->PropertyComp->IsAlive())
+	if (Attacker&&PropertyComp->IsAlive())
 	{
 		if (MagDamage < 0.0f) return;
 		float MagDef = PropertyComp->GetCurMagDef();
@@ -343,7 +350,7 @@ void ABaseCharacter::InitCamp()
 }
 void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 {
-	if (PropertyComp->GetCurHP() < 0.0001)
+	if (PropertyComp->GetCurHP() < 0.0001&&PropertyComp->IsAlive())
 	{
 
 		AMobaController* MC = Cast<AMobaController>(Controller);
@@ -356,7 +363,8 @@ void ABaseCharacter::CheckIsDead(ABaseCharacter* Attacker)
 		DeathParticleEffect();
 		PropertyComp->SetAlive(false);
 		BuffComp->ClearAllBuff();
-		check(BuffComp->UniqueBuff.Num()==0&& BuffComp->MultiBuff.Num() == 0)//检查是否清除buff成功
+		check(BuffComp->UniqueBuff.Num() == 0 && BuffComp->MultiBuff.Num() == 0)//检查是否清除buff成功
+			WholeDeath(nullptr);
 		if (CampComp->CheckIsHero())
 		{
 			PropertyComp->AddDeathNum(1);
